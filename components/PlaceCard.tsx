@@ -91,13 +91,13 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
             </View>
           ))}
         </ScrollView>
-        
+
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.7)']}
           className="absolute bottom-0 left-0 right-0 h-1/2"
           pointerEvents="none"
         />
-        
+
         {/* Image Navigation Arrows */}
         {place.images.length > 1 && (
           <>
@@ -110,7 +110,7 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
                 <ChevronLeft size={24} color="#ffffff" />
               </TouchableOpacity>
             )}
-            
+
             {currentImageIndex < place.images.length - 1 && (
               <TouchableOpacity
                 className="absolute top-1/2 right-4 w-10 h-10 rounded-full bg-black/50 justify-center items-center z-10"
@@ -122,7 +122,7 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
             )}
           </>
         )}
-        
+
         {/* Image Indicators */}
         {place.images.length > 1 && (
           <View className="absolute bottom-4 left-0 right-0 flex-row justify-center gap-2 z-10" pointerEvents="none">
@@ -130,16 +130,15 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
               <TouchableOpacity
                 key={index}
                 onPress={() => scrollToImage(index)}
-                className={`w-2 h-2 rounded-full ${
-                  index === currentImageIndex ? 'bg-white' : 'bg-white/50'
-                }`}
+                className={`w-2 h-2 rounded-full ${index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                  }`}
                 activeOpacity={0.7}
                 pointerEvents="auto"
               />
             ))}
           </View>
         )}
-        
+
         {/* Rating Badge */}
         <View className="absolute top-4 right-4 flex-row items-center bg-white px-3 py-1.5 rounded-full gap-1 z-10" pointerEvents="none">
           <Star size={16} color="#fbbf24" fill="#fbbf24" />
@@ -153,8 +152,8 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
       </View>
 
       {/* Content */}
-      <ScrollView 
-        className="flex-1 p-5" 
+      <ScrollView
+        className="flex-1 p-5"
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}
         bounces={false}>
@@ -200,15 +199,15 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
 
         {/* Reviews Carousel */}
         {place.reviews && place.reviews.length > 0 && (
-          <ReviewCarousel 
-            reviews={place.reviews} 
+          <ReviewCarousel
+            reviews={place.reviews}
             onSeeAll={() => setShowAllReviews(true)}
           />
         )}
 
         {/* Action Buttons */}
         <View className="gap-3 mb-5">
-          <TouchableOpacity 
+          <TouchableOpacity
             className="flex-row items-center justify-center bg-sky-500 py-3.5 rounded-xl gap-2"
             onPress={onGoNow}>
             <Navigation size={20} color="#ffffff" />
@@ -216,8 +215,8 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
               Go Now
             </SSText>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             className="flex-row items-center justify-center bg-emerald-50 border-2 border-emerald-600 py-3.5 rounded-xl gap-2"
             onPress={onFindSimilar}>
             <Zap size={20} color="#10b981" />
@@ -244,7 +243,7 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
           visible={false}
           images={place.images}
           startIndex={currentImageIndex}
-          onClose={() => {}}
+          onClose={() => { }}
           onImageChange={handleImageChange}
         />
       )}

@@ -24,9 +24,21 @@ import { SSText } from '@/components/ui/SSText';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
+interface CardStackItem {
+  id: string;
+  place: Place;
+  index: number;
+  position: Animated.ValueXY;
+  scale: Animated.Value;
+  opacity: Animated.Value;
+  rotate: Animated.Value;
+  zIndex: number;
+}
+
 export default function DiscoverTab() {
   const [places, setPlaces] = useState<Place[]>(mockPlaces);
   const [currentIndex, setCurrentIndex] = useState(0);
+  // const [forceUpdate, setForceUpdate] = useState(0); // Force re-render trigger
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
@@ -37,6 +49,19 @@ export default function DiscoverTab() {
   const [priceFilter, setPriceFilter] = useState<string[]>([]);
   const [lastViewedImageIndex, setLastViewedImageIndex] = useState<{ [placeId: string]: number }>({});
 
+  // Use a ref to track the actual current index
+  // Card stack management
+  const [cardStack, setCardStack] = useState<CardStackItem[]>([]);
+  const stackAnimationRef = useRef<Animated.CompositeAnimation | null>(null);
+  const isAnimatingRef = useRef(false);
+
+  // Card configuration
+  const CARDS_TO_PRERENDER = 4;
+  const CARD_SCALES = [1, 0.95, 0.9, 0.85];
+  const CARD_OPACITIES = [1, 1, 0, 0];
+  const CARD_Y_OFFSETS = [0, 0, 0, 0];
+
+  // Animation values for current card
   const position = useRef(new Animated.ValueXY()).current;
   const rotate = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(1)).current;
@@ -45,54 +70,167 @@ export default function DiscoverTab() {
     loadVibePreferences();
   }, []);
 
+  useEffect(() => {
+    initializeCardStack();
+  }, [places, currentIndex]);
+
   const loadVibePreferences = async () => {
     const preferences = await getVibePreferences();
     setVibeFilters(preferences);
   };
 
-  const resetCard = () => {
+  const createCardStackItem = (place: Place, stackIndex: number, placeIndex: number): CardStackItem => {
+    const scaleValue = CARD_SCALES[stackIndex] || 0.8;
+    const opacityValue = CARD_OPACITIES[stackIndex] || 0.2;
+    const yOffset = CARD_Y_OFFSETS[stackIndex] || 0;
+
+    return {
+      id: `${place.id}-${placeIndex}`,
+      place,
+      index: placeIndex,
+      position: new Animated.ValueXY({ x: 0, y: 0 }),
+      scale: new Animated.Value(scaleValue),
+      opacity: new Animated.Value(opacityValue),
+      rotate: new Animated.Value(0),
+      zIndex: CARDS_TO_PRERENDER - stackIndex,
+    };
+  };
+
+  const initializeCardStack = () => {
+    const newStack: CardStackItem[] = [];
+
+    for (let i = 0; i < CARDS_TO_PRERENDER; i++) {
+      const placeIndex = currentIndex + i;
+      if (placeIndex < places.length) {
+        const cardItem = createCardStackItem(places[placeIndex], i, placeIndex);
+        newStack.push(cardItem);
+      }
+    }
+
+    setCardStack(newStack);
+  };
+
+  const animateStackMovement = () => {
+    if (isAnimatingRef.current) return;
+
+    isAnimatingRef.current = true;
+
+    const animations = cardStack.map((card, index) => {
+      if (index === 0) {
+        // Top card slides out
+        return null;
+      }
+
+      // Move each card up one position
+      const newStackIndex = index - 1;
+      const newScale = CARD_SCALES[newStackIndex] || 1;
+      const newOpacity = CARD_OPACITIES[newStackIndex] || 1;
+      const newYOffset = CARD_Y_OFFSETS[newStackIndex] || 0;
+
+      return Animated.parallel([
+        Animated.spring(card.scale, {
+          toValue: newScale,
+          useNativeDriver: false,
+          tension: 100,
+          friction: 8,
+        }),
+        Animated.spring(card.opacity, {
+          toValue: newOpacity,
+          useNativeDriver: false,
+          tension: 100,
+          friction: 8,
+        }),
+        Animated.spring(card.position, {
+          toValue: { x: 0, y: newYOffset },
+          useNativeDriver: false,
+          tension: 100,
+          friction: 8,
+        }),
+      ]);
+    }).filter(Boolean) as Animated.CompositeAnimation[];
+
+    stackAnimationRef.current = Animated.parallel(animations);
+
+    stackAnimationRef.current.start((finished) => {
+      if (finished) {
+        // Update the stack after animation completes
+        setCardStack(prevStack => {
+          const newStack = prevStack.slice(1); // Remove the top card
+
+          // Add a new card at the bottom if available
+          const lastIndex = newStack.length > 0 ? newStack[newStack.length - 1].index : currentIndex;
+          const nextPlaceIndex = lastIndex + 1;
+
+          if (nextPlaceIndex < places.length) {
+            const newCard = createCardStackItem(
+              places[nextPlaceIndex],
+              newStack.length,
+              nextPlaceIndex
+            );
+            newStack.push(newCard);
+          }
+
+          // Update z-index values
+          return newStack.map((card, index) => ({
+            ...card,
+            zIndex: CARDS_TO_PRERENDER - index,
+          }));
+        });
+
+        setCurrentIndex(prev => prev + 1);
+        isAnimatingRef.current = false;
+      }
+    });
+  };
+
+  const resetCurrentCard = () => {
     position.setValue({ x: 0, y: 0 });
     rotate.setValue(0);
     opacity.setValue(1);
   };
 
   const handleSwipe = (direction: 'left' | 'right') => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // const currentIdx = currentIndexRef.current;
+    if (isAnimatingRef.current) return;
+    if (currentIndex >= places.length - 1) {
+      Alert.alert('No more places!');
+      return;
     }
 
+    const topCard = cardStack[0];
+    if (!topCard) return;
+
     const x = direction === 'right' ? screenWidth + 100 : -screenWidth - 100;
-    
+    const rotateValue = direction === 'right' ? '30deg' : '-30deg';
+
+    // Animate the top card out
     Animated.parallel([
-      Animated.timing(position.x, {
-        toValue: x,
+      Animated.timing(topCard.position, {
+        toValue: { x, y: 0 },
         duration: 300,
         useNativeDriver: false,
       }),
-      Animated.timing(opacity, {
+      Animated.timing(topCard.opacity, {
         toValue: 0,
         duration: 300,
         useNativeDriver: false,
       }),
-    ]).start(() => {
-      if (direction === 'right') {
-        savePlaceToStorage(places[currentIndex]);
-      }
-      nextCard();
-    });
-  };
+      Animated.timing(topCard.rotate, {
+        toValue: direction === 'right' ? 0.5 : -0.5,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+    ]).start((finished) => {
+      if (finished) {
+        // Save the liked place - commented out storage usage
+        if (direction === 'right') {
+          savePlaceToStorage(topCard.place);
+        }
 
-  const nextCard = () => {
-    if (currentIndex < places.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      resetCard();
-    } else {
-      Alert.alert(
-        'No more places!',
-        'You\'ve seen all available spots. Check back later for more discoveries!',
-        [{ text: 'OK' }]
-      );
-    }
+        // Animate the rest of the stack
+        animateStackMovement();
+      }
+    });
   };
 
   const handleGoNow = (place: Place) => {
@@ -108,13 +246,12 @@ export default function DiscoverTab() {
   };
 
   const handleFindSimilar = (place: Place) => {
-    const similarPlaces = mockPlaces.filter(p => 
-      p.id !== place.id && 
+    const similarPlaces = mockPlaces.filter(p =>
+      p.id !== place.id &&
       p.vibes.some(vibe => place.vibes.includes(vibe))
     );
     setPlaces(similarPlaces);
-    setCurrentIndex(0);
-    resetCard();
+    resetCardStack();
   };
 
   const handleImagePress = (images: string[], startIndex: number) => {
@@ -125,12 +262,70 @@ export default function DiscoverTab() {
 
   const handleImageChange = (newIndex: number) => {
     const currentPlace = places[currentIndex];
+
     if (currentPlace) {
       setLastViewedImageIndex(prev => ({
         ...prev,
         [currentPlace.id]: newIndex
       }));
     }
+  };
+
+  const resetCardStack = () => {
+    // resetCurrentCard();
+    // nextCardScale.setValue(0.95);
+    // nextCardOpacity.setValue(0.5);
+    // thirdCardScale.setValue(0.9);
+    // thirdCardOpacity.setValue(0.3);
+    // currentIndexRef.current = 0;
+    // setCurrentIndex(0);
+    if (stackAnimationRef.current) {
+      stackAnimationRef.current.stop();
+    }
+    isAnimatingRef.current = false;
+    setCurrentIndex(0);
+  };
+
+  const createPanResponder = (card: CardStackItem) => {
+    return PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gesture) => {
+        if (isAnimatingRef.current) return false;
+        const isHorizontalGesture = Math.abs(gesture.dx) > Math.abs(gesture.dy) && Math.abs(gesture.dx) > 20;
+        return isHorizontalGesture;
+      },
+      onPanResponderGrant: () => {
+        card.position.setOffset({
+          x: card.position.x._value,
+          y: card.position.y._value,
+        });
+      },
+      onPanResponderMove: (_, gesture) => {
+        card.position.setValue({ x: gesture.dx, y: 0 });
+        card.rotate.setValue(gesture.dx * 0.0008);
+      },
+      onPanResponderRelease: (_, gesture) => {
+        card.position.flattenOffset();
+
+        if (Math.abs(gesture.dx) > 120) {
+          handleSwipe(gesture.dx > 0 ? 'right' : 'left');
+        } else {
+          Animated.parallel([
+            Animated.spring(card.position, {
+              toValue: { x: 0, y: CARD_Y_OFFSETS[0] },
+              useNativeDriver: false,
+              tension: 100,
+              friction: 8,
+            }),
+            Animated.spring(card.rotate, {
+              toValue: 0,
+              useNativeDriver: false,
+              tension: 100,
+              friction: 8,
+            }),
+          ]).start();
+        }
+      },
+    });
   };
 
   const panResponder = useRef(
@@ -151,7 +346,7 @@ export default function DiscoverTab() {
       },
       onPanResponderRelease: (_, gesture) => {
         position.flattenOffset();
-        
+
         if (Math.abs(gesture.dx) > 120) {
           handleSwipe(gesture.dx > 0 ? 'right' : 'left');
         } else {
@@ -209,15 +404,13 @@ export default function DiscoverTab() {
     );
   }
 
-  const currentPlace = places[currentIndex];
-
   return (
     <SafeAreaView className="flex-1">
       <LinearGradient
         colors={['#f0fdf4', '#ffffff']}
         className="absolute inset-0"
       />
-      
+
       {/* Header */}
       <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
         <SSText variant="bold" className="text-3xl text-emerald-600">
@@ -232,9 +425,8 @@ export default function DiscoverTab() {
           <TouchableOpacity
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
             onPress={() => {
-              setCurrentIndex(0);
               setPlaces(mockPlaces);
-              resetCard();
+              resetCardStack();
             }}>
             <RotateCcw size={24} color="#10b981" />
           </TouchableOpacity>
@@ -243,73 +435,91 @@ export default function DiscoverTab() {
 
       {/* Card Stack */}
       <View className="flex-1 items-center justify-center px-5 pb-30">
-        {/* Next card (underneath) */}
-        {currentIndex < places.length - 1 && (
-          <View 
-            className="absolute"
-            style={[
-              { 
-                width: screenWidth - 40, 
-                height: screenHeight * 0.65,
-                transform: [{ scale: 0.95 }],
-                opacity: 0.5
-              }
-            ]}>
-            <PlaceCard 
-              place={places[currentIndex + 1]} 
-              onImagePress={handleImagePress}
-              onGoNow={() => handleGoNow(places[currentIndex + 1])}
-              onFindSimilar={() => handleFindSimilar(places[currentIndex + 1])}
-            />
-          </View>
-        )}
+        {cardStack.map((card, index) => {
+          const isTopCard = index === 0;
+          const panResponder = isTopCard ? createPanResponder(card) : null;
 
-        {/* Current card */}
-        <Animated.View
-          {...panResponder.panHandlers}
-          style={[
-            { 
-              width: screenWidth - 40, 
-              height: screenHeight * 0.65,
-              position: 'absolute'
-            },
-            rotateAndTranslate, 
-            { opacity }
-          ]}>
-          <PlaceCard 
-            place={currentPlace}
-            onImagePress={handleImagePress}
-            onGoNow={() => handleGoNow(currentPlace)}
-            onFindSimilar={() => handleFindSimilar(currentPlace)}
-          />
+          const rotateAndTranslate = {
+            transform: [
+              {
+                rotate: card.rotate.interpolate({
+                  inputRange: [-1, 0, 1],
+                  outputRange: ['-30deg', '0deg', '30deg'],
+                }),
+              },
+              { scale: card.scale },
+              ...card.position.getTranslateTransform(),
+            ],
+          };
 
-          {/* Swipe Indicators */}
-          <Animated.View 
-            className="absolute top-12 right-5 bg-emerald-600 px-5 py-2.5 rounded-lg z-10"
-            style={[
-              { opacity: likeOpacity },
-              { transform: [{ rotate: '12deg' }] }
-            ]}>
-            <SSText variant="bold" className="text-white text-lg">
-              LIKE
-            </SSText>
-          </Animated.View>
-          <Animated.View 
-            className="absolute top-12 left-5 bg-rose-500 px-5 py-2.5 rounded-lg z-10"
-            style={[
-              { opacity: passOpacity },
-              { transform: [{ rotate: '-12deg' }] }
-            ]}>
-            <SSText variant="bold" className="text-white text-lg">
-              PASS
-            </SSText>
-          </Animated.View>
-        </Animated.View>
+          const likeOpacity = isTopCard ? card.position.x.interpolate({
+            inputRange: [0, 150],
+            outputRange: [0, 1],
+            extrapolate: 'clamp',
+          }) : new Animated.Value(0);
+
+          const passOpacity = isTopCard ? card.position.x.interpolate({
+            inputRange: [-150, 0],
+            outputRange: [1, 0],
+            extrapolate: 'clamp',
+          }) : new Animated.Value(0);
+
+          return (
+            <Animated.View
+              key={card.id}
+              {...(panResponder?.panHandlers || {})}
+              style={[
+                {
+                  width: screenWidth - 40,
+                  height: screenHeight * 0.65,
+                  position: 'absolute',
+                  zIndex: card.zIndex,
+                },
+                rotateAndTranslate,
+                { opacity: card.opacity }
+              ]}>
+              <PlaceCard
+                place={card.place}
+                onImagePress={handleImagePress}
+                onGoNow={() => handleGoNow(card.place)}
+                onFindSimilar={() => handleFindSimilar(card.place)}
+              />
+
+              {/* Swipe Indicators - Only show on top card */}
+              {isTopCard && (
+                <>
+                  {/* Swipe Indicators */}
+                  <Animated.View
+                      className="absolute top-12 left-5 bg-emerald-600 px-5 py-2.5 rounded-lg z-10"
+                      style={[
+                        { opacity: likeOpacity },
+                        { transform: [{ rotate: '-12deg' }] }
+                      ]}>
+                      <SSText variant="bold" className="text-white text-lg">
+                        LIKE
+                      </SSText>
+                    </Animated.View>
+                    <Animated.View
+                      className="absolute top-12 right-5 bg-rose-500 px-5 py-2.5 rounded-lg z-10"
+                      style={[
+                        { opacity: passOpacity },
+                        { transform: [{ rotate: '12deg' }] }
+                      ]}>
+                      <SSText variant="bold" className="text-white text-lg">
+                        PASS
+                      </SSText>
+                    </Animated.View>
+                </>
+              )}
+            </Animated.View>
+          );
+        })}
+
       </View>
 
       {/* Action Buttons */}
-      <View 
-        className="absolute left-0 right-0 flex-row justify-center items-center px-10 gap-10"
+      <View
+        className="absolute left-0 right-0 flex-row justify-center items-center px-10 gap-10 z-10"
         style={{ bottom: Platform.OS === 'ios' ? 40 : 30 }}>
         <TouchableOpacity
           className="w-16 h-16 rounded-full bg-rose-500 justify-center items-center shadow-lg"
@@ -332,28 +542,27 @@ export default function DiscoverTab() {
           setRatingFilter(filters.rating);
           setDistanceFilter(filters.distance);
           setPriceFilter(filters.priceRange);
-          
+
           let filteredPlaces = mockPlaces;
-          
+
           if (filters.vibes.length > 0) {
             filteredPlaces = filteredPlaces.filter(place =>
               place.vibes.some(vibe => filters.vibes.includes(vibe))
             );
           }
-          
+
           if (filters.rating > 0) {
             filteredPlaces = filteredPlaces.filter(place => place.rating >= filters.rating);
           }
-          
+
           if (filters.priceRange.length > 0) {
             filteredPlaces = filteredPlaces.filter(place =>
               filters.priceRange.includes(place.priceRange)
             );
           }
-          
+
           setPlaces(filteredPlaces);
-          setCurrentIndex(0);
-          resetCard();
+          resetCardStack()
         }}
         currentFilters={{
           vibes: vibeFilters,
