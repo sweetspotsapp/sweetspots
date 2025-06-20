@@ -7,11 +7,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Calendar, Users, MapPin, Clock, DollarSign } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Itinerary } from '@/types/Place';
 import { getItineraries } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
+import SSLinearGradient from '@/components/ui/SSLinearGradient';
 
 export default function ItinerariesScreen() {
   const [itineraries, setItineraries] = useState<Itinerary[]>([]);
@@ -138,10 +138,7 @@ export default function ItinerariesScreen() {
 
   return (
     <SafeAreaView className="flex-1">
-      <LinearGradient
-        colors={['#f0fdf4', '#ffffff']}
-        className="absolute inset-0"
-      />
+      <SSLinearGradient />
 
       {/* Header */}
       <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">

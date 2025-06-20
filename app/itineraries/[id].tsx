@@ -8,11 +8,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, MapPin, Calendar, Users, Share2, CreditCard as Edit3, Navigation, Star, Clock, DollarSign } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Itinerary } from '@/types/Place';
 import { getItineraries } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
+import SSLinearGradient from '@/components/ui/SSLinearGradient';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -94,9 +94,7 @@ export default function ItineraryDetailsScreen() {
   if (loading) {
     return (
       <SafeAreaView className="flex-1">
-        <LinearGradient
-          colors={['#f0fdf4', '#ffffff']}
-          className="absolute inset-0"
+        <SSLinearGradient
         />
         <View className="flex-1 justify-center items-center">
           <SSText className="text-lg text-slate-500">
@@ -110,9 +108,7 @@ export default function ItineraryDetailsScreen() {
   if (!itinerary) {
     return (
       <SafeAreaView className="flex-1">
-        <LinearGradient
-          colors={['#f0fdf4', '#ffffff']}
-          className="absolute inset-0"
+        <SSLinearGradient
         />
         <View className="flex-1 justify-center items-center px-10">
           <SSText variant="bold" className="text-2xl text-emerald-600 text-center mb-3">
@@ -137,10 +133,7 @@ export default function ItineraryDetailsScreen() {
 
   return (
     <SafeAreaView className="flex-1">
-      <LinearGradient
-        colors={['#f0fdf4', '#ffffff']}
-        className="absolute inset-0"
-      />
+      <SSLinearGradient />
 
       {/* Header */}
       <View className="flex-row justify-between items-center px-5 pt-2.5 pb-4">
@@ -149,7 +142,7 @@ export default function ItineraryDetailsScreen() {
           onPress={() => router.back()}>
           <ArrowLeft size={24} color="#10b981" />
         </TouchableOpacity>
-        
+
         <View className="flex-row gap-3">
           <TouchableOpacity
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
@@ -166,26 +159,26 @@ export default function ItineraryDetailsScreen() {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Cover Image */}
-        {itinerary.coverImage && (
+        {/* {itinerary.coverImage && (
           <View className="h-50 mx-5 rounded-2xl overflow-hidden mb-5">
             <Image 
               source={{ uri: itinerary.coverImage }} 
-              className="w-full h-full"
-              style={{ resizeMode: 'cover' }}
+              className="w-full h-[300px]"
+              style={{ resizeMode: 'contain', borderRadius: 16 }}
             />
             <LinearGradient
               colors={['transparent', 'rgba(0,0,0,0.6)']}
               className="absolute bottom-0 left-0 right-0 h-1/2"
             />
           </View>
-        )}
+        )} */}
 
         {/* Itinerary Info */}
         <View className="px-5">
           <SSText variant="bold" className="text-3xl text-gray-800 mb-3">
             {itinerary.name}
           </SSText>
-          
+
           {itinerary.description && (
             <SSText className="text-base text-slate-500 leading-6 mb-5">
               {itinerary.description}
@@ -225,7 +218,7 @@ export default function ItineraryDetailsScreen() {
                     </SSText>
                   </View>
                 )}
-                
+
                 {itinerary.totalDuration && (
                   <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
                     <Clock size={20} color="#0ea5e9" />
@@ -237,7 +230,7 @@ export default function ItineraryDetailsScreen() {
                     </SSText>
                   </View>
                 )}
-                
+
                 <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
                   <MapPin size={20} color="#f59e0b" />
                   <SSText variant="bold" className="text-xl text-gray-800 mt-2 mb-1">
@@ -291,7 +284,7 @@ export default function ItineraryDetailsScreen() {
             <SSText variant="semibold" className="text-xl text-gray-800 mb-4">
               Places to Visit
             </SSText>
-            
+
             {itinerary.places.map((place, index) => (
               <View key={place.id} className="bg-white rounded-2xl p-4 mb-4 shadow-sm">
                 <View className="flex-row items-start mb-3">
@@ -300,13 +293,13 @@ export default function ItineraryDetailsScreen() {
                       {place.order || index + 1}
                     </SSText>
                   </View>
-                  
-                  <Image 
-                    source={{ uri: place.images[0] }} 
+
+                  <Image
+                    source={{ uri: place.images[0] }}
                     className="w-20 h-20 rounded-xl mr-3"
                     style={{ resizeMode: 'cover' }}
                   />
-                  
+
                   <View className="flex-1">
                     <SSText variant="semibold" className="text-lg text-gray-800 mb-1">
                       {place.name}
@@ -315,7 +308,7 @@ export default function ItineraryDetailsScreen() {
                       {place.description}
                     </SSText>
                   </View>
-                  
+
                   <TouchableOpacity
                     className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-600 justify-center items-center ml-2 mt-1"
                     onPress={() => handleNavigateToPlace(place)}>
@@ -360,7 +353,7 @@ export default function ItineraryDetailsScreen() {
                     )}
                   </View>
                 )}
-                
+
                 <View className="flex-row gap-3 mb-3">
                   <View className="flex-row items-center gap-1">
                     <Star size={14} color="#fbbf24" fill="#fbbf24" />
@@ -381,7 +374,7 @@ export default function ItineraryDetailsScreen() {
                     </SSText>
                   </View>
                 </View>
-                
+
                 <View className="flex-row flex-wrap gap-1.5 items-center mb-2">
                   {place.vibes.slice(0, 3).map((vibe, vibeIndex) => (
                     <View key={vibeIndex} className="bg-emerald-50 border border-emerald-600 px-2 py-1 rounded-xl">

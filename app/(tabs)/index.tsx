@@ -12,8 +12,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Heart, X, Navigation, Filter, RotateCcw } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import * as Haptics from 'expo-haptics';
 import { PlaceCard } from '@/components/PlaceCard';
 import { FilterModal } from '@/components/FilterModal';
 import { ImageGalleryModal } from '@/components/ImageGalleryModal';
@@ -21,6 +19,7 @@ import { mockPlaces } from '@/data/mockPlaces';
 import { Place } from '@/types/Place';
 import { savePlaceToStorage, getVibePreferences } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
+import SSLinearBackground from '@/components/ui/SSLinearBackground';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -293,12 +292,12 @@ export default function DiscoverTab() {
         const isHorizontalGesture = Math.abs(gesture.dx) > Math.abs(gesture.dy) && Math.abs(gesture.dx) > 20;
         return isHorizontalGesture;
       },
-      onPanResponderGrant: () => {
-        card.position.setOffset({
-          x: card.position.x._value,
-          y: card.position.y._value,
-        });
-      },
+      // onPanResponderGrant: () => {
+      //   card.position.setOffset({
+      //     x: card.position.x._value,
+      //     y: card.position.y._value,
+      //   });
+      // },
       onPanResponderMove: (_, gesture) => {
         card.position.setValue({ x: gesture.dx, y: 0 });
         card.rotate.setValue(gesture.dx * 0.0008);
@@ -328,67 +327,6 @@ export default function DiscoverTab() {
     });
   };
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (_, gesture) => {
-        const isHorizontalGesture = Math.abs(gesture.dx) > Math.abs(gesture.dy) && Math.abs(gesture.dx) > 20;
-        return isHorizontalGesture;
-      },
-      onPanResponderGrant: () => {
-        position.setOffset({
-          x: position.x._value,
-          y: 0,
-        });
-      },
-      onPanResponderMove: (_, gesture) => {
-        position.setValue({ x: gesture.dx, y: 0 });
-        rotate.setValue(gesture.dx * 0.1);
-      },
-      onPanResponderRelease: (_, gesture) => {
-        position.flattenOffset();
-
-        if (Math.abs(gesture.dx) > 120) {
-          handleSwipe(gesture.dx > 0 ? 'right' : 'left');
-        } else {
-          Animated.parallel([
-            Animated.spring(position, {
-              toValue: { x: 0, y: 0 },
-              useNativeDriver: false,
-            }),
-            Animated.spring(rotate, {
-              toValue: 0,
-              useNativeDriver: false,
-            }),
-          ]).start();
-        }
-      },
-    })
-  ).current;
-
-  const rotateAndTranslate = {
-    transform: [
-      {
-        rotate: rotate.interpolate({
-          inputRange: [-200, 0, 200],
-          outputRange: ['-30deg', '0deg', '30deg'],
-        }),
-      },
-      ...position.getTranslateTransform(),
-    ],
-  };
-
-  const likeOpacity = position.x.interpolate({
-    inputRange: [0, 150],
-    outputRange: [0, 1],
-    extrapolate: 'clamp',
-  });
-
-  const passOpacity = position.x.interpolate({
-    inputRange: [-150, 0],
-    outputRange: [1, 0],
-    extrapolate: 'clamp',
-  });
-
   if (currentIndex >= places.length) {
     return (
       <SafeAreaView className="flex-1">
@@ -405,135 +343,134 @@ export default function DiscoverTab() {
   }
 
   return (
-    <SafeAreaView className="flex-1">
-      <LinearGradient
-        colors={['#f0fdf4', '#ffffff']}
-        className="absolute inset-0"
-      />
+    <>
+      <SSLinearBackground>
+        <SafeAreaView className="flex-1">
+          {/* Header */}
+          <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
+            <SSText variant="bold" className="text-3xl text-emerald-600">
+              SweetSpots
+            </SSText>
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
+                onPress={() => setShowFilterModal(true)}>
+                <Filter size={24} color="#10b981" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
+                onPress={() => {
+                  setPlaces(mockPlaces);
+                  resetCardStack();
+                }}>
+                <RotateCcw size={24} color="#10b981" />
+              </TouchableOpacity>
+            </View>
+          </View>
 
-      {/* Header */}
-      <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
-        <SSText variant="bold" className="text-3xl text-emerald-600">
-          SweetSpots
-        </SSText>
-        <View className="flex-row gap-3">
-          <TouchableOpacity
-            className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-            onPress={() => setShowFilterModal(true)}>
-            <Filter size={24} color="#10b981" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-            onPress={() => {
-              setPlaces(mockPlaces);
-              resetCardStack();
-            }}>
-            <RotateCcw size={24} color="#10b981" />
-          </TouchableOpacity>
-        </View>
-      </View>
+          {/* Card Stack */}
+          <View className="flex-1 items-center justify-center px-5 pb-30">
+            {cardStack.map((card, index) => {
+              const isTopCard = index === 0;
+              const panResponder = isTopCard ? createPanResponder(card) : null;
 
-      {/* Card Stack */}
-      <View className="flex-1 items-center justify-center px-5 pb-30">
-        {cardStack.map((card, index) => {
-          const isTopCard = index === 0;
-          const panResponder = isTopCard ? createPanResponder(card) : null;
+              const rotateAndTranslate = {
+                transform: [
+                  {
+                    rotate: card.rotate.interpolate({
+                      inputRange: [-1, 0, 1],
+                      outputRange: ['-30deg', '0deg', '30deg'],
+                    }),
+                  },
+                  { scale: card.scale },
+                  ...card.position.getTranslateTransform(),
+                ],
+              };
 
-          const rotateAndTranslate = {
-            transform: [
-              {
-                rotate: card.rotate.interpolate({
-                  inputRange: [-1, 0, 1],
-                  outputRange: ['-30deg', '0deg', '30deg'],
-                }),
-              },
-              { scale: card.scale },
-              ...card.position.getTranslateTransform(),
-            ],
-          };
+              const likeOpacity = isTopCard ? card.position.x.interpolate({
+                inputRange: [0, 150],
+                outputRange: [0, 1],
+                extrapolate: 'clamp',
+              }) : new Animated.Value(0);
 
-          const likeOpacity = isTopCard ? card.position.x.interpolate({
-            inputRange: [0, 150],
-            outputRange: [0, 1],
-            extrapolate: 'clamp',
-          }) : new Animated.Value(0);
+              const passOpacity = isTopCard ? card.position.x.interpolate({
+                inputRange: [-150, 0],
+                outputRange: [1, 0],
+                extrapolate: 'clamp',
+              }) : new Animated.Value(0);
 
-          const passOpacity = isTopCard ? card.position.x.interpolate({
-            inputRange: [-150, 0],
-            outputRange: [1, 0],
-            extrapolate: 'clamp',
-          }) : new Animated.Value(0);
+              return (
+                <Animated.View
+                  key={card.id}
+                  {...(panResponder?.panHandlers || {})}
+                  style={[
+                    {
+                      width: screenWidth - 40,
+                      height: screenHeight * 0.65,
+                      position: 'absolute',
+                      zIndex: card.zIndex,
+                    },
+                    rotateAndTranslate,
+                    { opacity: card.opacity }
+                  ]}>
+                  <PlaceCard
+                    place={card.place}
+                    onImagePress={handleImagePress}
+                    onGoNow={() => handleGoNow(card.place)}
+                    onFindSimilar={() => handleFindSimilar(card.place)}
+                  />
 
-          return (
-            <Animated.View
-              key={card.id}
-              {...(panResponder?.panHandlers || {})}
-              style={[
-                {
-                  width: screenWidth - 40,
-                  height: screenHeight * 0.65,
-                  position: 'absolute',
-                  zIndex: card.zIndex,
-                },
-                rotateAndTranslate,
-                { opacity: card.opacity }
-              ]}>
-              <PlaceCard
-                place={card.place}
-                onImagePress={handleImagePress}
-                onGoNow={() => handleGoNow(card.place)}
-                onFindSimilar={() => handleFindSimilar(card.place)}
-              />
+                  {/* Swipe Indicators - Only show on top card */}
+                  {isTopCard && (
+                    <>
+                      {/* Swipe Indicators */}
+                      <Animated.View
+                        className="absolute top-12 left-5 bg-emerald-600 px-5 py-2.5 rounded-lg z-10"
+                        style={[
+                          { opacity: likeOpacity },
+                          { transform: [{ rotate: '-12deg' }] }
+                        ]}>
+                        <SSText variant="bold" className="text-white text-lg">
+                          LIKE
+                        </SSText>
+                      </Animated.View>
+                      <Animated.View
+                        className="absolute top-12 right-5 bg-rose-500 px-5 py-2.5 rounded-lg z-10"
+                        style={[
+                          { opacity: passOpacity },
+                          { transform: [{ rotate: '12deg' }] }
+                        ]}>
+                        <SSText variant="bold" className="text-white text-lg">
+                          PASS
+                        </SSText>
+                      </Animated.View>
+                    </>
+                  )}
+                </Animated.View>
+              );
+            })}
 
-              {/* Swipe Indicators - Only show on top card */}
-              {isTopCard && (
-                <>
-                  {/* Swipe Indicators */}
-                  <Animated.View
-                      className="absolute top-12 left-5 bg-emerald-600 px-5 py-2.5 rounded-lg z-10"
-                      style={[
-                        { opacity: likeOpacity },
-                        { transform: [{ rotate: '-12deg' }] }
-                      ]}>
-                      <SSText variant="bold" className="text-white text-lg">
-                        LIKE
-                      </SSText>
-                    </Animated.View>
-                    <Animated.View
-                      className="absolute top-12 right-5 bg-rose-500 px-5 py-2.5 rounded-lg z-10"
-                      style={[
-                        { opacity: passOpacity },
-                        { transform: [{ rotate: '12deg' }] }
-                      ]}>
-                      <SSText variant="bold" className="text-white text-lg">
-                        PASS
-                      </SSText>
-                    </Animated.View>
-                </>
-              )}
-            </Animated.View>
-          );
-        })}
+          </View>
 
-      </View>
+          {/* Action Buttons */}
+          <View
+            className="absolute left-0 right-0 flex-row justify-center items-center px-10 gap-10 z-10"
+            style={{ bottom: Platform.OS === 'ios' ? 40 : 30 }}>
+            <TouchableOpacity
+              className="w-16 h-16 rounded-full bg-rose-500 justify-center items-center shadow-lg"
+              onPress={() => handleSwipe('left')}>
+              <X size={32} color="#ffffff" strokeWidth={3} />
+            </TouchableOpacity>
 
-      {/* Action Buttons */}
-      <View
-        className="absolute left-0 right-0 flex-row justify-center items-center px-10 gap-10 z-10"
-        style={{ bottom: Platform.OS === 'ios' ? 40 : 30 }}>
-        <TouchableOpacity
-          className="w-16 h-16 rounded-full bg-rose-500 justify-center items-center shadow-lg"
-          onPress={() => handleSwipe('left')}>
-          <X size={32} color="#ffffff" strokeWidth={3} />
-        </TouchableOpacity>
+            <TouchableOpacity
+              className="w-16 h-16 rounded-full bg-emerald-600 justify-center items-center shadow-lg"
+              onPress={() => handleSwipe('right')}>
+              <Heart size={32} color="#ffffff" strokeWidth={3} />
+            </TouchableOpacity>
+          </View>
 
-        <TouchableOpacity
-          className="w-16 h-16 rounded-full bg-emerald-600 justify-center items-center shadow-lg"
-          onPress={() => handleSwipe('right')}>
-          <Heart size={32} color="#ffffff" strokeWidth={3} />
-        </TouchableOpacity>
-      </View>
-
+        </SafeAreaView>
+      </SSLinearBackground>
       <FilterModal
         visible={showFilterModal}
         onClose={() => setShowFilterModal(false)}
@@ -579,6 +516,6 @@ export default function DiscoverTab() {
         onClose={() => setShowGalleryModal(false)}
         onImageChange={handleImageChange}
       />
-    </SafeAreaView>
+    </>
   );
 }

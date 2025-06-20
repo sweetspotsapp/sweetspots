@@ -9,6 +9,7 @@ import Slider from '@react-native-community/slider';
 import { X, Star } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SSText } from './ui/SSText';
+import SSLinearGradient from './ui/SSLinearGradient';
 
 interface FilterModalProps {
   visible: boolean;
@@ -44,8 +45,8 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>(currentFilters.priceRange);
 
   const toggleVibe = (vibe: string) => {
-    setSelectedVibes(prev => 
-      prev.includes(vibe) 
+    setSelectedVibes(prev =>
+      prev.includes(vibe)
         ? prev.filter(v => v !== vibe)
         : [...prev, vibe]
     );
@@ -91,11 +92,8 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
       presentationStyle="pageSheet"
       onRequestClose={onClose}>
       <View className="flex-1">
-        <LinearGradient
-          colors={['#f0fdf4', '#ffffff']}
-          className="absolute inset-0"
-        />
-        
+        <SSLinearGradient />
+
         {/* Header */}
         <View className="flex-row justify-between items-center px-5 pt-5 pb-4 border-b border-slate-100">
           <SSText variant="bold" className="text-2xl text-gray-800">
@@ -117,22 +115,20 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
               {[0, 3, 4, 4.5].map((rating) => (
                 <TouchableOpacity
                   key={rating}
-                  className={`flex-row items-center border-2 px-4 py-2.5 rounded-full gap-1.5 ${
-                    selectedRating === rating 
-                      ? 'bg-emerald-600 border-emerald-600' 
+                  className={`flex-row items-center border-2 px-4 py-2.5 rounded-full gap-1.5 ${selectedRating === rating
+                      ? 'bg-emerald-600 border-emerald-600'
                       : 'bg-white border-slate-200'
-                  }`}
+                    }`}
                   onPress={() => setSelectedRating(rating)}>
-                  <Star 
-                    size={16} 
-                    color={selectedRating === rating ? '#ffffff' : '#fbbf24'} 
-                    fill={selectedRating === rating ? '#ffffff' : '#fbbf24'} 
+                  <Star
+                    size={16}
+                    color={selectedRating === rating ? '#ffffff' : '#fbbf24'}
+                    fill={selectedRating === rating ? '#ffffff' : '#fbbf24'}
                   />
-                  <SSText 
-                    variant="medium" 
-                    className={`text-sm ${
-                      selectedRating === rating ? 'text-white' : 'text-slate-500'
-                    }`}>
+                  <SSText
+                    variant="medium"
+                    className={`text-sm ${selectedRating === rating ? 'text-white' : 'text-slate-500'
+                      }`}>
                     {rating === 0 ? 'Any' : `${rating}+`}
                   </SSText>
                 </TouchableOpacity>
@@ -155,7 +151,7 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
                 step={1}
                 minimumTrackTintColor="#10b981"
                 maximumTrackTintColor="#e2e8f0"
-                thumbStyle={{ backgroundColor: '#10b981', width: 20, height: 20 }}
+              // thumbStyle={{ backgroundColor: '#10b981', width: 20, height: 20 }}
               />
               <View className="flex-row justify-between mt-2">
                 <SSText className="text-xs text-slate-500">1 km</SSText>
@@ -173,17 +169,15 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
               {priceRanges.map((range) => (
                 <TouchableOpacity
                   key={range}
-                  className={`border-2 px-5 py-3 rounded-full min-w-15 items-center ${
-                    selectedPriceRanges.includes(range)
+                  className={`border-2 px-5 py-3 rounded-full min-w-15 items-center ${selectedPriceRanges.includes(range)
                       ? 'bg-emerald-600 border-emerald-600'
                       : 'bg-white border-slate-200'
-                  }`}
+                    }`}
                   onPress={() => togglePriceRange(range)}>
-                  <SSText 
-                    variant="medium" 
-                    className={`text-sm ${
-                      selectedPriceRanges.includes(range) ? 'text-white' : 'text-slate-500'
-                    }`}>
+                  <SSText
+                    variant="medium"
+                    className={`text-sm ${selectedPriceRanges.includes(range) ? 'text-white' : 'text-slate-500'
+                      }`}>
                     {range}
                   </SSText>
                 </TouchableOpacity>
@@ -203,17 +197,15 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
               {allVibes.map((vibe) => (
                 <TouchableOpacity
                   key={vibe}
-                  className={`border-2 px-4 py-2.5 rounded-full ${
-                    selectedVibes.includes(vibe)
+                  className={`border-2 px-4 py-2.5 rounded-full ${selectedVibes.includes(vibe)
                       ? 'bg-emerald-600 border-emerald-600'
                       : 'bg-white border-slate-200'
-                  }`}
+                    }`}
                   onPress={() => toggleVibe(vibe)}>
-                  <SSText 
-                    variant="medium" 
-                    className={`text-sm ${
-                      selectedVibes.includes(vibe) ? 'text-white' : 'text-slate-500'
-                    }`}>
+                  <SSText
+                    variant="medium"
+                    className={`text-sm ${selectedVibes.includes(vibe) ? 'text-white' : 'text-slate-500'
+                      }`}>
                     {vibe}
                   </SSText>
                 </TouchableOpacity>
@@ -224,13 +216,13 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
 
         {/* Footer */}
         <View className="flex-row px-5 pb-10 pt-5 gap-3 bg-white border-t border-slate-100">
-          <TouchableOpacity className="flex-1 bg-slate-100 py-4 rounded-xl items-center" onPress={clearAll}>
+          <TouchableOpacity className="bg-slate-100 py-4 px-8 rounded-xl items-center" onPress={clearAll}>
             <SSText variant="semibold" className="text-base text-slate-500">
               Clear All
             </SSText>
           </TouchableOpacity>
-          
-          <TouchableOpacity className="flex-2 bg-emerald-600 py-4 rounded-xl items-center" onPress={handleApply}>
+
+          <TouchableOpacity className="flex-1 bg-emerald-600 py-4 rounded-xl items-center" onPress={handleApply}>
             <SSText variant="semibold" className="text-base text-white">
               Apply {getTotalFilters() > 0 && `(${getTotalFilters()})`}
             </SSText>

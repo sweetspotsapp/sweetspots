@@ -1462,10 +1462,10 @@
   dependencies:
     merge-options "^3.0.4"
 
-"@react-native-community/datetimepicker@^8.2.0":
-  version "8.4.1"
-  resolved "https://registry.npmjs.org/@react-native-community/datetimepicker/-/datetimepicker-8.4.1.tgz"
-  integrity sha512-DrK+CUS5fZnz8dhzBezirkzQTcNDdaXer3oDLh0z4nc2tbdIdnzwvXCvi8IEOIvleoc9L95xS5tKUl0/Xv71Mg==
+"@react-native-community/datetimepicker@8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-8.3.0.tgz#d734a77ae5fdf9585ea2eba0d2b5cf47404c0a09"
+  integrity sha512-K/KgaJbLtjMpx4PaG4efrVIcSe6+DbLufeX1lwPB5YY8i3sq9dOh6WcAcMTLbaRTUpurebQTkl7puHPFm9GalA==
   dependencies:
     invariant "^2.2.4"
 
@@ -1742,14 +1742,9 @@
     "@rn-primitives/slot" "1.2.0"
     "@rn-primitives/types" "1.2.0"
 
-"@rn-primitives/slot@1.2.0":
+"@rn-primitives/slot@1.2.0", "@rn-primitives/slot@^1.2.0":
   version "1.2.0"
   resolved "https://registry.npmjs.org/@rn-primitives/slot/-/slot-1.2.0.tgz"
-  integrity sha512-cpbn+JLjSeq3wcA4uqgFsUimMrWYWx2Ks7r5rkwd1ds1utxynsGkLOKpYVQkATwWrYhtcoF1raxIKEqXuMN+/w==
-
-"@rn-primitives/slot@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@rn-primitives/slot/-/slot-1.2.0.tgz#54f757cb324cbf4670b81456526ae60e723ec6e4"
   integrity sha512-cpbn+JLjSeq3wcA4uqgFsUimMrWYWx2Ks7r5rkwd1ds1utxynsGkLOKpYVQkATwWrYhtcoF1raxIKEqXuMN+/w==
 
 "@rn-primitives/types@1.2.0":
