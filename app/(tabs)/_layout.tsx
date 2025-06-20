@@ -1,8 +1,10 @@
+import React from 'react';
 import { Tabs } from 'expo-router';
 import { Heart, User, Compass } from 'lucide-react-native';
 import { Platform } from 'react-native';
 
 export default function TabLayout() {
+
   return (
     <Tabs
       screenOptions={{
