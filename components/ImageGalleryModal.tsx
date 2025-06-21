@@ -22,7 +22,7 @@ import {
 } from 'react-native-gesture-handler';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { X } from 'lucide-react-native';
-import { cn } from '@/~/lib/utils';
+import { cn } from '@/lib/utils';
 
 const { width, height } = Dimensions.get('window');
 const MIN_ZOOM = 1;

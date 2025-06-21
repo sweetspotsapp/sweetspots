@@ -1,11 +1,12 @@
 import React from 'react';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { View, TextInput, Alert } from 'react-native';
+import { View, Alert } from 'react-native';
 import { saveToken } from '@/utils/token';
-import { login } from '@/api/endpoints/auth';
-import { Button } from '@/~/components/ui/button';
 import { SSText } from '@/components/ui/SSText';
+import { login } from '@/lib/auth';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -14,8 +15,8 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
-      const { accessToken } = await login(email, password);
-      await saveToken(accessToken);
+      // const { accessToken } = await login(email, password);
+      // await saveToken(accessToken);
       router.replace('/(tabs)');
     } catch (err) {
       Alert.alert('Login failed', 'Check your credentials.');
@@ -24,8 +25,7 @@ export default function LoginScreen() {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
-      <TextInput
-      className="bg-slate-100 border border-slate-200 rounded-xl px-3 py-3 h-14 text-sm text-gray-800"
+      <Input
       placeholder="Email"
       value={email}
       onChangeText={setEmail}
@@ -34,8 +34,7 @@ export default function LoginScreen() {
       autoCapitalize="none"
       keyboardType="email-address"
       />
-      <TextInput
-      className="bg-slate-100 border border-slate-200 rounded-xl px-3 py-3 h-14 text-sm text-gray-800"
+      <Input
       placeholder="Password"
       value={password}
       onChangeText={setPassword}

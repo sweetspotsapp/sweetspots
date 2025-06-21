@@ -12,9 +12,9 @@ import Animated, {
   useDerivedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { ChevronDown } from '~/lib/icons/ChevronDown';
-import { cn } from '~/lib/utils';
-import { TextClassContext } from '~/components/ui/text';
+import { TextClassContext } from './SSText';
+import { cn } from '@/lib/utils';
+import { ChevronDown } from 'lucide-react-native';
 
 function Accordion({
   children,
