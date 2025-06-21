@@ -12,6 +12,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Review } from '@/types/Place';
 import { SSText } from './ui/SSText';
+import { Input } from './ui/input';
+import { Badge } from './ui/badge';
 
 interface AllReviewsModalProps {
   visible: boolean;
@@ -20,11 +22,11 @@ interface AllReviewsModalProps {
   placeName: string;
 }
 
-export function AllReviewsModal({ 
-  visible, 
-  onClose, 
-  reviews, 
-  placeName 
+export function AllReviewsModal({
+  visible,
+  onClose,
+  reviews,
+  placeName
 }: AllReviewsModalProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
@@ -111,7 +113,7 @@ export function AllReviewsModal({
           colors={['#f0fdf4', '#ffffff']}
           className="absolute inset-0"
         />
-        
+
         {/* Header */}
         <View className="flex-row justify-between items-start px-5 pt-5 pb-4 border-b border-slate-100">
           <View className="flex-1">
@@ -140,7 +142,7 @@ export function AllReviewsModal({
               {reviews.length} reviews
             </SSText>
           </View>
-          
+
           <View className="flex-1 gap-2">
             {[5, 4, 3, 2, 1].map(rating => (
               <TouchableOpacity
@@ -152,13 +154,12 @@ export function AllReviewsModal({
                 </SSText>
                 <Star size={12} color="#fbbf24" fill="#fbbf24" />
                 <View className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <View 
-                    className={`h-full rounded-full ${
-                      selectedRating === rating ? 'bg-emerald-600' : 'bg-amber-400'
-                    }`}
-                    style={{ 
+                  <View
+                    className={`h-full rounded-full ${selectedRating === rating ? 'bg-emerald-600' : 'bg-amber-400'
+                      }`}
+                    style={{
                       width: `${(ratingDistribution[rating as keyof typeof ratingDistribution] / reviews.length) * 100}%`
-                    }} 
+                    }}
                   />
                 </View>
                 <SSText className="text-xs text-slate-500 w-5 text-right">
@@ -171,21 +172,20 @@ export function AllReviewsModal({
 
         {/* Search and Filters */}
         <View className="px-5 py-4">
-          <View className="flex-row items-center bg-white rounded-xl px-4 py-3 mb-4 gap-3 shadow-sm">
+          {/* <View className="flex-row items-center bg-white rounded-xl px-4 py-3 mb-4 gap-3 shadow-sm"> */}
+          <View className='flex-row items-center gap-2 mb-4'>
             <Search size={20} color="#64748b" />
-            <TextInput
-              className="flex-1 text-base text-gray-800"
+            <Input
               placeholder="Search reviews..."
               value={searchQuery}
               onChangeText={setSearchQuery}
-              placeholderTextColor="#94a3b8"
-              style={{ fontFamily: 'PlusJakartaSans-Regular' }}
             />
           </View>
-          
+          {/* </View> */}
+
           <View className="flex-row items-center gap-3">
             <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-1">
-              <View className="flex-row gap-2">
+              <View className="flex-row gap-2 overflow-visible">
                 {[
                   { key: 'newest', label: 'Newest' },
                   { key: 'oldest', label: 'Oldest' },
@@ -193,32 +193,27 @@ export function AllReviewsModal({
                   { key: 'lowest', label: 'Lowest Rated' },
                   { key: 'helpful', label: 'Most Helpful' },
                 ].map(option => (
-                  <TouchableOpacity
-                    key={option.key}
-                    className={`border px-4 py-2 rounded-full ${
-                      sortBy === option.key
-                        ? 'bg-emerald-600 border-emerald-600'
-                        : 'bg-white border-slate-200'
-                    }`}
-                    onPress={() => setSortBy(option.key as any)}>
-                    <SSText 
-                      variant="medium" 
-                      className={`text-sm ${
-                        sortBy === option.key ? 'text-white' : 'text-slate-500'
-                      }`}>
-                      {option.label}
-                    </SSText>
-                  </TouchableOpacity>
+                  <Badge asChild variant={sortBy === option.key ? 'default' : 'outline'} key={option.key}>
+                    <TouchableOpacity
+                      key={option.key}
+                      onPress={() => setSortBy(option.key as any)}>
+                      <SSText>
+                        {option.label}
+                      </SSText>
+                    </TouchableOpacity>
+                  </Badge>
                 ))}
               </View>
             </ScrollView>
-            
+
             {(searchQuery || selectedRating !== null || sortBy !== 'newest') && (
-              <TouchableOpacity className="bg-rose-500 px-4 py-2 rounded-full" onPress={clearFilters}>
-                <SSText variant="medium" className="text-sm text-white">
-                  Clear
-                </SSText>
-              </TouchableOpacity>
+              <Badge asChild variant='destructive'>
+                <TouchableOpacity onPress={clearFilters}>
+                  <SSText>
+                    Clear
+                  </SSText>
+                </TouchableOpacity>
+              </Badge>
             )}
           </View>
         </View>
@@ -253,11 +248,11 @@ export function AllReviewsModal({
                     </View>
                   </View>
                 </View>
-                
+
                 <SSText className="text-sm text-gray-600 leading-5 mb-4">
                   {review.comment}
                 </SSText>
-                
+
                 <View className="flex-row justify-end">
                   <TouchableOpacity className="flex-row items-center gap-1.5 px-3 py-1.5 bg-slate-100 rounded-2xl">
                     <ThumbsUp size={14} color="#64748b" />
@@ -269,7 +264,7 @@ export function AllReviewsModal({
               </View>
             ))
           )}
-          
+
           <View className="h-10" />
         </ScrollView>
       </SafeAreaView>

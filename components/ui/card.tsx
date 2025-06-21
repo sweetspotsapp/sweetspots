@@ -65,7 +65,7 @@ function CardContent({
 }) {
   return (
     <TextClassContext.Provider value='text-card-foreground'>
-      <View className={cn('p-6 pt-0', className)} {...props} />
+      <View className={cn('p-6', className)} {...props} />
     </TextClassContext.Provider>
   );
 }

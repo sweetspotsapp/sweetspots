@@ -32,7 +32,7 @@
     /* rose for readable contrast */
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 0 0% 100%;
 
     --border: 160 60% 80%;
     --input: 160 60% 85%;

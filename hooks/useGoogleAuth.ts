@@ -1,5 +1,5 @@
 import * as Google from 'expo-auth-session/providers/google';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { loginWithGoogleCredential } from '@/lib/auth';
 
 export const useGoogleAuth = () => {
@@ -9,12 +9,31 @@ export const useGoogleAuth = () => {
     androidClientId: '<your-android-client-id>.apps.googleusercontent.com',
   });
 
+  const loginPromise = useRef<Promise<any> | null>(null);
+  const [authError, setAuthError] = useState<Error | null>(null);
+
   useEffect(() => {
     if (response?.type === 'success') {
       const idToken = response.authentication?.idToken;
-      if (idToken) loginWithGoogleCredential(idToken);
+      if (idToken) {
+        loginPromise.current = loginWithGoogleCredential(idToken).catch((err) => {
+          setAuthError(err);
+        });
+      }
     }
   }, [response]);
 
-  return { promptAsync };
+  const loginAsync = async () => {
+    const res = await promptAsync();
+    if (res.type === 'success' && loginPromise.current) {
+      await loginPromise.current;
+    } else if (res.type === 'error') {
+      throw new Error('Google login was cancelled or failed');
+    }
+  };
+
+  return {
+    promptAsync: loginAsync,
+    authError,
+  };
 };
