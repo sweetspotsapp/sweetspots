@@ -13,6 +13,7 @@ import { ReviewCarousel } from './ReviewCarousel';
 import { AllReviewsModal } from './AllReviewsModal';
 import { ImageGalleryModal } from './ImageGalleryModal';
 import { SSText } from './ui/SSText';
+import { Button } from './ui/button';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -207,23 +208,23 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
 
         {/* Action Buttons */}
         <View className="gap-3 mb-5">
-          <TouchableOpacity
+          <Button
             className="flex-row items-center justify-center bg-sky-500 py-3.5 rounded-xl gap-2"
             onPress={onGoNow}>
             <Navigation size={20} color="#ffffff" />
             <SSText variant="semibold" className="text-base text-white">
               Go Now
             </SSText>
-          </TouchableOpacity>
+          </Button>
 
-          <TouchableOpacity
-            className="flex-row items-center justify-center bg-emerald-50 border-2 border-emerald-600 py-3.5 rounded-xl gap-2"
+          <Button
+          variant='outline'
             onPress={onFindSimilar}>
             <Zap size={20} color="#10b981" />
             <SSText variant="semibold" className="text-base text-emerald-600">
               Find Similar
             </SSText>
-          </TouchableOpacity>
+          </Button>
         </View>
       </ScrollView>
 

@@ -14,6 +14,7 @@ import { SavedPlace } from '@/types/Place';
 import { getSavedPlaces, togglePlaceSelection, clearSelectedPlaces } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
+import { Button } from '@/components/ui/button';
 
 export default function SavedTab() {
   const [savedPlaces, setSavedPlaces] = useState<SavedPlace[]>([]);
@@ -145,14 +146,14 @@ export default function SavedTab() {
 
       {/* Floating Create Button */}
       {selectedCount > 0 && (
-        <TouchableOpacity
-          className="absolute bottom-7 left-5 right-5 bg-emerald-600 flex-row items-center justify-center py-4 rounded-2xl gap-2 shadow-lg"
+        <Button
+          className="absolute bottom-7 left-5 right-5 shadow-lg"
           onPress={handleCreateItinerary}>
           <Plus size={24} color="#ffffff" />
           <SSText variant="semibold" className="text-white text-base">
             Create Itinerary ({selectedCount})
           </SSText>
-        </TouchableOpacity>
+        </Button>
       )}
 
       <CreateItineraryModal

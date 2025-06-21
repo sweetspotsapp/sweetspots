@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Modal,
-  TouchableOpacity,
-  TextInput,
   ScrollView,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import { X, Plus, Mail, Phone } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,7 +14,9 @@ import { PlaceScheduleCard } from './PlaceScheduleCard';
 import { TripSummaryCard } from './TripSummaryCard';
 import { SSText } from './ui/SSText';
 import { PickerProvider, SSDatePicker } from './ui/SSDateTimePicker';
-import { Button } from '@/~/components/ui/button';
+import { Label } from './ui/label';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
 
 interface CreateItineraryModalProps {
   visible: boolean;
@@ -202,28 +203,24 @@ export function CreateItineraryModal({
               <SSText variant="semibold" className="text-xl text-gray-800 mb-2">Trip Details</SSText>
 
               <View className="mb-4">
-                <SSText variant="semibold" className="text-base text-gray-800 mb-2">Trip Name *</SSText>
-                <TextInput
-                  className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-gray-800"
+                <Label htmlFor='trip-name'>Trip Name *</Label>
+                <Input
                   placeholder="e.g., Weekend Adventure in SF"
+                  id='trip-name'
                   value={name}
                   onChangeText={setName}
-                  placeholderTextColor="#94a3b8"
-                  style={{ fontFamily: 'PlusJakartaSans-Regular' }}
                 />
               </View>
 
               <View className="mb-4">
                 <SSText variant="semibold" className="text-base text-gray-800 mb-2">Description</SSText>
-                <TextInput
-                  className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-gray-800 h-20"
+                <Input
+                  className="h-20"
                   placeholder="Tell us about your trip..."
                   value={description}
                   onChangeText={setDescription}
                   multiline
                   numberOfLines={3}
-                  placeholderTextColor="#94a3b8"
-                  style={{ fontFamily: 'PlusJakartaSans-Regular', textAlignVertical: 'top' }}
                 />
               </View>
 
@@ -259,14 +256,11 @@ export function CreateItineraryModal({
             <View className="mb-8">
               <SSText variant="semibold" className="text-xl text-gray-800 mb-4">Invite Collaborators</SSText>
               <View className="flex-row gap-2 mb-4">
-                <TextInput
-                  className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-gray-800"
+                <Input
                   placeholder="Enter email or phone"
                   value={newCollaborator}
                   onChangeText={setNewCollaborator}
-                  placeholderTextColor="#94a3b8"
                   keyboardType="email-address"
-                  style={{ fontFamily: 'PlusJakartaSans-Regular' }}
                 />
                 <TouchableOpacity
                   className="w-12 h-12 bg-emerald-50 border border-emerald-600 rounded-xl justify-center items-center"
@@ -308,12 +302,12 @@ export function CreateItineraryModal({
           </ScrollView>
 
           <View className="flex-row px-5 pb-10 pt-5 gap-3 bg-white border-t border-slate-100">
-            <TouchableOpacity className="bg-slate-100 py-4 px-8 rounded-xl items-center" onPress={onClose}>
-              <SSText variant="semibold" className="text-base text-slate-500">Cancel</SSText>
-            </TouchableOpacity>
-            <TouchableOpacity className="flex-1 bg-emerald-600 py-4 rounded-xl items-center" onPress={handleCreate}>
-              <SSText variant="semibold" className="text-base text-white">Create Itinerary</SSText>
-            </TouchableOpacity>
+            <Button variant='outline' onPress={onClose}>
+              <SSText>Cancel</SSText>
+            </Button>
+            <Button onPress={handleCreate}>
+              <SSText >Create Itinerary</SSText>
+            </Button>
           </View>
         </View>
       </PickerProvider>

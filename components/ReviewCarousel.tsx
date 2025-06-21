@@ -8,6 +8,7 @@ import {
 import { Star, ThumbsUp, ChevronLeft, ChevronRight, Eye } from 'lucide-react-native';
 import { Review } from '@/types/Place';
 import { SSText } from './ui/SSText';
+import { Button } from './ui/button';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -157,14 +158,14 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
 
       {/* See All Button */}
       {onSeeAll && (
-        <TouchableOpacity 
-          className="flex-row items-center justify-center bg-emerald-50 border border-emerald-600 py-3 px-5 rounded-xl mt-4 gap-2"
+        <Button 
+          variant='outline'
           onPress={onSeeAll}>
           <Eye size={16} color="#10b981" />
-          <SSText variant="semibold" className="text-sm text-emerald-600">
+          <SSText className="text-emerald-600">
             See All Reviews ({reviews.length})
           </SSText>
-        </TouchableOpacity>
+        </Button>
       )}
     </View>
   );
