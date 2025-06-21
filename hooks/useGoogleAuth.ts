@@ -1,12 +1,19 @@
 import * as Google from 'expo-auth-session/providers/google';
 import { useEffect, useRef, useState } from 'react';
 import { loginWithGoogleCredential } from '@/lib/auth';
+import Constants from 'expo-constants';
+
+const {
+  GOOGLE_EXPO_CLIENT_ID,
+  GOOGLE_IOS_CLIENT_ID,
+  GOOGLE_ANDROID_CLIENT_ID,
+} = Constants.expoConfig?.extra || {};
 
 export const useGoogleAuth = () => {
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: '<your-expo-client-id>.apps.googleusercontent.com',
-    iosClientId: '<your-ios-client-id>.apps.googleusercontent.com',
-    androidClientId: '<your-android-client-id>.apps.googleusercontent.com',
+    clientId: GOOGLE_EXPO_CLIENT_ID,
+    iosClientId: GOOGLE_IOS_CLIENT_ID,
+    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
   });
 
   const loginPromise = useRef<Promise<any> | null>(null);

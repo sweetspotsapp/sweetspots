@@ -64,6 +64,15 @@ export default function ProfileTab() {
       onPress: () => { },
       color: '#64748b',
     },
+        {
+      icon: Settings,
+      title: 'Login',
+      subtitle: 'App preferences and account',
+      onPress: () => {
+        router.push('/(auth)/login');
+       },
+      color: '#64748b',
+    },
   ];
 
   return (
