@@ -3,23 +3,23 @@ import { IItinerary } from './dto/itinerary.dto';
 import { CreateItineraryDto } from './dto/create-itinerary.dto';
 import { UpdateItineraryDto } from './dto/update-itinerary.dto';
 import { GetItinerariesQueryDto } from './dto/get-itineraries-query.dto';
-import { PaginationResult } from '../pagination.dto';
+import { ApiPluralResponse, ApiResponse, PaginationResult } from '../pagination.dto';
 
 export const getAllItineraries = async (
   params?: GetItinerariesQueryDto
-): Promise<PaginationResult<IItinerary>> => {
+): Promise<ApiPluralResponse<IItinerary>> => {
   const res = await api.get('/itineraries', { params });
   return res.data;
 };
 
-export const getItineraryById = async (id: string): Promise<IItinerary> => {
+export const getItineraryById = async (id: string): Promise<ApiResponse<IItinerary>> => {
   const res = await api.get(`/itineraries/${id}`);
   return res.data;
 };
 
 export const createItinerary = async (
   data: CreateItineraryDto
-): Promise<IItinerary> => {
+): Promise<ApiResponse<IItinerary>> => {
   const res = await api.post('/itineraries', data);
   return res.data;
 };
@@ -27,14 +27,14 @@ export const createItinerary = async (
 export const updateItinerary = async (
   id: string,
   data: UpdateItineraryDto
-): Promise<IItinerary> => {
+): Promise<ApiResponse<IItinerary>> => {
   const res = await api.patch(`/itineraries/${id}`, data);
   return res.data;
 };
 
 export const deleteItinerary = async (
   id: string
-): Promise<{ success: boolean }> => {
+): Promise<ApiResponse<{ success: boolean }>> => {
   const res = await api.delete(`/itineraries/${id}`);
   return res.data;
 };
