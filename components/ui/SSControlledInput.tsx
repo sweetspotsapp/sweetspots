@@ -3,6 +3,7 @@ import { Controller, Control } from 'react-hook-form';
 import { SSText } from './SSText';
 import { Input, InputProps } from './input';
 import { View } from 'react-native';
+import { cn } from '@/lib/utils';
 
 interface SSControlledInputProps extends InputProps {
   name: string;
@@ -16,10 +17,11 @@ export const SSControlledInput: React.FC<SSControlledInputProps> = ({
   control,
   helperText,
   error,
+  className,
   ...rest
 }) => {
   return (
-    <View className="w-full gap-1">
+    <View className={cn("w-full gap-1", className)}>
       <Controller
         control={control}
         name={name}
