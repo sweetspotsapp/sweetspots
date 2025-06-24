@@ -13,6 +13,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import "../global.css"
 import React from 'react';
+import ToastManager from 'toastify-react-native'
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,6 +39,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <ToastManager/>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
