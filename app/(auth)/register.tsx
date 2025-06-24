@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Alert } from 'react-native';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import { useRouter } from 'expo-router';
 import { register as registerWithEmail } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,10 @@ import { SSControlledInput } from '@/components/ui/SSControlledInput';
 import SSLinearBackground from '@/components/ui/SSLinearBackground';
 
 type RegisterFormData = {
-  name: string;
+  // name: string;
+  firstName: string;
+  lastName: string;
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -21,20 +24,37 @@ export default function RegisterScreen() {
     control,
     handleSubmit,
     watch,
-    formState: { errors },
+    setValue,
+    formState: { errors, dirtyFields },
   } = useForm<RegisterFormData>({
     defaultValues: {
-      name: '',
+      // name: '',
+      firstName: '',
+      lastName: '',
+      username: '',
       email: '',
       password: '',
       confirmPassword: '',
     },
   });
 
+  useEffect(() => {
+    if (!dirtyFields.username) {
+      setValue('username', watch('email').split('@')[0]);
+      // Optionally, you can validate username uniqueness here
+      // For now, we assume it's always valid
+    }
+  }, [dirtyFields.username, watch('email'), setValue]);
+
   const onSubmit = async (data: RegisterFormData) => {
-    const { email, password } = data;
     try {
-      await registerWithEmail(email, password);
+      await registerWithEmail(
+        data.email,
+        data.password,
+        data.firstName,
+        data.lastName,
+        data.username || data.email.split('@')[0]
+      ); // Assuming username is optional
       Alert.alert('Success', 'Account created. Please log in.');
       router.replace('/(auth)/login');
     } catch (err) {
@@ -53,13 +73,24 @@ export default function RegisterScreen() {
         </SSText>
 
         <View className="my-4 w-full gap-3">
-          <SSControlledInput
-            name="name"
-            control={control}
-            placeholder="Name"
-            autoCapitalize="words"
-            error={errors.name?.message}
-          />
+          <View className="flex-row gap-3">
+            <SSControlledInput
+              name="firstName"
+              control={control}
+              placeholder="First Name"
+              className="flex-1"
+              autoCapitalize="words"
+              error={errors.firstName?.message}
+            />
+            <SSControlledInput
+              name="lastName"
+              control={control}
+              placeholder="Last Name"
+              className="flex-1"
+              autoCapitalize="words"
+              error={errors.lastName?.message}
+            />
+          </View>
           <SSControlledInput
             name="email"
             control={control}
@@ -67,6 +98,13 @@ export default function RegisterScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
             error={errors.email?.message}
+          />
+          <SSControlledInput
+            name="username"
+            control={control}
+            placeholder="Username"
+            autoCapitalize="none"
+            error={errors.username?.message}
           />
           <SSControlledInput
             name="password"
