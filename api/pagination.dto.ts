@@ -8,6 +8,15 @@ export interface PaginationResult<T> {
     };
 }
 
+export interface ApiPluralResponse<T> {
+    success: boolean;
+    data?: PaginationResult<T>;
+    message?: string;
+    statusCode?: number;
+    timestamp: string;
+    path?: string;
+    method?: string;
+}
 export interface ApiResponse<T> {
     success: boolean;
     data?: T;
