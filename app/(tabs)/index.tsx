@@ -16,16 +16,17 @@ import { PlaceCard } from '@/components/PlaceCard';
 import { FilterModal } from '@/components/FilterModal';
 import { ImageGalleryModal } from '@/components/ImageGalleryModal';
 import { mockPlaces } from '@/data/mockPlaces';
-import { Place } from '@/types/Place';
 import { savePlaceToStorage, getVibePreferences } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearBackground from '@/components/ui/SSLinearBackground';
+import { IRecommendedPlace } from '@/api/recommendations/dto/recommendation.dto';
+import { getRecommendations } from '@/api/recommendations/endpoints';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 interface CardStackItem {
   id: string;
-  place: Place;
+  place: IRecommendedPlace;
   index: number;
   position: Animated.ValueXY;
   scale: Animated.Value;
@@ -35,7 +36,7 @@ interface CardStackItem {
 }
 
 export default function DiscoverTab() {
-  const [places, setPlaces] = useState<Place[]>(mockPlaces);
+  const [places, setPlaces] = useState<IRecommendedPlace[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   // const [forceUpdate, setForceUpdate] = useState(0); // Force re-render trigger
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -78,7 +79,30 @@ export default function DiscoverTab() {
     setVibeFilters(preferences);
   };
 
-  const createCardStackItem = (place: Place, stackIndex: number, placeIndex: number): CardStackItem => {
+  useEffect(() => {
+  fetchRecommendations();
+}, [vibeFilters, ratingFilter, distanceFilter, priceFilter]);
+
+const fetchRecommendations = async () => {
+  try {
+    const res = await getRecommendations({
+      vibes: vibeFilters,
+      rating: ratingFilter > 0 ? ratingFilter : undefined,
+      distance: distanceFilter,
+      priceRange: priceFilter,
+      // latitude / longitude: use device location or static fallback
+      latitude: -37.8136, // Example: Melbourne CBD
+      longitude: 144.9631,
+    });
+    console.log('Fetched recommendations:', res);
+    setPlaces(res.data || []);
+    resetCardStack();
+  } catch (err) {
+    console.error('Failed to load recommendations:', err);
+  }
+};
+
+  const createCardStackItem = (place: IRecommendedPlace, stackIndex: number, placeIndex: number): CardStackItem => {
     const scaleValue = CARD_SCALES[stackIndex] || 0.8;
     const opacityValue = CARD_OPACITIES[stackIndex] || 0.2;
     const yOffset = CARD_Y_OFFSETS[stackIndex] || 0;
@@ -232,7 +256,7 @@ export default function DiscoverTab() {
     });
   };
 
-  const handleGoNow = (place: Place) => {
+  const handleGoNow = (place: IRecommendedPlace) => {
     const url = Platform.select({
       ios: `maps:?daddr=${place.latitude},${place.longitude}`,
       android: `geo:${place.latitude},${place.longitude}?q=${place.latitude},${place.longitude}(${place.name})`,
@@ -244,12 +268,12 @@ export default function DiscoverTab() {
     }
   };
 
-  const handleFindSimilar = (place: Place) => {
-    const similarPlaces = mockPlaces.filter(p =>
-      p.id !== place.id &&
-      p.vibes.some(vibe => place.vibes.includes(vibe))
-    );
-    setPlaces(similarPlaces);
+  const handleFindSimilar = (place: IRecommendedPlace) => {
+    // const similarPlaces = mockPlaces.filter(p =>
+    //   p.id !== place.id &&
+    //   p.vibes.some(vibe => place.vibes.includes(vibe))
+    // );
+    // setPlaces(similarPlaces);
     resetCardStack();
   };
 
@@ -480,25 +504,25 @@ export default function DiscoverTab() {
           setDistanceFilter(filters.distance);
           setPriceFilter(filters.priceRange);
 
-          let filteredPlaces = mockPlaces;
+          // let filteredPlaces = mockPlaces;
 
-          if (filters.vibes.length > 0) {
-            filteredPlaces = filteredPlaces.filter(place =>
-              place.vibes.some(vibe => filters.vibes.includes(vibe))
-            );
-          }
+          // if (filters.vibes.length > 0) {
+          //   filteredPlaces = filteredPlaces.filter(place =>
+          //     place.vibes.some(vibe => filters.vibes.includes(vibe))
+          //   );
+          // }
 
-          if (filters.rating > 0) {
-            filteredPlaces = filteredPlaces.filter(place => place.rating >= filters.rating);
-          }
+          // if (filters.rating > 0) {
+          //   filteredPlaces = filteredPlaces.filter(place => place.rating >= filters.rating);
+          // }
 
-          if (filters.priceRange.length > 0) {
-            filteredPlaces = filteredPlaces.filter(place =>
-              filters.priceRange.includes(place.priceRange)
-            );
-          }
+          // if (filters.priceRange.length > 0) {
+          //   filteredPlaces = filteredPlaces.filter(place =>
+          //     filters.priceRange.includes(place.priceRange)
+          //   );
+          // }
 
-          setPlaces(filteredPlaces);
+          // setPlaces(filteredPlaces);
           resetCardStack()
         }}
         currentFilters={{

@@ -1,20 +1,22 @@
-export interface Place {
-  id: string;
-  name: string;
-  description: string;
-  rating: number;
-  reviewCount: number;
-  distance: string;
-  duration: string;
-  priceRange: string;
-  vibes: string[];
-  images: string[];
-  latitude: number;
-  longitude: number;
-  category: string;
-  address: string;
-  reviews?: Review[];
-}
+// export interface Place {
+//   id: string;
+//   name: string;
+//   description: string;
+//   rating: number;
+//   reviewCount: number;
+//   distance: string;
+//   duration: string;
+//   priceRange: string;
+//   vibes: string[];
+//   images: string[];
+//   latitude: number;
+//   longitude: number;
+//   category: string;
+//   address: string;
+//   reviews?: Review[];
+// }
+
+import { IPlace } from "@/api/places/dto/place.dto";
 
 export interface Review {
   id: string;
@@ -26,7 +28,7 @@ export interface Review {
   helpful: number;
 }
 
-export interface SavedPlace extends Place {
+export interface SavedPlace extends IPlace {
   savedAt: string;
   selected?: boolean;
 }
