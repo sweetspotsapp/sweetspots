@@ -7,9 +7,29 @@ import {
   signInWithCredential,
 } from 'firebase/auth';
 import { auth } from './firebase';
+import { api } from '@/api/client';
 
-export const register = (email: string, password: string) =>
-  createUserWithEmailAndPassword(auth, email, password);
+export const register = async (
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string,
+  username: string
+) => {
+  const firebaseUser = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  const idToken = await firebaseUser.user.getIdToken();
+
+  await api.post('/auth/sync-profile', {
+    idToken,
+    firstName,
+    lastName,
+    username
+  });
+};
 
 export const login = (email: string, password: string) =>
   signInWithEmailAndPassword(auth, email, password);
