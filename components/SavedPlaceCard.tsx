@@ -5,11 +5,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Star, MapPin, Clock, CircleCheck as CheckCircle } from 'lucide-react-native';
-import { SavedPlace } from '@/types/Place';
+// import { SavedPlace } from '@/types/Place';
 import { SSText } from './ui/SSText';
+import { IPlace } from '@/api/places/dto/place.dto';
 
 interface SavedPlaceCardProps {
-  place: SavedPlace;
+  place: IPlace & { selected?: boolean };
   isSelectionMode: boolean;
   onSelect: () => void;
 }
@@ -23,7 +24,11 @@ export function SavedPlaceCard({ place, isSelectionMode, onSelect }: SavedPlaceC
       onPress={isSelectionMode ? onSelect : undefined}
       activeOpacity={isSelectionMode ? 0.7 : 1}>
       
-      <Image source={{ uri: place.images[0] }} className="w-30 h-30" style={{ resizeMode: 'cover' }} />
+      {
+        place.images?.[0] && (
+          <Image source={{ uri: place.images[0].url }} className="w-30 h-30" style={{ resizeMode: 'cover' }} />
+        )
+      }
       
       <View className="flex-1 p-4">
         <View className="flex-row justify-between items-center mb-2">

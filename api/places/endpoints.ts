@@ -38,3 +38,28 @@ export const deletePlace = async (
   const res = await api.delete(`/places/${id}`);
   return res.data;
 };
+
+export const savePlace = async (
+  id: string
+): Promise<ApiResponse<{ success: boolean }>> => {
+  const res = await api.post(`/places/${id}/save`);
+  return res.data;
+};
+
+export const getSavedPlaces = async (): Promise<ApiResponse<IPlace[]>> => {
+  const res = await api.get(`/places/saved/me`);
+  return res.data;
+};
+
+export const syncPlacesInArea = async (
+  latitude: number,
+  longitude: number,
+  radius?: number
+): Promise<ApiResponse<{ syncedCount: number }>> => {
+  const res = await api.post('/places/sync', {
+    latitude,
+    longitude,
+    radius,
+  });
+  return res.data;
+};

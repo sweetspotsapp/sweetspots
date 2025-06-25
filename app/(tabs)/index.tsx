@@ -21,6 +21,7 @@ import { SSText } from '@/components/ui/SSText';
 import SSLinearBackground from '@/components/ui/SSLinearBackground';
 import { IRecommendedPlace } from '@/api/recommendations/dto/recommendation.dto';
 import { getRecommendations } from '@/api/recommendations/endpoints';
+import { recordSwipe } from '@/api/swipes/endpoints';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -248,7 +249,13 @@ const fetchRecommendations = async () => {
         // Save the liked place - commented out storage usage
         if (direction === 'right') {
           savePlaceToStorage(topCard.place);
+
         }
+
+        recordSwipe({
+          placeId: topCard.place.id,
+          direction,
+        })
 
         // Animate the rest of the stack
         animateStackMovement();

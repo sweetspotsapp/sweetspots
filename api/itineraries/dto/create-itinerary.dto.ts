@@ -16,18 +16,11 @@ export interface CreateItineraryPlaceDto {
 
 export interface CreateItineraryDto {
   name: string;
-
   description?: string;
-
   collaborators?: string[];
-
   isPublic?: boolean;
-
   startDate?: string;
-
   endDate?: string;
-
   coverImage?: string;
-
   places: CreateItineraryPlaceDto[];
 }

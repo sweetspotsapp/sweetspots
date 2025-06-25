@@ -32,7 +32,7 @@ export interface IItineraryPlace {
   visitDate?: string | null;
   visitTime?: string | null;
   visitDuration?: number | null;
-  estimatedCost?: string | null;
+  estimatedCost?: number | null;
   notes?: string | null;
   orderIndex: number;
   createdAt: string;

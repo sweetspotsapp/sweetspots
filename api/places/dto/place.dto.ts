@@ -32,6 +32,8 @@ export interface IPlace {
   createdAt: string;
   updatedAt: string;
 
+  savedAt?: string | null; // when the place was saved by the user
+
   // Optional expanded fields
   images?: IPlaceImage[];
   reviews?: IReview[];

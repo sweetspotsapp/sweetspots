@@ -8,8 +8,7 @@ import {
 } from 'react-native';
 import { X, Plus, Mail, Phone } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SavedPlace, ItineraryPlace, TripSummary } from '@/types/Place';
-import { createItinerary } from '@/utils/storage';
+import { ItineraryPlace, TripSummary } from '@/types/Place';
 import { PlaceScheduleCard } from './PlaceScheduleCard';
 import { TripSummaryCard } from './TripSummaryCard';
 import { SSText } from './ui/SSText';
@@ -17,12 +16,15 @@ import { PickerProvider, SSDatePicker } from './ui/SSDateTimePicker';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
+import { IPlace } from '@/api/places/dto/place.dto';
+import { IItineraryPlace } from '@/api/itineraries/dto/itinerary.dto';
+import { createItinerary } from '@/api/itineraries/endpoints';
 
 interface CreateItineraryModalProps {
   visible: boolean;
   onClose: () => void;
   onCreated: () => void;
-  selectedPlaces: SavedPlace[];
+  selectedPlaces: IPlace[];
 }
 
 export function CreateItineraryModal({ 
@@ -38,7 +40,7 @@ export function CreateItineraryModal({
   const [collaborators, setCollaborators] = useState<string[]>([]);
   const [newCollaborator, setNewCollaborator] = useState('');
   const [isPublic, setIsPublic] = useState(false);
-  const [itineraryPlaces, setItineraryPlaces] = useState<ItineraryPlace[]>([]);
+  const [itineraryPlaces, setItineraryPlaces] = useState<(IItineraryPlace & IPlace)[]>([]);
   const [tripSummary, setTripSummary] = useState<TripSummary>({
     totalCost: 0,
     totalDuration: 0,
@@ -49,14 +51,14 @@ export function CreateItineraryModal({
 
   useEffect(() => {
     if (selectedPlaces.length > 0) {
-      const places: ItineraryPlace[] = selectedPlaces.map((place, index) => ({
+      const places: (IItineraryPlace & IPlace)[] = selectedPlaces.map((place, index) => ({
         ...place,
-        order: index + 1,
         visitDuration: getDefaultDuration(place.category),
         estimatedCost: getDefaultCost(place.priceRange),
         visitDate: '',
         visitTime: '',
         notes: '',
+        orderIndex: index + 1,
       }));
       setItineraryPlaces(places);
     }
@@ -150,13 +152,19 @@ export function CreateItineraryModal({
       await createItinerary({
         name: name.trim(),
         description: description.trim(),
-        places: itineraryPlaces,
+        places: itineraryPlaces.map(place => ({
+          placeId: place.id,
+          visitDate: place.visitDate ?? undefined,
+          visitTime: place.visitTime ?? undefined,
+          visitDuration: place.visitDuration || 0,
+          estimatedCost: place.estimatedCost || 0,
+          notes: place.notes || '',
+          orderIndex: place.orderIndex,
+        })),
         collaborators,
         isPublic,
         startDate,
         endDate,
-        totalEstimatedCost: tripSummary.totalCost,
-        totalDuration: tripSummary.totalDuration,
       });
 
       setName('');
@@ -245,7 +253,7 @@ export function CreateItineraryModal({
               {itineraryPlaces.map((place, index) => (
                 <PlaceScheduleCard
                   key={place.id}
-                  place={place}
+                  itineraryPlace={place}
                   onUpdate={(updates) => updatePlace(place.id, updates)}
                   onMoveUp={index > 0 ? () => reorderPlaces(index, index - 1) : undefined}
                   onMoveDown={index < itineraryPlaces.length - 1 ? () => reorderPlaces(index, index + 1) : undefined}
