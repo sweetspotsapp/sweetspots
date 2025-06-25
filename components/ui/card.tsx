@@ -1,20 +1,62 @@
 import { cn } from '@/lib/utils';
 import * as React from 'react';
-import { Text, type TextProps, View, type ViewProps } from 'react-native';
+import { Text, View, Platform, type ViewProps, type TextProps } from 'react-native';
 import { TextClassContext } from './SSText';
+
+type Elevation = 0 | 1 | 2 | 3 | 4;
+
+function getShadowStyle(elevation: Elevation = 0): object {
+  if (Platform.OS === 'android') {
+    return { elevation };
+  }
+
+  const iosShadowMap: Record<Elevation, object> = {
+    0: {},
+    1: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+    },
+    2: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
+    },
+    3: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.2,
+      shadowRadius: 6,
+    },
+    4: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.25,
+      shadowRadius: 8,
+    },
+  };
+
+  return iosShadowMap[elevation];
+}
 
 function Card({
   className,
+  elevation = 1,
+  style,
   ...props
 }: ViewProps & {
   ref?: React.RefObject<View>;
+  elevation?: Elevation;
 }) {
   return (
     <View
       className={cn(
-        'rounded-lg border border-border bg-card shadow-sm shadow-foreground/10',
+        'rounded-lg border-0 bg-card shadow-sm shadow-foreground/10',
         className
       )}
+      style={[getShadowStyle(elevation), style]}
       {...props}
     />
   );
@@ -37,7 +79,7 @@ function CardTitle({
 }) {
   return (
     <Text
-      role='heading'
+      role="heading"
       aria-level={3}
       className={cn(
         'text-2xl text-card-foreground font-semibold leading-none tracking-tight',
@@ -64,7 +106,7 @@ function CardContent({
   ref?: React.RefObject<View>;
 }) {
   return (
-    <TextClassContext.Provider value='text-card-foreground'>
+    <TextClassContext.Provider value="text-card-foreground">
       <View className={cn('p-6', className)} {...props} />
     </TextClassContext.Provider>
   );

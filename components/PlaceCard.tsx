@@ -8,17 +8,18 @@ import {
 } from 'react-native';
 import { Star, MapPin, Clock, DollarSign, Navigation, Zap, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Place } from '@/types/Place';
 import { ReviewCarousel } from './ReviewCarousel';
 import { AllReviewsModal } from './AllReviewsModal';
 import { ImageGalleryModal } from './ImageGalleryModal';
 import { SSText } from './ui/SSText';
 import { Button } from './ui/button';
+import { Card, CardContent } from './ui/card';
+import { IRecommendedPlace } from '@/api/recommendations/dto/recommendation.dto';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 interface PlaceCardProps {
-  place: Place;
+  place: IRecommendedPlace;
   onImagePress?: (images: string[], startIndex: number) => void;
   onGoNow?: () => void;
   onFindSimilar?: () => void;
@@ -29,7 +30,7 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
   const [showAllReviews, setShowAllReviews] = useState(false);
 
   const handleImagePress = (index: number) => {
-    if (onImagePress) {
+    if (onImagePress && place.images !== undefined) {
       onImagePress(place.images, index);
     }
   };
@@ -63,15 +64,15 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
   };
 
   const goToNextImage = () => {
-    if (currentImageIndex < place.images.length - 1) {
+    if (place.images && currentImageIndex < place.images.length - 1) {
       scrollToImage(currentImageIndex + 1);
     }
   };
 
   return (
-    <View className="flex-1 bg-white rounded-3xl shadow-lg overflow-hidden">
+    <Card elevation={4} className="flex-1 !rounded-3xl">
       {/* Image Carousel */}
-      <View className="h-2/5 relative">
+      <View className="h-2/5 relative rounded-3xl rounded-ee-none rounded-es-none overflow-hidden">
         <ScrollView
           ref={imageScrollRef}
           horizontal
@@ -248,6 +249,6 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
           onImageChange={handleImageChange}
         />
       )}
-    </View>
+    </Card>
   );
 }

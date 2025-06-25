@@ -165,6 +165,7 @@ export default function SavedTab() {
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
+        contentContainerClassName='gap-3'
         onRefresh={loadSavedPlaces}
         ListEmptyComponent={
           <View className="flex-1 justify-center items-center pt-25 px-10">
