@@ -7,13 +7,13 @@ import { Platform } from 'react-native';
 const isDev = process.env.NODE_ENV === 'development';
 
 // Replace this with your local machine's IP address
-const localIP = '192.168.68.110';
+const localUrl = 'https://sweetspots-nest.onrender.com';
 
 let baseURL = 'https://your-prod-api.com/api/v1';
 
 if (isDev) {
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
-    baseURL = `http://${localIP}:8080/api/v1`;
+    baseURL = `${localUrl}/api/v1`;
   } else {
     // for web
     baseURL = 'http://localhost:8080/api/v1';
