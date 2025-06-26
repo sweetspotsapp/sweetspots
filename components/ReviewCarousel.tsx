@@ -10,6 +10,7 @@ import { Review } from '@/types/Place';
 import { SSText } from './ui/SSText';
 import { Button } from './ui/button';
 import { IReview } from '@/api/reviews/dto/review.dto';
+import { ReviewCard } from './ReviewCard';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -108,37 +109,7 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
       </View>
       
       {/* Single Review Card */}
-      <View className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-        <View className="flex-row items-center mb-3">
-          <Image source={{ uri: currentReview.userAvatar }} className="w-12 h-12 rounded-full mr-3" />
-          <View className="flex-1">
-            <SSText variant="semibold" className="text-base text-gray-800 mb-1">
-              {currentReview.userName}
-            </SSText>
-            <View className="flex-row items-center gap-2">
-              <View className="flex-row gap-0.5">
-                {renderStars(currentReview.rating)}
-              </View>
-              <SSText className="text-xs text-slate-500">
-                {formatDate(currentReview.createdAt)}
-              </SSText>
-            </View>
-          </View>
-        </View>
-        
-        <SSText className="text-sm text-gray-600 leading-5 mb-4">
-          {currentReview.comment}
-        </SSText>
-        
-        <View className="flex-row justify-end">
-          <TouchableOpacity className="flex-row items-center gap-1.5 px-3 py-1.5 bg-slate-100 rounded-2xl">
-            <ThumbsUp size={14} color="#64748b" />
-            <SSText variant="medium" className="text-xs text-slate-500">
-              Helpful ({currentReview.helpful})
-            </SSText>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <ReviewCard review={currentReview} />
       
       {/* Pagination Dots */}
       {reviews.length > 1 && (

@@ -14,6 +14,7 @@ import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { getReviews } from '@/api/reviews/endpoints';
 import { IReview } from '@/api/reviews/dto/review.dto';
+import { ReviewCard } from './ReviewCard';
 
 interface AllReviewsModalProps {
   visible: boolean;
@@ -213,7 +214,7 @@ export function AllReviewsModal({
         </View>
 
         {/* Reviews List */}
-        <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
+        <ScrollView className="flex-1 px-5" contentContainerClassName='gap-3' showsVerticalScrollIndicator={false}>
           {isLoading ? (
             <View className="items-center py-20">
               <SSText className="text-base text-slate-500">Loading reviews...</SSText>
@@ -229,37 +230,7 @@ export function AllReviewsModal({
             </View>
           ) : (
             reviews.map((review) => (
-              <View key={review.id} className="bg-white rounded-2xl p-5 mb-4 shadow-sm border border-slate-100">
-                <View className="flex-row items-center mb-3">
-                  <Image source={{ uri: review.userAvatar }} className="w-12 h-12 rounded-full mr-3" />
-                  <View className="flex-1">
-                    <SSText variant="semibold" className="text-base text-gray-800 mb-1">
-                      {review.userName}
-                    </SSText>
-                    <View className="flex-row items-center gap-2">
-                      <View className="flex-row gap-0.5">
-                        {renderStars(review.rating)}
-                      </View>
-                      <SSText className="text-xs text-slate-500">
-                        {formatDate(review.createdAt)}
-                      </SSText>
-                    </View>
-                  </View>
-                </View>
-
-                <SSText className="text-sm text-gray-600 leading-5 mb-4">
-                  {review.comment}
-                </SSText>
-
-                <View className="flex-row justify-end">
-                  <TouchableOpacity className="flex-row items-center gap-1.5 px-3 py-1.5 bg-slate-100 rounded-2xl">
-                    <ThumbsUp size={14} color="#64748b" />
-                    <SSText variant="medium" className="text-xs text-slate-500">
-                      Helpful ({review.helpful})
-                    </SSText>
-                  </TouchableOpacity>
-                </View>
-              </View>
+              <ReviewCard review={review} key={review.id}/>
             ))
           )}
 
