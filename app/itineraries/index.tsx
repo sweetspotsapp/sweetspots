@@ -8,21 +8,21 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Calendar, Users, MapPin, Clock, DollarSign } from 'lucide-react-native';
 import { router } from 'expo-router';
-import { Itinerary } from '@/types/Place';
-import { getItineraries } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
+import { IItinerary } from '@/api/itineraries/dto/itinerary.dto';
+import { getMyItineraries } from '@/api/itineraries/endpoints';
 
 export default function ItinerariesScreen() {
-  const [itineraries, setItineraries] = useState<Itinerary[]>([]);
+  const [itineraries, setItineraries] = useState<IItinerary[]>([]);
 
   useEffect(() => {
     loadItineraries();
   }, []);
 
   const loadItineraries = async () => {
-    const data = await getItineraries();
-    setItineraries(data);
+    const res = await getMyItineraries();
+    setItineraries(res.data?.data ?? []);
   };
 
   const formatDate = (dateString: string) => {
@@ -56,7 +56,7 @@ export default function ItinerariesScreen() {
     return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   };
 
-  const renderItinerary = ({ item }: { item: Itinerary }) => (
+  const renderItinerary = ({ item }: { item: IItinerary }) => (
     <TouchableOpacity
       className="bg-white rounded-2xl mb-4 overflow-hidden shadow-sm"
       onPress={() => router.push(`/itineraries/${item.id}`)}>
@@ -92,7 +92,7 @@ export default function ItinerariesScreen() {
           <View className="flex-row items-center gap-1.5">
             <MapPin size={14} color="#64748b" />
             <SSText variant="semibold" className="text-sm text-gray-800">
-              {item.places.length} places
+              {/* {item.places.length} places */}
             </SSText>
           </View>
           
@@ -109,7 +109,7 @@ export default function ItinerariesScreen() {
             <View className="flex-row items-center gap-1.5">
               <DollarSign size={14} color="#64748b" />
               <SSText variant="semibold" className="text-sm text-gray-800">
-                {formatCurrency(item.totalEstimatedCost)}
+                {formatCurrency(Number(item.totalEstimatedCost))}
               </SSText>
             </View>
           )}
@@ -123,14 +123,14 @@ export default function ItinerariesScreen() {
             </SSText>
           </View>
           
-          {item.collaborators.length > 0 && (
+          {/* {item.collaborators.length > 0 && (
             <View className="flex-row items-center gap-1.5">
               <Users size={16} color="#64748b" />
               <SSText variant="medium" className="text-xs text-slate-500">
                 {item.collaborators.length} collaborators
               </SSText>
             </View>
-          )}
+          )} */}
         </View>
       </View>
     </TouchableOpacity>

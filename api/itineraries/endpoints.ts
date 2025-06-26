@@ -12,6 +12,13 @@ export const getAllItineraries = async (
   return res.data;
 };
 
+export const getMyItineraries = async (
+  params?: GetItinerariesQueryDto
+): Promise<ApiPluralResponse<IItinerary>> => {
+  const res = await api.get('/itineraries/me', { params });
+  return res.data;
+};
+
 export const getItineraryById = async (id: string): Promise<ApiResponse<IItinerary>> => {
   const res = await api.get(`/itineraries/${id}`);
   return res.data;

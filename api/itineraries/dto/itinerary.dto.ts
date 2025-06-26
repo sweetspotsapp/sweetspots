@@ -36,6 +36,7 @@ export interface IItineraryPlace {
   notes?: string | null;
   orderIndex: number;
   createdAt: string;
+  imageUrl?: string | null; // Optional image URL for the place
 
   // Optional populated place
   place?: IPlace;
