@@ -234,8 +234,8 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
         <AllReviewsModal
           visible={showAllReviews}
           onClose={() => setShowAllReviews(false)}
-          reviews={place.reviews}
           placeName={place.name}
+          placeId={place.id}
         />
       )}
 

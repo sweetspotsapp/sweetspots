@@ -9,11 +9,12 @@ import { Star, ThumbsUp, ChevronLeft, ChevronRight, Eye } from 'lucide-react-nat
 import { Review } from '@/types/Place';
 import { SSText } from './ui/SSText';
 import { Button } from './ui/button';
+import { IReview } from '@/api/reviews/dto/review.dto';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 interface ReviewCarouselProps {
-  reviews: Review[];
+  reviews: IReview[];
   onSeeAll?: () => void;
 }
 
@@ -119,7 +120,7 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
                 {renderStars(currentReview.rating)}
               </View>
               <SSText className="text-xs text-slate-500">
-                {formatDate(currentReview.date)}
+                {formatDate(currentReview.createdAt)}
               </SSText>
             </View>
           </View>

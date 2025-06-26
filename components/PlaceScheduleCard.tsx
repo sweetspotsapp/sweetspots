@@ -15,6 +15,7 @@ import { ItineraryPlace } from '@/types/Place';
 import { SSText } from './ui/SSText';
 import { SSDatePicker, SSTimePicker } from './ui/SSDateTimePicker';
 import { IItineraryPlace } from '@/api/itineraries/dto/itinerary.dto';
+import { Card } from './ui/card';
 
 interface PlaceScheduleCardProps {
   itineraryPlace: IItineraryPlace;
@@ -48,7 +49,7 @@ export function PlaceScheduleCard({
   };
 
   return (
-    <View className="bg-white rounded-2xl mb-4 shadow-sm overflow-hidden">
+    <Card className="rounded-2xl mb-4">
       <TouchableOpacity
         className="flex-row items-center p-4"
         onPress={() => setIsExpanded(!isExpanded)}
@@ -61,10 +62,9 @@ export function PlaceScheduleCard({
         {itineraryPlace.place && (
           <>
             {' '}
-            {itineraryPlace.place.images &&
-            itineraryPlace.place.images.length > 0 ? (
+            {itineraryPlace.imageUrl ? (
               <Image
-                source={{ uri: itineraryPlace.place.images[0].url }}
+                source={{ uri: itineraryPlace.imageUrl }}
                 className="w-15 h-15 rounded-xl mr-3"
                 style={{ resizeMode: 'cover' }}
               />
@@ -223,6 +223,6 @@ export function PlaceScheduleCard({
           </View>
         </View>
       )}
-    </View>
+    </Card>
   );
 }

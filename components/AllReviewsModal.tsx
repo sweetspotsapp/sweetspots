@@ -1,70 +1,72 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Modal,
   TouchableOpacity,
   ScrollView,
   Image,
-  TextInput,
 } from 'react-native';
-import { X, Star, ThumbsUp, Search, Filter } from 'lucide-react-native';
+import { X, Star, ThumbsUp, Search } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Review } from '@/types/Place';
 import { SSText } from './ui/SSText';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
+import { getReviews } from '@/api/reviews/endpoints';
+import { IReview } from '@/api/reviews/dto/review.dto';
 
 interface AllReviewsModalProps {
   visible: boolean;
   onClose: () => void;
-  reviews: Review[];
+  placeId: string;
   placeName: string;
+}
+
+function mapSortKey(
+  uiKey: 'newest' | 'oldest' | 'highest' | 'lowest' | 'helpful'
+): 'newest' | 'oldest' | 'rating_high' | 'rating_low' | 'helpful' {
+  switch (uiKey) {
+    case 'highest': return 'rating_high';
+    case 'lowest': return 'rating_low';
+    default: return uiKey;
+  }
 }
 
 export function AllReviewsModal({
   visible,
   onClose,
-  reviews,
-  placeName
+  placeId,
+  placeName,
 }: AllReviewsModalProps) {
+  const [reviews, setReviews] = useState<IReview[]>([]);
+  const [isLoading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'highest' | 'lowest' | 'helpful'>('newest');
 
-  const filteredAndSortedReviews = useMemo(() => {
-    let filtered = reviews;
+  useEffect(() => {
+    if (!visible) return;
 
-    if (searchQuery.trim()) {
-      filtered = filtered.filter(review =>
-        review.comment.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        review.userName.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    if (selectedRating !== null) {
-      filtered = filtered.filter(review => review.rating === selectedRating);
-    }
-
-    const sorted = [...filtered].sort((a, b) => {
-      switch (sortBy) {
-        case 'newest':
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        case 'oldest':
-          return new Date(a.date).getTime() - new Date(b.date).getTime();
-        case 'highest':
-          return b.rating - a.rating;
-        case 'lowest':
-          return a.rating - b.rating;
-        case 'helpful':
-          return b.helpful - a.helpful;
-        default:
-          return 0;
+    const fetchReviews = async () => {
+      try {
+        setLoading(true);
+        const res = await getReviews({
+          placeId,
+          rating: selectedRating ?? undefined,
+          sortBy: mapSortKey(sortBy),
+          page: 1,
+          limit: 100,
+        });
+        setReviews(res.data?.data ?? []);
+      } catch (err) {
+        console.error('Error fetching reviews:', err);
+      } finally {
+        setLoading(false);
       }
-    });
+    };
 
-    return sorted;
-  }, [reviews, searchQuery, selectedRating, sortBy]);
+    fetchReviews();
+  }, [visible, placeId, selectedRating, sortBy]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -94,7 +96,7 @@ export function AllReviewsModal({
   };
 
   const ratingDistribution = getRatingDistribution();
-  const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+  const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / (reviews.length || 1);
 
   const clearFilters = () => {
     setSearchQuery('');
@@ -158,7 +160,7 @@ export function AllReviewsModal({
                     className={`h-full rounded-full ${selectedRating === rating ? 'bg-emerald-600' : 'bg-amber-400'
                       }`}
                     style={{
-                      width: `${(ratingDistribution[rating as keyof typeof ratingDistribution] / reviews.length) * 100}%`
+                      width: `${(ratingDistribution[rating as keyof typeof ratingDistribution] / (reviews.length || 1)) * 100}%`
                     }}
                   />
                 </View>
@@ -172,8 +174,7 @@ export function AllReviewsModal({
 
         {/* Search and Filters */}
         <View className="px-5 py-4">
-          {/* <View className="flex-row items-center bg-white rounded-xl px-4 py-3 mb-4 gap-3 shadow-sm"> */}
-          <View className='flex-row items-center gap-2 mb-4'>
+          <View className="flex-row items-center gap-2 mb-4">
             <Search size={20} color="#64748b" />
             <Input
               placeholder="Search reviews..."
@@ -181,7 +182,6 @@ export function AllReviewsModal({
               onChangeText={setSearchQuery}
             />
           </View>
-          {/* </View> */}
 
           <View className="flex-row items-center gap-3">
             <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-1">
@@ -194,12 +194,8 @@ export function AllReviewsModal({
                   { key: 'helpful', label: 'Most Helpful' },
                 ].map(option => (
                   <Badge asChild variant={sortBy === option.key ? 'default' : 'outline'} key={option.key}>
-                    <TouchableOpacity
-                      key={option.key}
-                      onPress={() => setSortBy(option.key as any)}>
-                      <SSText>
-                        {option.label}
-                      </SSText>
+                    <TouchableOpacity onPress={() => setSortBy(option.key as any)}>
+                      <SSText>{option.label}</SSText>
                     </TouchableOpacity>
                   </Badge>
                 ))}
@@ -209,9 +205,7 @@ export function AllReviewsModal({
             {(searchQuery || selectedRating !== null || sortBy !== 'newest') && (
               <Badge asChild variant='destructive'>
                 <TouchableOpacity onPress={clearFilters}>
-                  <SSText>
-                    Clear
-                  </SSText>
+                  <SSText>Clear</SSText>
                 </TouchableOpacity>
               </Badge>
             )}
@@ -220,7 +214,11 @@ export function AllReviewsModal({
 
         {/* Reviews List */}
         <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
-          {filteredAndSortedReviews.length === 0 ? (
+          {isLoading ? (
+            <View className="items-center py-20">
+              <SSText className="text-base text-slate-500">Loading reviews...</SSText>
+            </View>
+          ) : reviews.length === 0 ? (
             <View className="items-center py-15">
               <SSText variant="semibold" className="text-xl text-gray-800 mb-2">
                 No reviews found
@@ -230,7 +228,7 @@ export function AllReviewsModal({
               </SSText>
             </View>
           ) : (
-            filteredAndSortedReviews.map((review, index) => (
+            reviews.map((review) => (
               <View key={review.id} className="bg-white rounded-2xl p-5 mb-4 shadow-sm border border-slate-100">
                 <View className="flex-row items-center mb-3">
                   <Image source={{ uri: review.userAvatar }} className="w-12 h-12 rounded-full mr-3" />
@@ -243,7 +241,7 @@ export function AllReviewsModal({
                         {renderStars(review.rating)}
                       </View>
                       <SSText className="text-xs text-slate-500">
-                        {formatDate(review.date)}
+                        {formatDate(review.createdAt)}
                       </SSText>
                     </View>
                   </View>
