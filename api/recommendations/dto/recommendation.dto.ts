@@ -1,3 +1,5 @@
+import { IReview } from "@/api/reviews/dto/review.dto";
+
 export interface IRecommendedPlace {
   id: string;
   name: string;
@@ -13,4 +15,5 @@ export interface IRecommendedPlace {
   longitude: number;
   category: string;
   address: string;
+  reviews?: IReview[];
 }

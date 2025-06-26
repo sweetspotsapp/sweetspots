@@ -88,14 +88,14 @@ export default function LoginScreen() {
           <SSText className="text-sm text-muted-foreground">or continue with</SSText>
           <Separator className="flex-1" />
         </View>
-        <Button
+        {/* <Button
           onPress={handleGoogleLogin}
           className="flex-row items-center justify-center bg-white border border-[#4285F4] rounded-md py-2 px-4 shadow-sm"
           style={{ elevation: 2 }}
         >
           <Ionicons name="logo-google" size={20} color="#4285F4" style={{ marginRight: 8 }} />
           <SSText className="text-[#4285F4]">Sign in with Google</SSText>
-        </Button>
+        </Button> */}
         <View>
           <SSText className="text-sm text-muted-foreground mt-4">
             Don't have an account?{' '}
