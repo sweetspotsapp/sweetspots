@@ -3,7 +3,8 @@ import { IPlace } from './dto/place.dto';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 import { GetPlacesQueryDto } from './dto/get-places-query.dto';
-import { ApiPluralResponse, ApiResponse, PaginationResult } from '../pagination.dto';
+import { ApiPluralResponse, ApiResponse } from '../pagination.dto';
+import { CalculateDistanceDto } from './dto/calculate-distance.dto';
 
 export const getAllPlaces = async (
   params?: GetPlacesQueryDto
@@ -61,5 +62,12 @@ export const syncPlacesInArea = async (
     longitude,
     radius,
   });
+  return res.data;
+};
+
+export const calculateTimeAndDistance = async (
+  data: CalculateDistanceDto
+): Promise<ApiResponse<{ distance: number; duration: number }>> => {
+  const res = await api.post('/places/calculate-time-distance', data);
   return res.data;
 };
