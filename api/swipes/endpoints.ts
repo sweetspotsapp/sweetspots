@@ -25,8 +25,10 @@ export const getUserSwipes = async (): Promise<ApiPluralResponse<IUserSwipe>> =>
  * Get current user's swipe stats (e.g., count of left/right).
  */
 export const getSwipeStats = async (): Promise<ApiResponse<{
-  left: number;
-  right: number;
+  totalSwipes: number;
+  rightSwipes: number;
+  leftSwipes: number;
+  rightSwipeRate: number;
 }>> => {
   const res = await api.get('/swipes/stats');
   return res.data;
