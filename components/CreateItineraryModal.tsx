@@ -40,7 +40,7 @@ export function CreateItineraryModal({
   const [collaborators, setCollaborators] = useState<string[]>([]);
   const [newCollaborator, setNewCollaborator] = useState('');
   const [isPublic, setIsPublic] = useState(false);
-  const [itineraryPlaces, setItineraryPlaces] = useState<(IItineraryPlace & IPlace)[]>([]);
+  const [itineraryPlaces, setItineraryPlaces] = useState<(IItineraryPlace)[]>([]);
   const [tripSummary, setTripSummary] = useState<TripSummary>({
     totalCost: 0,
     totalDuration: 0,
@@ -51,8 +51,11 @@ export function CreateItineraryModal({
 
   useEffect(() => {
     if (selectedPlaces.length > 0) {
-      const places: (IItineraryPlace & IPlace)[] = selectedPlaces.map((place, index) => ({
-        ...place,
+      const places: IItineraryPlace[] = selectedPlaces.map((place, index) => ({
+        id: place.id, // Use the place id or generate a unique id if needed
+        createdAt: new Date().toISOString(),
+        place,
+        imageUrl: place.images?.[0]?.url || null, // Use the first image URL if available
         visitDuration: getDefaultDuration(place.category),
         estimatedCost: getDefaultCost(place.priceRange),
         visitDate: '',
@@ -314,7 +317,7 @@ export function CreateItineraryModal({
               <SSText>Cancel</SSText>
             </Button>
             <Button onPress={handleCreate}>
-              <SSText >Create Itinerary</SSText>
+              <SSText>Create Itinerary</SSText>
             </Button>
           </View>
         </View>
