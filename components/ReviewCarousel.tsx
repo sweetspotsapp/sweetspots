@@ -109,7 +109,7 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
       </View>
       
       {/* Single Review Card */}
-      <ReviewCard review={currentReview} />
+      <ReviewCard review={currentReview} hideHelpfulButton/>
       
       {/* Pagination Dots */}
       {reviews.length > 1 && (
