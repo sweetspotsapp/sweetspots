@@ -14,6 +14,8 @@ let baseURL = 'https://your-prod-api.com/api/v1';
 if (isDev) {
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
     baseURL = `${localUrl}/api/v1`;
+    // baseURL = 'http://192.168.68.110:8080/api/v1';
+
   } else {
     // for web
     baseURL = 'http://localhost:8080/api/v1';
@@ -50,6 +52,7 @@ api.interceptors.response.use(
         type: 'RESPONSE',
         status,
         message,
+        baseURL,
         url: error.config?.url,
       });
 
@@ -66,15 +69,16 @@ api.interceptors.response.use(
 
     } else if (error.request) {
       // Request was made but no response received
-      console.log('API Error:', {
+      console.log('API Request Error:', {
         type: 'REQUEST',
         url: error.config?.url,
         method: error.config?.method,
-        baseURL: error.config?.baseURL,
+        baseURL: baseURL,
         timeout: error.config?.timeout,
         headers: error.config?.headers,
         data: error.config?.data,
         message: error.message,
+        error: error.toJSON(),
       });
 
       Toast.error('Network error. Please check your connection or server address.');

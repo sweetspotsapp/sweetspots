@@ -251,7 +251,7 @@ export function CreateItineraryModal({
 
             <View className="mb-8">
               <SSText variant="semibold" className="text-xl text-gray-800 mb-2">Places Schedule ({itineraryPlaces.length} places)</SSText>
-              <SSText className="text-sm text-slate-500 mb-4">Configure when and how long you'll visit each place</SSText>
+              <SSText className="text-sm text-slate-500 mb-4">Press each place to configure when and how long you'll visit</SSText>
 
               {itineraryPlaces.map((place, index) => (
                 <PlaceScheduleCard
@@ -269,6 +269,7 @@ export function CreateItineraryModal({
               <View className="flex-row gap-2 mb-4">
                 <Input
                   placeholder="Enter email or phone"
+                  className='flex-1'
                   value={newCollaborator}
                   onChangeText={setNewCollaborator}
                   keyboardType="email-address"
@@ -316,7 +317,7 @@ export function CreateItineraryModal({
             <Button variant='outline' onPress={onClose}>
               <SSText>Cancel</SSText>
             </Button>
-            <Button onPress={handleCreate}>
+            <Button onPress={handleCreate} className='flex-1'>
               <SSText>Create Itinerary</SSText>
             </Button>
           </View>

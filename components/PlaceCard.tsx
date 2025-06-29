@@ -1,20 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Image,
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
-import { Star, MapPin, Clock, DollarSign, Navigation, Zap, ChevronLeft, ChevronRight } from 'lucide-react-native';
+import {
+  Star,
+  MapPin,
+  Clock,
+  DollarSign,
+  Navigation,
+  Zap,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReviewCarousel } from './ReviewCarousel';
 import { AllReviewsModal } from './AllReviewsModal';
 import { ImageGalleryModal } from './ImageGalleryModal';
 import { SSText } from './ui/SSText';
 import { Button } from './ui/button';
-import { Card, CardContent } from './ui/card';
+import { Card } from './ui/card';
 import { IRecommendedPlace } from '@/api/recommendations/dto/recommendation.dto';
+import { CalculateDistanceDto } from '@/api/places/dto/calculate-distance.dto';
+import { calculateTimeAndDistance } from '@/api/places/endpoints';
+import { useLocationStore } from '@/store/useLocationStore';
+import { formatDistance, formatDuration } from '@/utils/formatter';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -25,9 +39,48 @@ interface PlaceCardProps {
   onFindSimilar?: () => void;
 }
 
-export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: PlaceCardProps) {
+export function PlaceCard({
+  place,
+  onImagePress,
+  onGoNow,
+  onFindSimilar,
+}: PlaceCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAllReviews, setShowAllReviews] = useState(false);
+  const [distance, setDistance] = useState<number | null>(null);
+  const [duration, setDuration] = useState<number | null>(null);
+
+  const { location } = useLocationStore();
+
+  useEffect(() => {
+    const fetchDistanceAndDuration = async () => {
+      // console.log('Fetching distance and duration for place:', place, location);
+      if (place && location) {
+        try {
+          const dto: CalculateDistanceDto = {
+            origin: {
+              latitude: location.latitude,
+              longitude: location.longitude,
+              // latitude: -37.899,
+              // longitude: 145.123,
+            },
+            destination: {
+              latitude: place.latitude,
+              longitude: place.longitude,
+            },
+          };
+          const result = await calculateTimeAndDistance(dto);
+          if (result?.data) {
+            setDistance(result.data?.distance);
+            setDuration(result.data?.duration);
+          }
+        } catch (error) {
+          // handle error if needed
+        }
+      }
+    };
+    fetchDistanceAndDuration();
+  }, [place]);
 
   const handleImagePress = (index: number) => {
     if (onImagePress && place.images !== undefined) {
@@ -81,14 +134,23 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
           onScroll={handleScroll}
           scrollEventThrottle={16}
           nestedScrollEnabled={true}
-          contentOffset={{ x: currentImageIndex * (screenWidth - 40), y: 0 }}>
+          contentOffset={{ x: currentImageIndex * (screenWidth - 40), y: 0 }}
+        >
           {place.images.map((image, index) => (
-            <View key={index} style={{ width: screenWidth - 40, height: '100%' }}>
+            <View
+              key={index}
+              style={{ width: screenWidth - 40, height: '100%' }}
+            >
               <TouchableOpacity
                 onPress={() => handleImagePress(index)}
                 activeOpacity={0.9}
-                className="w-full h-full">
-                <Image source={{ uri: image }} className="w-full h-full" style={{ resizeMode: 'cover' }} />
+                className="w-full h-full"
+              >
+                <Image
+                  source={{ uri: image }}
+                  className="w-full h-full"
+                  style={{ resizeMode: 'cover' }}
+                />
               </TouchableOpacity>
             </View>
           ))}
@@ -96,7 +158,13 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
 
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.7)']}
-          style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '50%' }}
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '50%',
+          }}
           pointerEvents="none"
         />
 
@@ -108,7 +176,8 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
                 className="absolute top-1/2 left-4 w-10 h-10 rounded-full bg-black/50 justify-center items-center z-10"
                 style={{ marginTop: -20 }}
                 onPress={goToPreviousImage}
-                activeOpacity={0.7}>
+                activeOpacity={0.7}
+              >
                 <ChevronLeft size={24} color="#ffffff" />
               </TouchableOpacity>
             )}
@@ -118,7 +187,8 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
                 className="absolute top-1/2 right-4 w-10 h-10 rounded-full bg-black/50 justify-center items-center z-10"
                 style={{ marginTop: -20 }}
                 onPress={goToNextImage}
-                activeOpacity={0.7}>
+                activeOpacity={0.7}
+              >
                 <ChevronRight size={24} color="#ffffff" />
               </TouchableOpacity>
             )}
@@ -127,22 +197,29 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
 
         {/* Image Indicators */}
         {place.images.length > 1 && (
-          <View className="absolute bottom-4 left-0 right-0 flex-row justify-center gap-2 z-10" pointerEvents="none">
+          <View
+            className="absolute bottom-4 left-0 right-0 flex-row justify-center gap-2 z-10"
+            pointerEvents="none"
+          >
             {place.images.map((_, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={() => scrollToImage(index)}
-                className={`w-2 h-2 rounded-full ${index === currentImageIndex ? 'bg-white' : 'bg-white/50'
-                  }`}
+                className={`w-2 h-2 rounded-full ${
+                  index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                }`}
                 activeOpacity={0.7}
-                pointerEvents="auto"
+                // pointerEvents="auto"
               />
             ))}
           </View>
         )}
 
         {/* Rating Badge */}
-        <View className="absolute top-4 right-4 flex-row items-center bg-white px-3 py-1.5 rounded-full gap-1 z-10" pointerEvents="none">
+        <View
+          className="absolute top-4 right-4 flex-row items-center bg-white px-3 py-1.5 rounded-full gap-1 z-10"
+          pointerEvents="none"
+        >
           <Star size={16} color="#fbbf24" fill="#fbbf24" />
           <SSText variant="semibold" className="text-sm text-gray-800">
             {place.rating}
@@ -158,28 +235,29 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
         className="flex-1 p-5"
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}
-        bounces={false}>
+        bounces={false}
+      >
         <SSText variant="bold" className="text-3xl text-gray-800 mb-2">
           {place.name}
         </SSText>
         <SSText className="text-base text-gray-600 leading-6 mb-5">
-          {place.description}
+            {place.description.replace(/\*/g, '')}
         </SSText>
 
         {/* Location & Time */}
         <View className="flex-row justify-between mb-5">
-          <View className="flex-row items-center gap-1.5">
-            <MapPin size={18} color="#64748b" />
-            <SSText variant="medium" className="text-sm text-slate-500">
-              {place.distance}
-            </SSText>
-          </View>
-          <View className="flex-row items-center gap-1.5">
-            <Clock size={18} color="#64748b" />
-            <SSText variant="medium" className="text-sm text-slate-500">
-              {place.duration}
-            </SSText>
-          </View>
+            <View className="flex-row items-center gap-1.5">
+              <MapPin size={18} color="#64748b" />
+              <SSText variant="medium" className="text-sm text-slate-500">
+                {distance ? formatDistance(distance) : <ActivityIndicator className='ml-4' size={4}/>}
+              </SSText>
+            </View>
+            <View className="flex-row items-center gap-1.5">
+              <Clock size={18} color="#64748b" />
+              <SSText variant="medium" className="text-sm text-slate-500">
+                {duration ? formatDuration(duration) : <ActivityIndicator className='ml-4' size={4}/>}
+              </SSText>
+            </View>
           <View className="flex-row items-center gap-1.5">
             <DollarSign size={18} color="#64748b" />
             <SSText variant="medium" className="text-sm text-slate-500">
@@ -191,7 +269,10 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
         {/* Vibes Pills */}
         <View className="flex-row flex-wrap gap-2 mb-6">
           {place.vibes.map((vibe, index) => (
-            <View key={index} className="bg-emerald-50 border border-emerald-600 px-3 py-1.5 rounded-2xl">
+            <View
+              key={index}
+              className="bg-emerald-50 border border-emerald-600 px-3 py-1.5 rounded-2xl"
+            >
               <SSText variant="medium" className="text-xs text-emerald-600">
                 {vibe}
               </SSText>
@@ -211,16 +292,15 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
         <View className="gap-3 mb-5">
           <Button
             className="flex-row items-center justify-center bg-sky-500 py-3.5 rounded-xl gap-2"
-            onPress={onGoNow}>
+            onPress={onGoNow}
+          >
             <Navigation size={20} color="#ffffff" />
             <SSText variant="semibold" className="text-base text-white">
               Go Now
             </SSText>
           </Button>
 
-          <Button
-          variant='outline'
-            onPress={onFindSimilar}>
+          <Button variant="outline" onPress={onFindSimilar}>
             <Zap size={20} color="#10b981" />
             <SSText variant="semibold" className="text-base text-emerald-600">
               Find Similar
@@ -245,7 +325,7 @@ export function PlaceCard({ place, onImagePress, onGoNow, onFindSimilar }: Place
           visible={false}
           images={place.images}
           startIndex={currentImageIndex}
-          onClose={() => { }}
+          onClose={() => {}}
           onImageChange={handleImageChange}
         />
       )}

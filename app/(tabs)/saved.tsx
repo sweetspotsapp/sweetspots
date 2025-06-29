@@ -16,6 +16,7 @@ import { CreateItineraryModal } from '@/components/CreateItineraryModal';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
 import { Button } from '@/components/ui/button';
+import { Toast } from 'toastify-react-native';
 
 export default function SavedTab() {
   const [savedPlaces, setSavedPlaces] = useState<
@@ -47,6 +48,7 @@ export default function SavedTab() {
     setRefreshing(true);
     try {
       const res = await getSavedPlaces();
+      console.log('Loaded saved places:', res.data);
       const placesWithSelection =
         res.data?.map((place) => ({
           ...place,
@@ -103,6 +105,7 @@ export default function SavedTab() {
   };
 
   const onItineraryCreated = () => {
+    Toast.success('Itinerary created successfully!');
     setShowCreateModal(false);
     setIsSelectionMode(false);
     setSavedPlaces((prev) => prev.map((p) => ({ ...p, selected: false })));

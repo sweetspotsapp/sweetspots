@@ -23,6 +23,8 @@ import SSLinearBackground from '@/components/ui/SSLinearBackground';
 import { IRecommendedPlace } from '@/api/recommendations/dto/recommendation.dto';
 import { getRecommendations } from '@/api/recommendations/endpoints';
 import { recordSwipe } from '@/api/swipes/endpoints';
+import { useLocationStore } from '@/store/useLocationStore';
+import { getCurrentCoordinates } from '@/utils/location';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -38,6 +40,20 @@ interface CardStackItem {
 }
 
 export default function DiscoverTab() {
+  // Fetch user's current location and set it in the store
+  const { setLocation, location } = useLocationStore();
+
+  useEffect(() => {
+    const init = async () => {
+      const coords = await getCurrentCoordinates();
+      if (coords) {
+        setLocation(coords);
+      }
+    };
+
+    init();
+  }, []);
+
   const [places, setPlaces] = useState<IRecommendedPlace[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   // const [forceUpdate, setForceUpdate] = useState(0); // Force re-render trigger
@@ -96,9 +112,8 @@ export default function DiscoverTab() {
         rating: ratingFilter > 0 ? ratingFilter : undefined,
         distance: distanceFilter,
         priceRange: priceFilter,
-        // latitude / longitude: use device location or static fallback
-        latitude: -37.8136, // Example: Melbourne CBD
-        longitude: 144.9631,
+        latitude: location?.latitude || -37.8136, // Example: Melbourne CBD
+        longitude: location?.longitude || 144.9631,
       });
       console.log('Fetched recommendations:', res);
       setPlaces(res.data || []);

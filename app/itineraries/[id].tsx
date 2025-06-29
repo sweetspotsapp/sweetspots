@@ -9,32 +9,36 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, MapPin, Calendar, Users, Share2, CreditCard as Edit3, Navigation, Star, Clock, DollarSign } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Itinerary } from '@/types/Place';
 import { getItineraries } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
 import { Card, CardContent } from '@/components/ui/card';
+import { getItineraryById } from '@/api/itineraries/endpoints';
+import { IItinerary } from '@/api/itineraries/dto/itinerary.dto';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [itinerary, setItinerary] = useState<Itinerary | null>(null);
+  const [itinerary, setItinerary] = useState<IItinerary | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadItinerary();
   }, [id]);
 
-  const loadItinerary = async () => {
-    try {
-      const itineraries = await getItineraries();
-      const found = itineraries.find(item => item.id === id);
-      setItinerary(found || null);
-    } catch (error) {
-      console.error('Error loading itinerary:', error);
-    } finally {
-      setLoading(false);
+const loadItinerary = async () => {
+  try {
+    const response = await getItineraryById(id as string);
+    if (response.success &&  response.data) {
+      setItinerary(response.data);
+    } else {
+      console.error('Failed to fetch itinerary:', response.message);
     }
-  };
+  } catch (error) {
+    console.error('Error loading itinerary:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleShareItinerary = () => {
     Alert.alert(
@@ -130,7 +134,7 @@ export default function ItineraryDetailsScreen() {
     );
   }
 
-  const tripDays = getDurationInDays(itinerary.startDate, itinerary.endDate);
+  const tripDays = getDurationInDays(itinerary.startDate || undefined, itinerary.endDate || undefined );
 
   return (
     <SafeAreaView className="flex-1">
@@ -212,7 +216,7 @@ export default function ItineraryDetailsScreen() {
                   <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
                     <DollarSign size={20} color="#10b981" />
                     <SSText variant="bold" className="text-xl text-gray-800 mt-2 mb-1">
-                      {formatCurrency(itinerary.totalEstimatedCost)}
+                      {formatCurrency(Number(itinerary.totalEstimatedCost))}
                     </SSText>
                     <SSText variant="medium" className="text-xs text-slate-500">
                       Total Cost
@@ -235,7 +239,7 @@ export default function ItineraryDetailsScreen() {
                 <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
                   <MapPin size={20} color="#f59e0b" />
                   <SSText variant="bold" className="text-xl text-gray-800 mt-2 mb-1">
-                    {itinerary.places.length}
+                    {itinerary.placesCount}
                   </SSText>
                   <SSText variant="medium" className="text-xs text-slate-500">
                     Places
@@ -246,7 +250,7 @@ export default function ItineraryDetailsScreen() {
                   <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
                     <Calendar size={20} color="#8b5cf6" />
                     <SSText variant="bold" className="text-xl text-gray-800 mt-2 mb-1">
-                      {formatCurrency(itinerary.totalEstimatedCost / tripDays)}
+                      {formatCurrency(Number(itinerary.totalEstimatedCost) / tripDays)}
                     </SSText>
                     <SSText variant="medium" className="text-xs text-slate-500">
                       Per Day
@@ -286,21 +290,24 @@ export default function ItineraryDetailsScreen() {
               Places to Visit
             </SSText>
 
-            {itinerary.places.map((place, index) => (
+            {itinerary.itineraryPlaces?.map((place, index) => (
               <Card key={place.id}>
                 <CardContent>
                   <View className="flex-row items-start mb-3">
                     <View className="w-8 h-8 rounded-full bg-emerald-600 justify-center items-center mr-3 mt-1">
                       <SSText variant="bold" className="text-sm text-white">
-                        {place.order || index + 1}
+                        {place.orderIndex || index + 1}
                       </SSText>
                     </View>
-
-                    <Image
-                      source={{ uri: place.images[0] }}
-                      className="w-20 h-20 rounded-xl mr-3"
-                      style={{ resizeMode: 'cover' }}
-                    />
+                    {
+                      place.imageUrl && (
+                        <Image
+                          source={{ uri: place.imageUrl }}
+                          className="w-20 h-20 rounded-xl mr-3"
+                          style={{ resizeMode: 'cover' }}
+                        />
+                      )
+                    }
 
                     <View className="flex-1">
                       <SSText variant="semibold" className="text-lg text-gray-800 mb-1">

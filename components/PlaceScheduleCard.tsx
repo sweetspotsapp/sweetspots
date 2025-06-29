@@ -65,8 +65,8 @@ export function PlaceScheduleCard({
             {itineraryPlace.imageUrl ? (
               <Image
                 source={{ uri: itineraryPlace.imageUrl }}
-                className="w-15 h-15 rounded-xl mr-3"
-                style={{ resizeMode: 'cover' }}
+                className="rounded-xl mr-3"
+                style={{ resizeMode: 'cover', width: 60, height: 60 }}
               />
             ) : (
               <View className="w-15 h-15 bg-gray-200 rounded-xl mr-3 justify-center items-center">
