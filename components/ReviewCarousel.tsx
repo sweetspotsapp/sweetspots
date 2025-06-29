@@ -113,7 +113,7 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
       
       {/* Pagination Dots */}
       {reviews.length > 1 && (
-        <View className="flex-row justify-center items-center mt-4 gap-2">
+        <View className="flex-row justify-center items-center mt-4 gap-2 mb-4">
           {reviews.map((_, index) => (
             <TouchableOpacity
               key={index}
