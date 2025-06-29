@@ -13,20 +13,20 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    --primary: 160 60% 52%;
+    --primary: 160 60% 58%;
     /* emerald-400 */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 350 94% 71%;
+    --secondary: 316 69% 68%;
     /* rose-400 */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 160 60% 95%;
+    --muted: 160 60% 96%;
     /* very light emerald tint */
     --muted-foreground: 160 40% 35%;
     /* medium emerald text */
 
-    --accent: 350 100% 92%;
+    --accent: 320 89% 96%;
     /* very light rose */
     --accent-foreground: 350 60% 40%;
     /* rose for readable contrast */
@@ -53,7 +53,7 @@
     /* emerald-600 */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 350 83% 50%;
+    --secondary: 314 59% 51%;
     /* rose-600 */
     --secondary-foreground: 0 0% 100%;
 
@@ -62,7 +62,7 @@
     --muted-foreground: 160 50% 70%;
     /* light greenish text */
 
-    --accent: 350 60% 25%;
+    --accent: 316 65% 34%;
     /* dark rose tone */
     --accent-foreground: 0 0% 98%;
     /* white text */
