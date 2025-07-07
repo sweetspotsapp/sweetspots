@@ -99,8 +99,7 @@ export function CreateItineraryModal({
   };
 
   const calculateTripDistanceAndDuration = async () => {
-    console.log('Calculating trip distance and duration...');
-   const { location } = useLocationStore.getState();
+    const { location } = useLocationStore.getState();
 
     if (location && itineraryPlaces.length > 0) {
       const waypoints = [
@@ -142,7 +141,7 @@ export function CreateItineraryModal({
 
       setTravelSegments(segments);
     }
-  }
+  };
 
   useEffect(() => {
     calculateTripDistanceAndDuration();
@@ -161,18 +160,19 @@ export function CreateItineraryModal({
     let totalTravelDuration = travelSegments.reduce(
       (sum, segment) => sum + (segment.duration || 0),
       0
-    );
+    ) / 3600;
 
-    let totalDays = 0;
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      totalDays =
-        Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) +
-        1;
-    }
+    // let totalDays = 0;
+    // if (startDate && endDate) {
+    //   const start = new Date(startDate);
+    //   const end = new Date(endDate);
+    //   totalDays =
+    //     Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) +
+    //     1;
+    // }
 
     const totalDuration = totalVisitDuration + totalTravelDuration;
+    const totalDays = totalDuration > 0 ? Math.ceil(totalDuration / 24) : 0;
     const averageCostPerDay = totalDays > 0 ? totalCost / totalDays : 0;
     const placesPerDay = totalDays > 0 ? itineraryPlaces.length / totalDays : 0;
 
@@ -184,8 +184,6 @@ export function CreateItineraryModal({
       placesPerDay,
     });
   };
-
-  console.log('itineraryPlaces:', itineraryPlaces.map((p) => p.visitDuration));
 
   const updatePlace = (placeId: string, updates: Partial<ItineraryPlace>) => {
     setItineraryPlaces((prev) =>
@@ -332,7 +330,7 @@ export function CreateItineraryModal({
                 />
               </View>
 
-              <View className="flex-row gap-3">
+              {/* <View className="flex-row gap-3">
                 <View className="flex-1">
                   <SSText
                     variant="semibold"
@@ -359,7 +357,7 @@ export function CreateItineraryModal({
                     onChange={setEndDate}
                   />
                 </View>
-              </View>
+              </View> */}
             </View>
 
             <TripSummaryCard summary={tripSummary} />
