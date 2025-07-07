@@ -47,6 +47,7 @@ export default function DiscoverTab() {
     const init = async () => {
       const coords = await getCurrentCoordinates();
       if (coords) {
+        console.log('Fetched current coordinates:', coords);
         setLocation(coords);
       }
     };

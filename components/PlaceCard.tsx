@@ -255,7 +255,9 @@ export function PlaceCard({
             <View className="flex-row items-center gap-1.5">
               <Clock size={18} color="#64748b" />
               <SSText variant="medium" className="text-sm text-slate-500">
-                {duration ? formatDuration(duration) : <ActivityIndicator className='ml-4' size={4}/>}
+                {duration ? formatDuration({
+                  seconds: duration,
+                }) : <ActivityIndicator className='ml-4' size={4}/>}
               </SSText>
             </View>
           <View className="flex-row items-center gap-1.5">

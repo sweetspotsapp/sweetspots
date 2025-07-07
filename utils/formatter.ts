@@ -1,16 +1,28 @@
-export const formatDuration = (totalSeconds: number): string => {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
+type DurationInput = {
+  seconds?: number; // can be float
+  minutes?: number; // can be float
+  hours?: number;   // can be float
+};
 
-  if (hours > 0 && minutes > 0) {
-    return `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minute${minutes > 1 ? 's' : ''}`;
+export const formatDuration = ({ seconds = 0, minutes = 0, hours = 0 }: DurationInput): string => {
+  const totalSeconds = Math.round(seconds + minutes * 60 + hours * 3600);
+
+  const finalHours = Math.floor(totalSeconds / 3600);
+  const finalMinutes = Math.floor((totalSeconds % 3600) / 60);
+  const finalSeconds = totalSeconds % 60;
+
+  const parts = [];
+  if (finalHours > 0) {
+    parts.push(`${finalHours} hour${finalHours !== 1 ? 's' : ''}`);
+  }
+  if (finalMinutes > 0) {
+    parts.push(`${finalMinutes} minute${finalMinutes !== 1 ? 's' : ''}`);
+  }
+  if (finalSeconds > 0 || parts.length === 0) {
+    parts.push(`${finalSeconds} second${finalSeconds !== 1 ? 's' : ''}`);
   }
 
-  if (hours > 0) {
-    return `${hours} hour${hours > 1 ? 's' : ''}`;
-  }
-
-  return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+  return parts.join(' ');
 };
 
 export const formatDistance = (meters: number): string => {

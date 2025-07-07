@@ -16,12 +16,14 @@ import { SSText } from './ui/SSText';
 import { SSDatePicker, SSTimePicker } from './ui/SSDateTimePicker';
 import { IItineraryPlace } from '@/api/itineraries/dto/itinerary.dto';
 import { Card } from './ui/card';
+import { formatDistance, formatDuration } from '@/utils/formatter';
 
 interface PlaceScheduleCardProps {
   itineraryPlace: IItineraryPlace;
   onUpdate: (updates: Partial<ItineraryPlace>) => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
+  toNextSegment?: { distance: number; duration: number };
 }
 
 export function PlaceScheduleCard({
@@ -29,23 +31,12 @@ export function PlaceScheduleCard({
   onUpdate,
   onMoveUp,
   onMoveDown,
+  toNextSegment,
 }: PlaceScheduleCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return `$${amount.toFixed(0)}`;
-  };
-
-  const formatDuration = (hours: number) => {
-    if (hours < 1) {
-      return `${Math.round(hours * 60)}min`;
-    }
-    const wholeHours = Math.floor(hours);
-    const minutes = Math.round((hours - wholeHours) * 60);
-    if (minutes === 0) {
-      return `${wholeHours}h`;
-    }
-    return `${wholeHours}h ${minutes}min`;
   };
 
   return (
@@ -99,7 +90,7 @@ export function PlaceScheduleCard({
                 <View className="flex-row items-center gap-1">
                   <Clock size={12} color="#64748b" />
                   <SSText variant="medium" className="text-xs text-slate-500">
-                    {formatDuration(itineraryPlace.visitDuration || 2)}
+                    {formatDuration({ hours: itineraryPlace.visitDuration || 2})}
                   </SSText>
                 </View>
                 <View className="flex-row items-center gap-1">
@@ -162,7 +153,7 @@ export function PlaceScheduleCard({
 
           <View className="mb-4">
             <SSText variant="semibold" className="text-sm text-gray-800 mb-2">
-              Duration: {formatDuration(itineraryPlace.visitDuration || 2)}
+              Duration: {formatDuration({ hours: itineraryPlace.visitDuration || 2})}
             </SSText>
             <Slider
               style={{ width: '100%', height: 40, marginTop: 8 }}
@@ -223,6 +214,30 @@ export function PlaceScheduleCard({
           </View>
         </View>
       )}
+
+      {
+        toNextSegment && (
+          <View className="px-4 py-3 border-t border-slate-100 bg-slate-50 rounded-b-md">
+            <SSText variant="semibold" className="text-sm text-gray-800 mb-2">
+              Next Segment
+            </SSText>
+            <View className="flex-row items-center justify-between">
+              <View className="flex-row items-center gap-2">
+                <MapPin size={16} color="#64748b" />
+                <SSText variant="medium" className="text-xs text-slate-500">
+                  {formatDistance(toNextSegment.distance)}
+                </SSText>
+              </View>
+              <View className="flex-row items-center gap-2">
+                <Clock size={16} color="#64748b" />
+                <SSText variant="medium" className="text-xs text-slate-500">
+                  {formatDuration({ seconds: toNextSegment.duration })}
+                </SSText>
+              </View>
+            </View>
+          </View>
+        )
+      }
     </Card>
   );
 }
