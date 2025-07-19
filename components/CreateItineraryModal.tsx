@@ -102,12 +102,36 @@ export function CreateItineraryModal({
     const { location } = useLocationStore.getState();
 
     if (location && itineraryPlaces.length > 0) {
+      const userLocation = {
+        latitude: Number(location.latitude) || 0,
+        longitude: Number(location.longitude) || 0,
+      };
+
+      // Calculate Euclidean distance (rough estimate)
+      const vectorDistance = (
+        a: { latitude: number; longitude: number },
+        b: { latitude: number; longitude: number }
+      ) => {
+        const dx = a.latitude - b.latitude;
+        const dy = a.longitude - b.longitude;
+        return Math.sqrt(dx * dx + dy * dy);
+      };
+
+      const sortedPlaces = [...itineraryPlaces].sort(
+        (a, b) =>
+          vectorDistance(userLocation, {
+            latitude: Number(a.place?.latitude) || 0,
+            longitude: Number(a.place?.longitude) || 0,
+          }) -
+          vectorDistance(userLocation, {
+            latitude: Number(b.place?.latitude) || 0,
+            longitude: Number(b.place?.longitude) || 0,
+          })
+      );
+
       const waypoints = [
-        {
-          latitude: Number(location.latitude) || 0,
-          longitude: Number(location.longitude) || 0,
-        },
-        ...itineraryPlaces.map((p) => ({
+        userLocation,
+        ...sortedPlaces.map((p) => ({
           latitude: Number(p.place?.latitude) || 0,
           longitude: Number(p.place?.longitude) || 0,
         })),
@@ -157,10 +181,11 @@ export function CreateItineraryModal({
       0
     );
 
-    let totalTravelDuration = travelSegments.reduce(
-      (sum, segment) => sum + (segment.duration || 0),
-      0
-    ) / 3600;
+    let totalTravelDuration =
+      travelSegments.reduce(
+        (sum, segment) => sum + (segment.duration || 0),
+        0
+      ) / 3600;
 
     // let totalDays = 0;
     // if (startDate && endDate) {
