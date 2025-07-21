@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Modal, ScrollView, Alert, TouchableOpacity } from 'react-native';
-import { X, Plus, Mail, Phone } from 'lucide-react-native';
+import { View, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import { X, Plus, Mail, User } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ItineraryPlace, TripSummary } from '@/types/Place';
 import { PlaceScheduleCard } from './PlaceScheduleCard';
@@ -516,7 +516,7 @@ export function ItineraryForm({
             </SSText>
             <View className="flex-row gap-2 mb-4">
               <Input
-                placeholder="Enter email or phone"
+                placeholder="Enter email or username"
                 className="flex-1"
                 value={newCollaborator}
                 onChangeText={setNewCollaborator}
@@ -540,7 +540,7 @@ export function ItineraryForm({
                     {collaborator.includes('@') ? (
                       <Mail size={14} color="#10b981" />
                     ) : (
-                      <Phone size={14} color="#10b981" />
+                      <User size={14} color="#10b981" />
                     )}
                     <SSText
                       variant="medium"
