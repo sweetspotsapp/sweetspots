@@ -49,6 +49,6 @@ export const formatDistance = (meters: number): string => {
   return `${Math.round(meters)} m`;
 };
 
-export const formatCurrency = (amount: number): string => {
-  return `$${amount.toFixed(0)}`;
+export const formatCurrency = (amount: number | string = 0, currency: string = '$'): string => {
+  return `${currency}${Number(amount || 0).toFixed(0)}`;
 }
