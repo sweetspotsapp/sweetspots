@@ -44,12 +44,6 @@ export function ItineraryForm({
   const [description, setDescription] = useState('');
   const [descriptionInput, setDescriptionInput] = useState('');
 
-  
-  // const [startDate, setStartDate] = useState('');
-  // const [endDate, setEndDate] = useState('');
-  const [startDateInput, setStartDateInput] = useState('');
-  const [endDateInput, setEndDateInput] = useState('');
-  
   const [collaborators, setCollaborators] = useState<string[]>([]);
   const [newCollaborator, setNewCollaborator] = useState('');
   const [isPublic, setIsPublic] = useState(false);
@@ -64,6 +58,36 @@ export function ItineraryForm({
   const [travelSegments, setTravelSegments] = useState<
     { fromIndex: number; toIndex: number; distance: number; duration: number }[]
   >([]);
+
+  const { user } = useAuth();
+
+  const { startEditing, stopEditing, suggestChange, logChange } =
+    useItinerarySocket({
+      itineraryId: itineraryId || '',
+      userId: user?.uid || '',
+      onEvents: {
+        fieldLocked: ({ field, userId }) => {
+          setLockedFields((prev) => ({ ...prev, [field]: userId }));
+        },
+        fieldUnlocked: ({ field }) => {
+          setLockedFields((prev) => {
+            const newFields = { ...prev };
+            delete newFields[field];
+            return newFields;
+          });
+        },
+        suggestedChange: (data) => {
+          const { field, value, userId } = data;
+          if (user?.uid !== userId) {
+            if (field === 'name') {
+              setName(value);
+            } else if (field === 'description') {
+              setDescription(value);
+            }
+          }
+        },
+      },
+    });
 
   useEffect(() => {
     if (itineraryId) {
@@ -291,7 +315,11 @@ export function ItineraryForm({
     );
     const startDate = itineraryPlacesSorted[0]?.visitDate || undefined;
     const lastPlace = itineraryPlacesSorted[itineraryPlacesSorted.length - 1];
-    const endDate = (lastPlace ? moment(lastPlace?.visitDate).add(lastPlace.visitDuration, 'hours').toISOString() : undefined);
+    const endDate = lastPlace
+      ? moment(lastPlace?.visitDate)
+          .add(lastPlace.visitDuration, 'hours')
+          .toISOString()
+      : undefined;
 
     try {
       const payload = {
@@ -348,41 +376,12 @@ export function ItineraryForm({
     setCollaborators(collaborators.filter((c) => c !== email));
   };
 
-  const { user } = useAuth();
-
-  const [lockedFields, setLockedFields] = useState<{[key: string]: string}>({});
+  const [lockedFields, setLockedFields] = useState<{ [key: string]: string }>(
+    {}
+  );
   const userLockedFields = Object.keys(lockedFields).filter(
     (field) => lockedFields[field] !== user?.uid
   );
-
-  const { startEditing, stopEditing, suggestChange, logChange } =
-    useItinerarySocket({
-      itineraryId: itineraryId || '',
-      userId: user?.uid || '',
-      onEvents: {
-        fieldLocked: ({ field, userId }) => {
-          console.log(`Field ${field} locked by user ${userId}`);
-          setLockedFields((prev) => ({ ...prev, [field]: userId }));
-        },
-        fieldUnlocked: ({ field }) => {
-          setLockedFields((prev) => {
-            const newFields = { ...prev };
-            delete newFields[field];
-            return newFields;
-          });
-        },
-        suggestedChange: (data) => {
-          const { field, value, userId } = data;
-          if (user?.uid !== userId) {
-            if (field === 'name') {
-              setName(value);
-            } else if (field === 'description') {
-              setDescription(value);
-            }
-          }
-        },
-      },
-    });
 
   const handleFieldFocus = (field: string) => {
     if (itineraryId && user?.uid) {
@@ -398,8 +397,6 @@ export function ItineraryForm({
         suggestChange(field, newValue);
         if (field === 'name') setNameInput(newValue);
         if (field === 'description') setDescriptionInput(newValue);
-        if (field === 'startDate') setStartDateInput(newValue);
-        if (field === 'endDate') setEndDateInput(newValue);
       }
     }
   };
@@ -461,7 +458,9 @@ export function ItineraryForm({
                 value={description}
                 onChangeText={setDescription}
                 onFocus={() => handleFieldFocus('description')}
-                onBlur={() => handleFieldBlur('description', descriptionInput, description)}
+                onBlur={() =>
+                  handleFieldBlur('description', descriptionInput, description)
+                }
                 multiline
                 numberOfLines={3}
                 editable={!userLockedFields.includes('description')}

@@ -3,7 +3,6 @@ import { View, TouchableOpacity, TextInput, Image } from 'react-native';
 import {
   Clock,
   DollarSign,
-  Calendar,
   ChevronUp,
   ChevronDown,
   MapPin,
@@ -16,7 +15,11 @@ import { SSText } from './ui/SSText';
 import { SSDatePicker, SSTimePicker } from './ui/SSDateTimePicker';
 import { IItineraryPlace } from '@/api/itineraries/dto/itinerary.dto';
 import { Card } from './ui/card';
-import { formatCurrency, formatDistance, formatDuration } from '@/utils/formatter';
+import {
+  formatCurrency,
+  formatDistance,
+  formatDuration,
+} from '@/utils/formatter';
 
 interface PlaceScheduleCardProps {
   itineraryPlace: IItineraryPlace;
@@ -37,29 +40,27 @@ export function PlaceScheduleCard({
 
   return (
     <>
-    {
-          toNextSegment && (
-            <View className="px-4 py-3 mb-3 bg-slate-50 rounded">
-              {/* <SSText variant="semibold" className="text-sm text-gray-800 mb-2">
+      {toNextSegment && (
+        <View className="px-4 py-3 mb-3 bg-slate-50 rounded">
+          {/* <SSText variant="semibold" className="text-sm text-gray-800 mb-2">
                 Next Segment
               </SSText> */}
-              <View className="flex-row items-center justify-between">
-                <View className="flex-row items-center gap-2">
-                  <MapPin size={16} color="#64748b" />
-                  <SSText variant="medium" className="text-xs text-slate-500">
-                    {formatDistance(toNextSegment.distance)}
-                  </SSText>
-                </View>
-                <View className="flex-row items-center gap-2">
-                  <Clock size={16} color="#64748b" />
-                  <SSText variant="medium" className="text-xs text-slate-500">
-                    {formatDuration({ seconds: toNextSegment.duration })}
-                  </SSText>
-                </View>
-              </View>
+          <View className="flex-row items-center justify-between">
+            <View className="flex-row items-center gap-2">
+              <MapPin size={16} color="#64748b" />
+              <SSText variant="medium" className="text-xs text-slate-500">
+                {formatDistance(toNextSegment.distance)}
+              </SSText>
             </View>
-          )
-        }
+            <View className="flex-row items-center gap-2">
+              <Clock size={16} color="#64748b" />
+              <SSText variant="medium" className="text-xs text-slate-500">
+                {formatDuration({ seconds: toNextSegment.duration })}
+              </SSText>
+            </View>
+          </View>
+        </View>
+      )}
       <Card className="rounded-2xl mb-4">
         <TouchableOpacity
           className="flex-row items-center p-4"
@@ -109,7 +110,9 @@ export function PlaceScheduleCard({
                   <View className="flex-row items-center gap-1">
                     <Clock size={12} color="#64748b" />
                     <SSText variant="medium" className="text-xs text-slate-500">
-                      {formatDuration({ hours: itineraryPlace.visitDuration || 2})}
+                      {formatDuration({
+                        hours: itineraryPlace.visitDuration || 2,
+                      })}
                     </SSText>
                   </View>
                   <View className="flex-row items-center gap-1">
@@ -149,7 +152,10 @@ export function PlaceScheduleCard({
           <View className="px-4 py-4 border-t border-slate-100">
             <View className="flex-row gap-3 mb-4">
               <View className="flex-1">
-                <SSText variant="semibold" className="text-sm text-gray-800 mb-2">
+                <SSText
+                  variant="semibold"
+                  className="text-sm text-gray-800 mb-2"
+                >
                   Visit Date
                 </SSText>
                 <SSDatePicker
@@ -159,7 +165,10 @@ export function PlaceScheduleCard({
                 />
               </View>
               <View className="flex-1">
-                <SSText variant="semibold" className="text-sm text-gray-800 mb-2">
+                <SSText
+                  variant="semibold"
+                  className="text-sm text-gray-800 mb-2"
+                >
                   Visit Time
                 </SSText>
                 <SSTimePicker
@@ -172,13 +181,14 @@ export function PlaceScheduleCard({
 
             <View className="mb-4">
               <SSText variant="semibold" className="text-sm text-gray-800 mb-2">
-                Duration: {formatDuration({ hours: itineraryPlace.visitDuration || 2})}
+                Duration:{' '}
+                {formatDuration({ hours: itineraryPlace.visitDuration || 2 })}
               </SSText>
               <Slider
                 style={{ width: '100%', height: 40, marginTop: 8 }}
                 minimumValue={0.5}
                 maximumValue={8}
-                value={itineraryPlace.visitDuration || 2}
+                value={itineraryPlace.visitDuration ? Number(itineraryPlace.visitDuration) : 2}
                 onValueChange={(value) => onUpdate({ visitDuration: value })}
                 step={0.5}
                 minimumTrackTintColor="#10b981"
@@ -194,13 +204,13 @@ export function PlaceScheduleCard({
             <View className="mb-4">
               <SSText variant="semibold" className="text-sm text-gray-800 mb-2">
                 Estimated Cost:{' '}
-                {formatCurrency(itineraryPlace.estimatedCost || 0)}
+                {formatCurrency(itineraryPlace.estimatedCost ? Number(itineraryPlace.estimatedCost) : 0)}
               </SSText>
               <Slider
                 style={{ width: '100%', height: 40, marginTop: 8 }}
                 minimumValue={0}
                 maximumValue={500}
-                value={itineraryPlace.estimatedCost || 0}
+                value={itineraryPlace.estimatedCost ? Number(itineraryPlace.estimatedCost) : 0}
                 onValueChange={(value) => onUpdate({ estimatedCost: value })}
                 step={5}
                 minimumTrackTintColor="#10b981"
@@ -233,7 +243,6 @@ export function PlaceScheduleCard({
             </View>
           </View>
         )}
-
       </Card>
     </>
   );

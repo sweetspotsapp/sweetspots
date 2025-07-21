@@ -1,26 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  ArrowLeft,
-  MapPin,
-  Calendar,
-  Users,
-  Share2,
-  CreditCard as Edit3,
-  Navigation,
-  Star,
-  Clock,
-  DollarSign,
-} from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { getItineraries } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
-import { Card, CardContent } from '@/components/ui/card';
 import { getItineraryById } from '@/api/itineraries/endpoints';
 import { IItinerary } from '@/api/itineraries/dto/itinerary.dto';
-import { formatCurrency, formatDuration } from '@/utils/formatter';
 import { ItineraryForm } from '@/components/ItineraryForm';
 
 export default function EditItineraryScreen() {
@@ -45,46 +30,6 @@ export default function EditItineraryScreen() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleShareItinerary = () => {
-    Alert.alert(
-      'Share Itinerary',
-      'Share this itinerary with friends and family',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Share Link', onPress: () => console.log('Share link') },
-        { text: 'Invite People', onPress: () => console.log('Invite people') },
-      ]
-    );
-  };
-
-  const handleEditItinerary = () => {
-    Alert.alert('Edit Itinerary', 'Editing functionality coming soon!', [
-      { text: 'OK' },
-    ]);
-  };
-
-  const handleNavigateToPlace = (place: any) => {
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${place.latitude},${place.longitude}`;
-    console.log('Navigate to:', place.name);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
-  const getDurationInDays = (startDate?: string, endDate?: string) => {
-    if (!startDate || !endDate) return 0;
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    return (
-      Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
-    );
   };
 
   if (loading) {
@@ -126,11 +71,6 @@ export default function EditItineraryScreen() {
       </SafeAreaView>
     );
   }
-
-  const tripDays = getDurationInDays(
-    itinerary.startDate || undefined,
-    itinerary.endDate || undefined
-  );
 
   return (
     <SafeAreaView className="flex-1">
