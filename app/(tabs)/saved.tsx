@@ -48,7 +48,6 @@ export default function SavedTab() {
     setRefreshing(true);
     try {
       const res = await getSavedPlaces();
-      console.log('Loaded saved places:', res.data);
       const placesWithSelection =
         res.data?.map((place) => ({
           ...place,

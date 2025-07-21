@@ -41,15 +41,12 @@ export function useItinerarySocket({ itineraryId, userId, onEvents }: SocketOpti
   }, [itineraryId, userId]);
 
   const emit = (event: string, payload: any) => {
-    console.log(`Emitting event: ${event}`, payload);
-    console.log('Socket ID:', socketRef.current);
     socketRef.current?.emit(event, payload);
   };
 
   return {
     emit,
     startEditing: (field: string) => {
-      console.log(`Starting edit for field INSIDE: ${field} by user ${userId} for itinerary ${itineraryId}`);
       emit('startEditing', { itineraryId, userId, field });
     },
     stopEditing: (field: string) =>

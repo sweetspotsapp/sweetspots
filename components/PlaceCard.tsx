@@ -54,7 +54,6 @@ export function PlaceCard({
 
   useEffect(() => {
     const fetchDistanceAndDuration = async () => {
-      // console.log('Fetching distance and duration for place:', place, location);
       if (place && location) {
         try {
           const dto: CalculateDistanceDto = {

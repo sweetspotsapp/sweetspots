@@ -73,7 +73,6 @@ export function ItineraryForm({
           const response = await getItineraryById(itineraryId);
           const data = response.data;
           if (data) {
-            console.log('Loaded itinerary data:', data);
             setName(data.name);
             if (data.description) setDescription(data.description);
             // if (data.startDate) setStartDate(data.startDate);
@@ -352,6 +351,9 @@ export function ItineraryForm({
   const { user } = useAuth();
 
   const [lockedFields, setLockedFields] = useState<{[key: string]: string}>({});
+  const userLockedFields = Object.keys(lockedFields).filter(
+    (field) => lockedFields[field] !== user?.uid
+  );
 
   const { startEditing, stopEditing, suggestChange, logChange } =
     useItinerarySocket({
@@ -359,6 +361,7 @@ export function ItineraryForm({
       userId: user?.uid || '',
       onEvents: {
         fieldLocked: ({ field, userId }) => {
+          console.log(`Field ${field} locked by user ${userId}`);
           setLockedFields((prev) => ({ ...prev, [field]: userId }));
         },
         fieldUnlocked: ({ field }) => {
@@ -368,7 +371,16 @@ export function ItineraryForm({
             return newFields;
           });
         },
-        suggestedChange: (data) => console.log('Suggestion received', data),
+        suggestedChange: (data) => {
+          const { field, value, userId } = data;
+          if (user?.uid !== userId) {
+            if (field === 'name') {
+              setName(value);
+            } else if (field === 'description') {
+              setDescription(value);
+            }
+          }
+        },
       },
     });
 
@@ -432,6 +444,7 @@ export function ItineraryForm({
                 onChangeText={setName}
                 onFocus={() => handleFieldFocus('name')}
                 onBlur={() => handleFieldBlur('name', nameInput, name)}
+                editable={!userLockedFields.includes('name')}
               />
             </View>
 
@@ -447,8 +460,11 @@ export function ItineraryForm({
                 placeholder="Tell us about your trip..."
                 value={description}
                 onChangeText={setDescription}
+                onFocus={() => handleFieldFocus('description')}
+                onBlur={() => handleFieldBlur('description', descriptionInput, description)}
                 multiline
                 numberOfLines={3}
+                editable={!userLockedFields.includes('description')}
               />
             </View>
 
