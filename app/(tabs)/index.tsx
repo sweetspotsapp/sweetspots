@@ -116,7 +116,6 @@ export default function DiscoverTab() {
         latitude: location?.latitude || -37.8136, // Example: Melbourne CBD
         longitude: location?.longitude || 144.9631,
       });
-      console.log('Fetched recommendations:', res);
       setPlaces(res.data || []);
       resetCardStack();
     } catch (err) {
