@@ -49,15 +49,10 @@ export function PlaceScheduleCard({
   const userLockedFields = Object.keys(lockedFields).filter(
     (field) => lockedFields[field] !== user?.uid
   );
-  console.log('User Locked Fields:', userLockedFields);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const [visitDate, setVisitDate] = useState(
-    itineraryPlace.visitDate || ''
-  );
-  const [visitTime, setVisitTime] = useState(
-    itineraryPlace.visitTime || ''
-  );
+  const [visitDate, setVisitDate] = useState(itineraryPlace.visitDate || '');
+  const [visitTime, setVisitTime] = useState(itineraryPlace.visitTime || '');
   const [visitDuration, setVisitDuration] = useState(
     itineraryPlace.visitDuration || 2
   );
@@ -75,13 +70,11 @@ export function PlaceScheduleCard({
     setNotes(itineraryPlace.notes || '');
   }, [itineraryPlace]);
 
-
   const handleFieldFocus = (field: string) => {
     onFieldFocus(`${field}.${itineraryPlace.orderIndex}`);
-  }
+  };
 
   const handleFieldBlur = (field: string, prevValue: any, newValue: any) => {
-    console.log(`Field ${field} blurred with value:`, newValue);
     onUpdate({ [field]: newValue });
     onFieldBlur(`${field}.${itineraryPlace.orderIndex}`, prevValue, newValue);
   };
@@ -211,10 +204,20 @@ export function PlaceScheduleCard({
                   value={visitDate}
                   onTextChange={setVisitDate}
                   onFocus={() => {
-                    console.log('Opening date picker for visit date');
-                    handleFieldFocus('visitDate')}}
-                  onBlur={() => handleFieldBlur('visitDate', itineraryPlace.visitDate, visitDate)}
-                  editable={!userLockedFields.includes(`visitDate.${itineraryPlace.orderIndex}`)}
+                    handleFieldFocus('visitDate');
+                  }}
+                  onBlur={() =>
+                    handleFieldBlur(
+                      'visitDate',
+                      itineraryPlace.visitDate,
+                      visitDate
+                    )
+                  }
+                  editable={
+                    !userLockedFields.includes(
+                      `visitDate.${itineraryPlace.orderIndex}`
+                    )
+                  }
                 />
               </View>
               <View className="flex-1">
@@ -229,8 +232,18 @@ export function PlaceScheduleCard({
                   value={visitTime}
                   onTextChange={setVisitTime}
                   onFocus={() => handleFieldFocus('visitTime')}
-                  onBlur={() => handleFieldBlur('visitTime', itineraryPlace.visitTime, visitTime)}
-                  editable={!userLockedFields.includes(`visitTime.${itineraryPlace.orderIndex}`)}
+                  onBlur={() =>
+                    handleFieldBlur(
+                      'visitTime',
+                      itineraryPlace.visitTime,
+                      visitTime
+                    )
+                  }
+                  editable={
+                    !userLockedFields.includes(
+                      `visitTime.${itineraryPlace.orderIndex}`
+                    )
+                  }
                 />
               </View>
             </View>
@@ -249,10 +262,16 @@ export function PlaceScheduleCard({
                     ? Number(itineraryPlace.visitDuration)
                     : 2
                 }
-                disabled={userLockedFields.includes(`visitDuration.${itineraryPlace.orderIndex}`)}
+                disabled={userLockedFields.includes(
+                  `visitDuration.${itineraryPlace.orderIndex}`
+                )}
                 onSlidingStart={() => handleFieldFocus('visitDuration')}
                 onSlidingComplete={(value) =>
-                  handleFieldBlur('visitDuration', itineraryPlace.visitDuration, value)
+                  handleFieldBlur(
+                    'visitDuration',
+                    itineraryPlace.visitDuration,
+                    value
+                  )
                 }
                 onValueChange={(value) => onUpdate({ visitDuration: value })}
                 step={0.5}
@@ -284,10 +303,16 @@ export function PlaceScheduleCard({
                     ? Number(itineraryPlace.estimatedCost)
                     : 0
                 }
-                disabled={userLockedFields.includes(`estimatedCost.${itineraryPlace.orderIndex}`)}
+                disabled={userLockedFields.includes(
+                  `estimatedCost.${itineraryPlace.orderIndex}`
+                )}
                 onSlidingStart={() => handleFieldFocus('estimatedCost')}
                 onSlidingComplete={(value) =>
-                  handleFieldBlur('estimatedCost', itineraryPlace.estimatedCost, value)
+                  handleFieldBlur(
+                    'estimatedCost',
+                    itineraryPlace.estimatedCost,
+                    value
+                  )
                 }
                 onValueChange={(value) => onUpdate({ estimatedCost: value })}
                 step={5}
@@ -306,14 +331,22 @@ export function PlaceScheduleCard({
                 Notes (Optional)
               </SSText>
               <Input
-                className={cn("bg-slate-100 border border-slate-200 rounded-xl px-3 py-3 h-20 text-sm text-gray-800 h-30", )}
+                className={cn(
+                  'bg-slate-100 border border-slate-200 rounded-xl px-3 py-3 h-20 text-sm text-gray-800 h-30'
+                )}
                 placeholder="Add any special notes or reminders..."
                 value={notes}
                 // onChangeText={(text) => onUpdate({ notes: text })}
                 onChangeText={setNotes}
                 onFocus={() => handleFieldFocus('notes')}
-                onBlur={() => handleFieldBlur('notes', itineraryPlace.notes, notes)}
-                editable={!userLockedFields.includes(`notes.${itineraryPlace.orderIndex}`)}
+                onBlur={() =>
+                  handleFieldBlur('notes', itineraryPlace.notes, notes)
+                }
+                editable={
+                  !userLockedFields.includes(
+                    `notes.${itineraryPlace.orderIndex}`
+                  )
+                }
                 // editable={false}
                 multiline
                 numberOfLines={3}

@@ -107,7 +107,6 @@ export function SSDatePicker({
                 value={tempDate}
                 onChange={(event, selectedDate) => {
                   if (selectedDate) {
-                    console.log('Selected Date:', selectedDate);
                     onTextChange(selectedDate.toISOString().split('T')[0]);
                     setTempDate(selectedDate);
                   }

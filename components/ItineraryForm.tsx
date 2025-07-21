@@ -61,15 +61,12 @@ export function ItineraryForm({
 
   const { user } = useAuth();
 
-  console.log('ITIN', itineraryPlaces)
-
   const { startEditing, stopEditing, suggestChange, logChange } =
     useItinerarySocket({
       itineraryId: itineraryId || '',
       userId: user?.uid || '',
       onEvents: {
         fieldLocked: ({ field, userId }) => {
-          console.log('Field locked:', field, 'by user:', userId);
           setLockedFields((prev) => ({ ...prev, [field]: userId }));
         },
         fieldUnlocked: ({ field }) => {
@@ -396,7 +393,6 @@ export function ItineraryForm({
 
   const handleFieldFocus = (field: string) => {
     if (itineraryId && user?.uid) {
-      console.log('Field focused:', field);
       startEditing(field);
     }
   };
