@@ -61,12 +61,15 @@ export function ItineraryForm({
 
   const { user } = useAuth();
 
+  console.log('ITIN', itineraryPlaces)
+
   const { startEditing, stopEditing, suggestChange, logChange } =
     useItinerarySocket({
       itineraryId: itineraryId || '',
       userId: user?.uid || '',
       onEvents: {
         fieldLocked: ({ field, userId }) => {
+          console.log('Field locked:', field, 'by user:', userId);
           setLockedFields((prev) => ({ ...prev, [field]: userId }));
         },
         fieldUnlocked: ({ field }) => {
@@ -83,6 +86,14 @@ export function ItineraryForm({
               setName(value);
             } else if (field === 'description') {
               setDescription(value);
+            } else {
+              const [fieldName, index] = field.split('.');
+              const placeIndex = parseInt(index, 10) - 1;
+              setItineraryPlaces((prev) =>
+                prev.map((place, i) =>
+                  i === placeIndex ? { ...place, [fieldName]: value } : place
+                )
+              );
             }
           }
         },
@@ -385,6 +396,7 @@ export function ItineraryForm({
 
   const handleFieldFocus = (field: string) => {
     if (itineraryId && user?.uid) {
+      console.log('Field focused:', field);
       startEditing(field);
     }
   };
@@ -521,6 +533,9 @@ export function ItineraryForm({
                     : undefined
                 }
                 toNextSegment={travelSegments[index]}
+                onFieldFocus={handleFieldFocus}
+                onFieldBlur={handleFieldBlur}
+                lockedFields={lockedFields}
               />
             ))}
           </View>

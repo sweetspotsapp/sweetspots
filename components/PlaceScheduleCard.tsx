@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, TextInput, Image } from 'react-native';
 import {
   Clock,
@@ -20,6 +20,9 @@ import {
   formatDistance,
   formatDuration,
 } from '@/utils/formatter';
+import { useAuth } from '@/hooks/useAuth';
+import { cn } from '@/lib/utils';
+import { Input } from './ui/input';
 
 interface PlaceScheduleCardProps {
   itineraryPlace: IItineraryPlace;
@@ -27,6 +30,9 @@ interface PlaceScheduleCardProps {
   onMoveUp?: () => void;
   onMoveDown?: () => void;
   toNextSegment?: { distance: number; duration: number };
+  lockedFields?: Record<string, string>;
+  onFieldFocus?: (field: string) => void;
+  onFieldBlur?: (field: string, prevValue: any, newValue: any) => void;
 }
 
 export function PlaceScheduleCard({
@@ -35,8 +41,50 @@ export function PlaceScheduleCard({
   onMoveUp,
   onMoveDown,
   toNextSegment,
+  lockedFields = {},
+  onFieldFocus = () => {},
+  onFieldBlur = () => {},
 }: PlaceScheduleCardProps) {
+  const { user } = useAuth();
+  const userLockedFields = Object.keys(lockedFields).filter(
+    (field) => lockedFields[field] !== user?.uid
+  );
+  console.log('User Locked Fields:', userLockedFields);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const [visitDate, setVisitDate] = useState(
+    itineraryPlace.visitDate || ''
+  );
+  const [visitTime, setVisitTime] = useState(
+    itineraryPlace.visitTime || ''
+  );
+  const [visitDuration, setVisitDuration] = useState(
+    itineraryPlace.visitDuration || 2
+  );
+  const [estimatedCost, setEstimatedCost] = useState(
+    itineraryPlace.estimatedCost || 0
+  );
+
+  const [notes, setNotes] = useState(itineraryPlace.notes || '');
+
+  useEffect(() => {
+    setVisitDate(itineraryPlace.visitDate || '');
+    setVisitTime(itineraryPlace.visitTime || '');
+    setVisitDuration(itineraryPlace.visitDuration || 2);
+    setEstimatedCost(itineraryPlace.estimatedCost || 0);
+    setNotes(itineraryPlace.notes || '');
+  }, [itineraryPlace]);
+
+
+  const handleFieldFocus = (field: string) => {
+    onFieldFocus(`${field}.${itineraryPlace.orderIndex}`);
+  }
+
+  const handleFieldBlur = (field: string, prevValue: any, newValue: any) => {
+    console.log(`Field ${field} blurred with value:`, newValue);
+    onUpdate({ [field]: newValue });
+    onFieldBlur(`${field}.${itineraryPlace.orderIndex}`, prevValue, newValue);
+  };
 
   return (
     <>
@@ -160,8 +208,13 @@ export function PlaceScheduleCard({
                 </SSText>
                 <SSDatePicker
                   id={`place-${itineraryPlace.id}-date`}
-                  value={itineraryPlace.visitDate || ''}
-                  onChange={(val) => onUpdate({ visitDate: val })}
+                  value={visitDate}
+                  onTextChange={setVisitDate}
+                  onFocus={() => {
+                    console.log('Opening date picker for visit date');
+                    handleFieldFocus('visitDate')}}
+                  onBlur={() => handleFieldBlur('visitDate', itineraryPlace.visitDate, visitDate)}
+                  editable={!userLockedFields.includes(`visitDate.${itineraryPlace.orderIndex}`)}
                 />
               </View>
               <View className="flex-1">
@@ -173,8 +226,11 @@ export function PlaceScheduleCard({
                 </SSText>
                 <SSTimePicker
                   id={`place-${itineraryPlace.id}-time`}
-                  value={itineraryPlace.visitTime || ''}
-                  onChange={(val) => onUpdate({ visitTime: val })}
+                  value={visitTime}
+                  onTextChange={setVisitTime}
+                  onFocus={() => handleFieldFocus('visitTime')}
+                  onBlur={() => handleFieldBlur('visitTime', itineraryPlace.visitTime, visitTime)}
+                  editable={!userLockedFields.includes(`visitTime.${itineraryPlace.orderIndex}`)}
                 />
               </View>
             </View>
@@ -188,7 +244,16 @@ export function PlaceScheduleCard({
                 style={{ width: '100%', height: 40, marginTop: 8 }}
                 minimumValue={0.5}
                 maximumValue={8}
-                value={itineraryPlace.visitDuration ? Number(itineraryPlace.visitDuration) : 2}
+                value={
+                  itineraryPlace.visitDuration
+                    ? Number(itineraryPlace.visitDuration)
+                    : 2
+                }
+                disabled={userLockedFields.includes(`visitDuration.${itineraryPlace.orderIndex}`)}
+                onSlidingStart={() => handleFieldFocus('visitDuration')}
+                onSlidingComplete={(value) =>
+                  handleFieldBlur('visitDuration', itineraryPlace.visitDuration, value)
+                }
                 onValueChange={(value) => onUpdate({ visitDuration: value })}
                 step={0.5}
                 minimumTrackTintColor="#10b981"
@@ -204,13 +269,26 @@ export function PlaceScheduleCard({
             <View className="mb-4">
               <SSText variant="semibold" className="text-sm text-gray-800 mb-2">
                 Estimated Cost:{' '}
-                {formatCurrency(itineraryPlace.estimatedCost ? Number(itineraryPlace.estimatedCost) : 0)}
+                {formatCurrency(
+                  itineraryPlace.estimatedCost
+                    ? Number(itineraryPlace.estimatedCost)
+                    : 0
+                )}
               </SSText>
               <Slider
                 style={{ width: '100%', height: 40, marginTop: 8 }}
                 minimumValue={0}
                 maximumValue={500}
-                value={itineraryPlace.estimatedCost ? Number(itineraryPlace.estimatedCost) : 0}
+                value={
+                  itineraryPlace.estimatedCost
+                    ? Number(itineraryPlace.estimatedCost)
+                    : 0
+                }
+                disabled={userLockedFields.includes(`estimatedCost.${itineraryPlace.orderIndex}`)}
+                onSlidingStart={() => handleFieldFocus('estimatedCost')}
+                onSlidingComplete={(value) =>
+                  handleFieldBlur('estimatedCost', itineraryPlace.estimatedCost, value)
+                }
                 onValueChange={(value) => onUpdate({ estimatedCost: value })}
                 step={5}
                 minimumTrackTintColor="#10b981"
@@ -227,11 +305,16 @@ export function PlaceScheduleCard({
               <SSText variant="semibold" className="text-sm text-gray-800 mb-2">
                 Notes (Optional)
               </SSText>
-              <TextInput
-                className="bg-slate-100 border border-slate-200 rounded-xl px-3 py-3 h-20 text-sm text-gray-800"
+              <Input
+                className={cn("bg-slate-100 border border-slate-200 rounded-xl px-3 py-3 h-20 text-sm text-gray-800 h-30", )}
                 placeholder="Add any special notes or reminders..."
-                value={itineraryPlace.notes || ''}
-                onChangeText={(text) => onUpdate({ notes: text })}
+                value={notes}
+                // onChangeText={(text) => onUpdate({ notes: text })}
+                onChangeText={setNotes}
+                onFocus={() => handleFieldFocus('notes')}
+                onBlur={() => handleFieldBlur('notes', itineraryPlace.notes, notes)}
+                editable={!userLockedFields.includes(`notes.${itineraryPlace.orderIndex}`)}
+                // editable={false}
                 multiline
                 numberOfLines={3}
                 placeholderTextColor="#94a3b8"
