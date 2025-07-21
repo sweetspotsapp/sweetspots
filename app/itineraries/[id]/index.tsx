@@ -15,6 +15,7 @@ import SSLinearGradient from '@/components/ui/SSLinearGradient';
 import { Card, CardContent } from '@/components/ui/card';
 import { getItineraryById } from '@/api/itineraries/endpoints';
 import { IItinerary } from '@/api/itineraries/dto/itinerary.dto';
+import { formatCurrency, formatDuration } from '@/utils/formatter';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -53,11 +54,7 @@ const loadItinerary = async () => {
   };
 
   const handleEditItinerary = () => {
-    Alert.alert(
-      'Edit Itinerary',
-      'Editing functionality coming soon!',
-      [{ text: 'OK' }]
-    );
+    router.push(`/itineraries/${id}/edit`);
   };
 
   const handleNavigateToPlace = (place: any) => {
@@ -71,22 +68,6 @@ const loadItinerary = async () => {
       month: 'long',
       day: 'numeric',
     });
-  };
-
-  const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(0)}`;
-  };
-
-  const formatDuration = (hours: number) => {
-    if (hours < 1) {
-      return `${Math.round(hours * 60)}min`;
-    }
-    const wholeHours = Math.floor(hours);
-    const minutes = Math.round((hours - wholeHours) * 60);
-    if (minutes === 0) {
-      return `${wholeHours}h`;
-    }
-    return `${wholeHours}h ${minutes}min`;
   };
 
   const getDurationInDays = (startDate?: string, endDate?: string) => {
@@ -216,7 +197,7 @@ const loadItinerary = async () => {
                   <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
                     <DollarSign size={20} color="#10b981" />
                     <SSText variant="bold" className="text-xl text-gray-800 mt-2 mb-1">
-                      {formatCurrency(Number(itinerary.totalEstimatedCost))}
+                      {formatCurrency(itinerary.totalEstimatedCost)}
                     </SSText>
                     <SSText variant="medium" className="text-xs text-slate-500">
                       Total Cost
@@ -228,7 +209,7 @@ const loadItinerary = async () => {
                   <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
                     <Clock size={20} color="#0ea5e9" />
                     <SSText variant="bold" className="text-xl text-gray-800 mt-2 mb-1">
-                      {formatDuration(itinerary.totalDuration)}
+                      {formatDuration({ hours: itinerary.totalDuration})}
                     </SSText>
                     <SSText variant="medium" className="text-xs text-slate-500">
                       Total Time
@@ -262,13 +243,13 @@ const loadItinerary = async () => {
           )}
 
           {/* Collaborators */}
-          {itinerary.collaborators.length > 0 && (
+          {(itinerary.collaborators || []).length > 0 && (
             <View className="mb-8">
               <SSText variant="semibold" className="text-xl text-gray-800 mb-4">
                 Collaborators
               </SSText>
               <View className="flex-row flex-wrap gap-3">
-                {itinerary.collaborators.map((collaborator, index) => (
+                {(itinerary.collaborators || []).map((collaborator, index) => (
                   <View key={index} className="flex-row items-center bg-slate-100 px-3 py-2 rounded-full gap-2">
                     <View className="w-6 h-6 rounded-full bg-emerald-600 justify-center items-center">
                       <SSText variant="semibold" className="text-xs text-white">
@@ -285,8 +266,8 @@ const loadItinerary = async () => {
           )}
 
           {/* Places List */}
-          <View className="mb-10">
-            <SSText variant="semibold" className="text-xl text-gray-800 mb-4">
+          <View className="mb-10 gap-4">
+            <SSText variant="semibold" className="text-xl text-gray-800">
               Places to Visit
             </SSText>
 
@@ -311,10 +292,10 @@ const loadItinerary = async () => {
 
                     <View className="flex-1">
                       <SSText variant="semibold" className="text-lg text-gray-800 mb-1">
-                        {place.name}
+                        {place.place?.name}
                       </SSText>
                       <SSText className="text-sm text-slate-500 leading-5" numberOfLines={2}>
-                        {place.description}
+                        {place.place?.description}
                       </SSText>
                     </View>
 
@@ -348,7 +329,7 @@ const loadItinerary = async () => {
                         <View className="flex-row items-center gap-1">
                           <Clock size={14} color="#64748b" />
                           <SSText className="text-xs text-slate-500">
-                            {formatDuration(place.visitDuration)}
+                            {formatDuration({ hours: place.visitDuration })}
                           </SSText>
                         </View>
                       )}
@@ -367,24 +348,25 @@ const loadItinerary = async () => {
                     <View className="flex-row items-center gap-1">
                       <Star size={14} color="#fbbf24" fill="#fbbf24" />
                       <SSText variant="medium" className="text-xs text-slate-500">
-                        {place.rating}
+                        {place?.place?.rating}
                       </SSText>
                     </View>
                     <View className="flex-row items-center gap-1">
                       <MapPin size={14} color="#64748b" />
                       <SSText variant="medium" className="text-xs text-slate-500">
-                        {place.distance}
+                        {place.place?.distance}
                       </SSText>
                     </View>
                     <View className="flex-row items-center gap-1">
                       <DollarSign size={14} color="#64748b" />
                       <SSText variant="medium" className="text-xs text-slate-500">
-                        {place.priceRange}
+                        {place.place?.priceRange}
                       </SSText>
                     </View>
                   </View>
 
-                  <View className="flex-row flex-wrap gap-1.5 items-center mb-2">
+{/* VIBES */}
+                  {/* <View className="flex-row flex-wrap gap-1.5 items-center mb-2">
                     {place.vibes.slice(0, 3).map((vibe, vibeIndex) => (
                       <View key={vibeIndex} className="bg-emerald-50 border border-emerald-600 px-2 py-1 rounded-xl">
                         <SSText variant="medium" className="text-xs text-emerald-600">
@@ -397,7 +379,7 @@ const loadItinerary = async () => {
                         +{place.vibes.length - 3}
                       </SSText>
                     )}
-                  </View>
+                  </View> */}
 
                   {place.notes && (
                     <View className="bg-amber-50 p-3 rounded-lg mt-2">

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Stack } from 'expo-router/stack';
 
 export default function ItinerariesLayout() {
@@ -11,9 +12,16 @@ export default function ItinerariesLayout() {
         }} 
       />
       <Stack.Screen 
-        name="[id]" 
+        name="[id]/index" 
         options={{ 
           title: 'Itinerary Details',
+          headerShown: false,
+        }} 
+      />
+            <Stack.Screen 
+        name="[id]/edit" 
+        options={{ 
+          title: 'Edit Itinerary',
           headerShown: false,
         }} 
       />
