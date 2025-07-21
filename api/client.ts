@@ -7,18 +7,19 @@ import { Platform } from 'react-native';
 const isDev = process.env.NODE_ENV === 'development';
 
 // Replace this with your local machine's IP address
-const apiUrl = 'https://sweetspots-nest.onrender.com';
 
 let baseURL = 'https://your-prod-api.com/api/v1';
+export const MOBILE_URL = 'http://118.139.85.103:8080'
+export const API_URL = 'http://localhost:8080';
 
 if (isDev) {
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
-    // baseURL = `${apiUrl}/api/v1`;
-    baseURL = 'http://192.168.68.106:8080/api/v1';
+    baseURL = `${MOBILE_URL}/api/v1`;
+    // baseURL = 'http://118.139.85.103:8080/api/v1';
 
   } else {
     // for web
-    baseURL = 'http://localhost:8080/api/v1';
+    baseURL = `${API_URL}/api/v1`;
   }
 }
 

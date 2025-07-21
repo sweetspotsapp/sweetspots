@@ -1,8 +1,7 @@
 // hooks/useItinerarySocket.ts
+import { MOBILE_URL } from '@/api/client';
 import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-
-const SOCKET_URL = 'http://localhost:8080';
 
 interface SocketOptions {
   itineraryId: string;
@@ -20,7 +19,7 @@ export function useItinerarySocket({ itineraryId, userId, onEvents }: SocketOpti
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    const socket = io(`${SOCKET_URL}/itinerary`, {
+    const socket = io(`${MOBILE_URL}/itinerary`, {
       transports: ['websocket'],
     });
 
@@ -42,13 +41,17 @@ export function useItinerarySocket({ itineraryId, userId, onEvents }: SocketOpti
   }, [itineraryId, userId]);
 
   const emit = (event: string, payload: any) => {
+    console.log(`Emitting event: ${event}`, payload);
+    console.log('Socket ID:', socketRef.current);
     socketRef.current?.emit(event, payload);
   };
 
   return {
     emit,
-    startEditing: (field: string) =>
-      emit('startEditing', { itineraryId, userId, field }),
+    startEditing: (field: string) => {
+      console.log(`Starting edit for field INSIDE: ${field} by user ${userId} for itinerary ${itineraryId}`);
+      emit('startEditing', { itineraryId, userId, field });
+    },
     stopEditing: (field: string) =>
       emit('stopEditing', { itineraryId, userId, field }),
     suggestChange: (field: string, value: any) =>
