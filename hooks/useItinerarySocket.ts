@@ -53,12 +53,12 @@ export function useItinerarySocket({ itineraryId, userId, onEvents }: SocketOpti
       emit('stopEditing', { itineraryId, userId, field }),
     suggestChange: (field: string, value: any) =>
       emit('suggestChange', { itineraryId, userId, field, value }),
-    logChange: (field: string, previousValue: any, newValue: any) =>
+    logChange: (field: string, newValue: any) =>
       emit('logChange', {
         itineraryId,
         userId,
         field,
-        previousValue,
+        // previousValue,
         newValue,
         type: 'update_field', // optional type enum
       }),
