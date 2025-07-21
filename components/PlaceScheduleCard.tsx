@@ -16,7 +16,7 @@ import { SSText } from './ui/SSText';
 import { SSDatePicker, SSTimePicker } from './ui/SSDateTimePicker';
 import { IItineraryPlace } from '@/api/itineraries/dto/itinerary.dto';
 import { Card } from './ui/card';
-import { formatDistance, formatDuration } from '@/utils/formatter';
+import { formatCurrency, formatDistance, formatDuration } from '@/utils/formatter';
 
 interface PlaceScheduleCardProps {
   itineraryPlace: IItineraryPlace;
@@ -34,10 +34,6 @@ export function PlaceScheduleCard({
   toNextSegment,
 }: PlaceScheduleCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(0)}`;
-  };
 
   return (
     <>
@@ -76,7 +72,6 @@ export function PlaceScheduleCard({
           </View>
           {itineraryPlace.place && (
             <>
-              {' '}
               {itineraryPlace.imageUrl ? (
                 <Image
                   source={{ uri: itineraryPlace.imageUrl }}
