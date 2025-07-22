@@ -13,15 +13,17 @@ import { Card, CardContent } from './ui/card';
 import { cn } from '@/lib/utils';
 
 interface SavedPlaceCardProps {
-  place: IPlace & { selected?: boolean };
+  place: IPlace;
   isSelectionMode: boolean;
   onSelect: () => void;
+  isSelected?: boolean;
 }
 
 export function SavedPlaceCard({
   place,
   isSelectionMode,
   onSelect,
+  isSelected = false,
 }: SavedPlaceCardProps) {
   return (
     <TouchableOpacity
@@ -32,21 +34,22 @@ export function SavedPlaceCard({
       activeOpacity={isSelectionMode ? 0.7 : 1}
     >
       <Card
-      className={
-        cn('flex-row items-center', place.selected && '!border-2 !border-emerald-400',{
-          'border-2 border-emerald-70': place.selected,
-        })
-      }
+        className={cn(
+          'flex-row items-center',
+          isSelected && '!border-2 !border-emerald-400',
+          {
+            'border-2 border-emerald-70': isSelected,
+          }
+        )}
       >
-          {place.images?.[0] && (
-            <Image
-              source={{ uri: place.images[0].url }}
-              className="w-30 h-30"
-              style={{ resizeMode: 'cover' }}
-            />
-          )}
-        <CardContent>
-
+        {place.images?.[0] && (
+          <Image
+            source={{ uri: place.images[0].url }}
+            className="w-30 h-30"
+            style={{ resizeMode: 'cover' }}
+          />
+        )}
+        <CardContent className='flex-1'>
           <View className="flex-1">
             <View className="flex-row justify-between items-center mb-2">
               <SSText
@@ -59,8 +62,8 @@ export function SavedPlaceCard({
               {isSelectionMode && (
                 <CheckCircle
                   size={24}
-                  color={place.selected ? '#065f46' : '#e2e8f0'}
-                  fill={place.selected ? '#065f46' : 'transparent'}
+                  color={isSelected ? '#065f46' : '#e2e8f0'}
+                  fill={isSelected ? '#065f46' : 'transparent'}
                 />
               )}
             </View>

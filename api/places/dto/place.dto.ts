@@ -40,6 +40,10 @@ export interface IPlace {
   calculatedDistance?: number;
 }
 
+export interface ISavedPlace extends IPlace {
+  selected?: boolean;
+}
+
 export interface IPlaceImage {
   id: string;
   placeId: string;
