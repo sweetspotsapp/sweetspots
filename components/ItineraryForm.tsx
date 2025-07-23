@@ -418,11 +418,6 @@ export function ItineraryForm({
   return (
     <PickerProvider>
       <View className="flex-1">
-        <LinearGradient
-          colors={['#f0fdf4', '#ffffff']}
-          className="absolute inset-0"
-        />
-
         <View className="flex-row justify-between items-center px-5 pt-5 pb-4 border-b border-slate-100">
           <SSText variant="bold" className="text-2xl text-gray-800">
             {editMode ? 'Edit' : 'Create'} Itinerary

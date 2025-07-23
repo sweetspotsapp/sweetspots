@@ -57,54 +57,56 @@ export default function SavedTab() {
   };
 
   return (
-    <SafeAreaView className="flex-1">
-      <SSLinearGradient />
+    <>
+        <SSLinearGradient />
+      <SafeAreaView className="flex-1 container mx-auto">
 
-      {/* Header */}
-      <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
-        <SSText variant="bold" className="text-3xl text-emerald-600">
-          Saved Places
-        </SSText>
-        <TouchableOpacity
-          className={`w-11 h-11 rounded-full justify-center items-center ${
-            isSelectionMode
-              ? 'bg-emerald-600'
-              : 'bg-white border-2 border-emerald-600'
-          }`}
-          onPress={toggleSelectionMode}
-        >
-          <CheckCircle
-            size={24}
-            color={isSelectionMode ? '#ffffff' : '#10b981'}
-          />
-        </TouchableOpacity>
-      </View>
-
-      <SavedPlaces
-        isSelectionMode={isSelectionMode}
-        onSelectPlace={handleSelectPlace}
-        selectedPlaceIds={selectedPlaceIds}
-      />
-
-      {/* Floating Create Button */}
-      {selectedCount > 0 && (
-        <Button
-          className="absolute bottom-7 left-5 right-5 shadow-lg"
-          onPress={handleCreateItinerary}
-        >
-          <Plus size={24} color="#ffffff" />
-          <SSText variant="semibold" className="text-white text-base">
-            Create Itinerary ({selectedCount})
+        {/* Header */}
+        <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
+          <SSText variant="bold" className="text-3xl text-emerald-600">
+            Saved Places
           </SSText>
-        </Button>
-      )}
+          <TouchableOpacity
+            className={`w-11 h-11 rounded-full justify-center items-center ${
+              isSelectionMode
+                ? 'bg-emerald-600'
+                : 'bg-white border-2 border-emerald-600'
+            }`}
+            onPress={toggleSelectionMode}
+          >
+            <CheckCircle
+              size={24}
+              color={isSelectionMode ? '#ffffff' : '#10b981'}
+            />
+          </TouchableOpacity>
+        </View>
 
-      <CreateItineraryModal
-        visible={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-        onCreated={onItineraryCreated}
-        selectedPlaces={savedPlaces.filter((p) => selectedPlaceIds.includes(p.id))}
-      />
-    </SafeAreaView>
+        <SavedPlaces
+          isSelectionMode={isSelectionMode}
+          onSelectPlace={handleSelectPlace}
+          selectedPlaceIds={selectedPlaceIds}
+        />
+
+        {/* Floating Create Button */}
+        {selectedCount > 0 && (
+          <Button
+            className="absolute bottom-7 left-5 right-5 shadow-lg"
+            onPress={handleCreateItinerary}
+          >
+            <Plus size={24} color="#ffffff" />
+            <SSText variant="semibold" className="text-white text-base">
+              Create Itinerary ({selectedCount})
+            </SSText>
+          </Button>
+        )}
+
+        <CreateItineraryModal
+          visible={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onCreated={onItineraryCreated}
+          selectedPlaces={savedPlaces.filter((p) => selectedPlaceIds.includes(p.id))}
+        />
+      </SafeAreaView>
+    </>
   );
 }

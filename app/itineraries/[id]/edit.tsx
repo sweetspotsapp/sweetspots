@@ -73,17 +73,20 @@ export default function EditItineraryScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1">
-      <ItineraryForm
-        itineraryId={id}
-        onCancel={() => {
-          router.back();
-        }}
-        onUpdated={() => {
-          router.back();
-        }}
-      />
-      {/* <SSLinearGradient /> */}
-    </SafeAreaView>
+    <>
+      <SSLinearGradient />
+      <SafeAreaView className="flex-1 container mx-auto">
+        <ItineraryForm
+          itineraryId={id}
+          onCancel={() => {
+            router.back();
+          }}
+          onUpdated={() => {
+            router.back();
+          }}
+        />
+        {/* <SSLinearGradient /> */}
+      </SafeAreaView>
+    </>
   );
 }

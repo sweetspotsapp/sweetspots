@@ -109,7 +109,7 @@ export default function ProfileTab() {
   return (
     <>
       <SSLinearBackground>
-        <SafeAreaView className="flex-1">
+        <SafeAreaView className="flex-1 container mx-auto">
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* Profile Header */}
             <View className="items-center py-10">
