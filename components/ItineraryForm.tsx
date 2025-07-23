@@ -26,6 +26,7 @@ import AddPlaceToItineraryModal from './AddPlaceToItineraryModal';
 
 interface ItineraryFormProps {
   onCreated?: () => void;
+  onUpdated?: () => void;
   selectedPlaces?: IPlace[];
   onCancel?: () => void;
   itineraryId?: string;
@@ -34,6 +35,7 @@ interface ItineraryFormProps {
 export function ItineraryForm({
   onCreated,
   onCancel,
+  onUpdated,
   selectedPlaces = [],
   itineraryId,
 }: ItineraryFormProps) {
@@ -353,8 +355,10 @@ export function ItineraryForm({
 
       if (editMode && itineraryId) {
         await updateItinerary(itineraryId, payload);
+        onUpdated?.();
       } else {
         await createItinerary(payload);
+        onCreated?.();
       }
 
       setName('');
@@ -366,7 +370,6 @@ export function ItineraryForm({
       setIsPublic(false);
       setItineraryPlaces([]);
 
-      onCreated?.();
     } catch (error) {
       console.error('Failed to create itinerary', error);
       Alert.alert('Error', 'Failed to create itinerary. Please try again.');
