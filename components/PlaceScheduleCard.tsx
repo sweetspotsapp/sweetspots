@@ -7,7 +7,7 @@ import {
   ChevronDown,
   MapPin,
   Star,
-  CreditCard as Edit3,
+  EditIcon,
 } from 'lucide-react-native';
 import Slider from '@react-native-community/slider';
 import { ItineraryPlace } from '@/types/Place';
@@ -184,7 +184,7 @@ export function PlaceScheduleCard({
               </TouchableOpacity>
             )}
             <TouchableOpacity className="w-8 h-8 rounded-full bg-emerald-50 justify-center items-center">
-              <Edit3 size={16} color="#10b981" />
+              <EditIcon size={16} color="#10b981" />
             </TouchableOpacity>
           </View>
         </TouchableOpacity>

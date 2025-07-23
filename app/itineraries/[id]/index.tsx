@@ -7,7 +7,7 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft, MapPin, Calendar, Users, Share2, CreditCard as Edit3, Navigation, Star, Clock, DollarSign } from 'lucide-react-native';
+import { ArrowLeft, MapPin, Calendar, Share2, Navigation, Star, Clock, DollarSign, EditIcon } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { getItineraries } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
@@ -138,7 +138,7 @@ const loadItinerary = async () => {
           <TouchableOpacity
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
             onPress={handleEditItinerary}>
-            <Edit3 size={24} color="#10b981" />
+            <EditIcon size={24} color="#10b981" />
           </TouchableOpacity>
         </View>
       </View>
