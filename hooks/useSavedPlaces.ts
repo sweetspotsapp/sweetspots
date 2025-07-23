@@ -1,9 +1,10 @@
 import { ISavedPlace } from '@/api/places/dto/place.dto';
+import { useSavedPlacesStore } from '@/store/useSavedPlacesStore';
 import { getSavedPlaces } from '@/utils/storage';
 import { useState, useCallback } from 'react';
 
 export const useSavedPlaces = () => {
-    const [savedPlaces, setSavedPlaces] = useState<ISavedPlace[]>([]);
+    const { savedPlaces, setSavedPlaces } = useSavedPlacesStore();
     const [refreshing, setRefreshing] = useState(false);
 
     const loadSavedPlaces = useCallback(async () => {
