@@ -301,7 +301,7 @@ export function ItineraryForm({
 
     const reorderedPlaces = newPlaces.map((place, index) => ({
       ...place,
-      order: index + 1,
+      orderIndex: index + 1,
     }));
 
     setItineraryPlaces(reorderedPlaces);
@@ -337,7 +337,7 @@ export function ItineraryForm({
         name: (nameInput || name).trim(),
         description: (descriptionInput || description).trim(),
         places: itineraryPlaces.map((place) => ({
-          placeId: place.id,
+          placeId: place.placeId || place.id,
           visitDate: place.visitDate ?? undefined,
           visitTime: place.visitTime ?? undefined,
           visitDuration: place.visitDuration || 0,
