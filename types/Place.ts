@@ -39,7 +39,7 @@ export interface ItineraryPlace extends SavedPlace {
   visitDuration?: number; // in hours
   estimatedCost?: number;
   notes?: string;
-  order: number;
+  orderIndex: number;
 }
 
 export interface Itinerary {
