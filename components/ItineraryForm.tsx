@@ -6,7 +6,7 @@ import { ItineraryPlace, TripSummary } from '@/types/Place';
 import { PlaceScheduleCard } from './PlaceScheduleCard';
 import { TripSummaryCard } from './TripSummaryCard';
 import { SSText } from './ui/SSText';
-import { PickerProvider, SSDatePicker } from './ui/SSDateTimePicker';
+import { PickerProvider } from './ui/SSDateTimePicker';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
@@ -639,7 +639,7 @@ export function ItineraryForm({
       </View>
 
       <AddPlaceToItineraryModal
-        itineraryPlaceIds={itineraryPlaces.map((p) => p.id)}
+        itineraryPlaceIds={itineraryPlaces.map((p) => p.placeId).filter(Boolean) as string[]}
         visible={isAddingPlace}
         onClose={() => setIsAddingPlace(false)}
         onAdded={(places) => {
