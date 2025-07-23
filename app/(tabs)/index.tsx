@@ -16,7 +16,6 @@ import { Heart, X, Navigation, Filter, RotateCcw } from 'lucide-react-native';
 import { PlaceCard } from '@/components/PlaceCard';
 import { FilterModal } from '@/components/FilterModal';
 import { ImageGalleryModal } from '@/components/ImageGalleryModal';
-import { mockPlaces } from '@/data/mockPlaces';
 import { savePlaceToStorage, getVibePreferences } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearBackground from '@/components/ui/SSLinearBackground';
@@ -424,7 +423,7 @@ export default function DiscoverTab() {
               >
                 <Filter size={24} color="#10b981" />
               </TouchableOpacity>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
                 onPress={() => {
                   setPlaces(mockPlaces);
@@ -432,7 +431,7 @@ export default function DiscoverTab() {
                 }}
               >
                 <RotateCcw size={24} color="#10b981" />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
 
