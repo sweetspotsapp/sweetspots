@@ -22,6 +22,7 @@ import { useLocationStore } from '@/store/useLocationStore';
 import { useItinerarySocket } from '@/hooks/useItinerarySocket';
 import { useAuth } from '@/hooks/useAuth';
 import moment from 'moment';
+import AddPlaceToItineraryModal from './AddPlaceToItineraryModal';
 
 interface ItineraryFormProps {
   onCreated?: () => void;
@@ -37,6 +38,8 @@ export function ItineraryForm({
   itineraryId,
 }: ItineraryFormProps) {
   const editMode = Boolean(itineraryId);
+
+  const [isAddingPlace, setIsAddingPlace] = useState(false);
 
   const [name, setName] = useState('');
   const [nameInput, setNameInput] = useState('');
@@ -508,12 +511,23 @@ export function ItineraryForm({
           <TripSummaryCard summary={tripSummary} />
 
           <View className="mb-8">
-            <SSText variant="semibold" className="text-xl text-gray-800 mb-2">
-              Places Schedule ({itineraryPlaces.length} places)
-            </SSText>
-            <SSText className="text-sm text-slate-500 mb-4">
-              Press each place to configure when and how long you'll visit
-            </SSText>
+            <View className="flex-row items-end justify-between mb-4">
+              <View>
+                <SSText
+                  variant="semibold"
+                  className="text-xl text-gray-800 mb-2"
+                >
+                  Places Schedule ({itineraryPlaces.length} places)
+                </SSText>
+                <SSText className="text-sm text-slate-500">
+                  Press each place to configure when and how long you'll visit
+                </SSText>
+              </View>
+              <Button onPress={() => setIsAddingPlace(true)}>
+                <Plus size={16} color="white" />
+                <SSText>Add Place</SSText>
+              </Button>
+            </View>
 
             {itineraryPlaces.map((place, index) => (
               <PlaceScheduleCard
@@ -623,6 +637,29 @@ export function ItineraryForm({
           </Button>
         </View>
       </View>
+
+      <AddPlaceToItineraryModal
+        itineraryPlaceIds={itineraryPlaces.map((p) => p.id)}
+        visible={isAddingPlace}
+        onClose={() => setIsAddingPlace(false)}
+        onAdded={(places) => {
+          const newPlaces = places.map((place, index) => ({
+            id: place.id,
+            createdAt: new Date().toISOString(),
+            place,
+            imageUrl: place.images?.[0]?.url || null,
+            visitDuration: getDefaultDuration(place.category),
+            estimatedCost: getDefaultCost(place.priceRange),
+            visitDate: '',
+            visitTime: '',
+            notes: '',
+            orderIndex: itineraryPlaces.length + index + 1,
+          }));
+          console.log('Adding new places:', places, newPlaces);
+          setItineraryPlaces((prev) => [...prev, ...newPlaces]);
+          setIsAddingPlace(false);
+        }}
+      />
     </PickerProvider>
   );
 }

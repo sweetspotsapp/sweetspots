@@ -10,12 +10,14 @@ type SavedPlacesProps = {
   isSelectionMode?: boolean;
   onSelectPlace?: (placeId: string) => void;
   selectedPlaceIds?: string[];
+  hiddenPlaceIds?: string[];
 };
 
 export default function SavedPlaces({
   isSelectionMode = false,
   onSelectPlace = () => {},
   selectedPlaceIds = [],
+  hiddenPlaceIds = [],
 }: SavedPlacesProps) {
   const { savedPlaces, loadSavedPlaces, refreshing } = useSavedPlaces();
   const [filteredPlaces, setFilteredPlaces] = useState<
@@ -33,7 +35,7 @@ export default function SavedPlaces({
 
   const filterPlaces = () => {
     if (!searchQuery.trim()) {
-      setFilteredPlaces(savedPlaces);
+      setFilteredPlaces(savedPlaces.filter((place) => hiddenPlaceIds.indexOf(place.id) === -1));
       return;
     }
 
@@ -43,7 +45,7 @@ export default function SavedPlaces({
         place.name.toLowerCase().includes(lowerQuery) ||
         place.vibes.some((vibe) => vibe.toLowerCase().includes(lowerQuery))
     );
-    setFilteredPlaces(filtered);
+    setFilteredPlaces(filtered.filter((place) => hiddenPlaceIds.indexOf(place.id) === -1));
   };
 
   const renderPlaceCard = ({
