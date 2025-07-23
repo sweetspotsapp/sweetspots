@@ -79,7 +79,7 @@ export default function SavedPlaces({
       <FlatList
         data={filteredPlaces}
         renderItem={renderPlaceCard}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(_, i) => i.toString()}
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
