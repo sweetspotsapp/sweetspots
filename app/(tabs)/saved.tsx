@@ -3,8 +3,6 @@ import { View, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CircleCheck as CheckCircle, Plus } from 'lucide-react-native';
 
-import { getSavedPlaces } from '@/api/places/endpoints';
-import { IPlace, ISavedPlace } from '@/api/places/dto/place.dto';
 import { CreateItineraryModal } from '@/components/CreateItineraryModal';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
