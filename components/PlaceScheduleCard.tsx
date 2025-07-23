@@ -104,70 +104,96 @@ export function PlaceScheduleCard({
       )}
       <Card className="rounded-2xl mb-4">
         <TouchableOpacity
-          className="flex-row items-center p-4"
+          className="flex-row items-end gap-4 p-4"
           onPress={() => setIsExpanded(!isExpanded)}
         >
-          <View className="w-8 h-8 rounded-full bg-emerald-600 justify-center items-center mr-3">
-            <SSText variant="bold" className="text-sm text-white">
-              {itineraryPlace.orderIndex}
-            </SSText>
-          </View>
-          {itineraryPlace.place && (
-            <>
-              {itineraryPlace.imageUrl ? (
-                <Image
-                  source={{ uri: itineraryPlace.imageUrl }}
-                  className="rounded-xl mr-3"
-                  style={{ resizeMode: 'cover', width: 60, height: 60 }}
-                />
-              ) : (
-                <View className="w-15 h-15 bg-gray-200 rounded-xl mr-3 justify-center items-center">
-                  <SSText variant="semibold" className="text-sm text-gray-500">
-                    No Image
-                  </SSText>
-                </View>
-              )}
-              <View className="flex-1">
-                <SSText
-                  variant="semibold"
-                  className="text-base text-gray-800 mb-2"
-                  numberOfLines={1}
+          <View className="flex-row flex-1">
+            <View className="gap-2">
+              {onMoveUp && (
+                <TouchableOpacity
+                  className="w-8 h-8 rounded-full bg-slate-100 justify-center items-center"
+                  onPress={onMoveUp}
                 >
-                  {itineraryPlace.place.name}
+                  <ChevronUp size={16} color="#64748b" />
+                </TouchableOpacity>
+              )}
+              <View className="w-8 h-8 rounded-full bg-emerald-600 justify-center items-center mr-3">
+                <SSText variant="bold" className="text-sm text-white">
+                  {itineraryPlace.orderIndex}
                 </SSText>
-                <View className="flex-row gap-3">
-                  <View className="flex-row items-center gap-1">
-                    <Star size={12} color="#fbbf24" fill="#fbbf24" />
-                    <SSText variant="medium" className="text-xs text-slate-500">
-                      {itineraryPlace.place.rating}
-                    </SSText>
-                  </View>
-                  <View className="flex-row items-center gap-1">
-                    <MapPin size={12} color="#64748b" />
-                    <SSText variant="medium" className="text-xs text-slate-500">
-                      {itineraryPlace.place.distance}
-                    </SSText>
-                  </View>
-                  <View className="flex-row items-center gap-1">
-                    <Clock size={12} color="#64748b" />
-                    <SSText variant="medium" className="text-xs text-slate-500">
-                      {formatDuration({
-                        hours: itineraryPlace.visitDuration || 2,
-                      })}
-                    </SSText>
-                  </View>
-                  <View className="flex-row items-center gap-1">
-                    <DollarSign size={12} color="#64748b" />
-                    <SSText variant="medium" className="text-xs text-slate-500">
-                      {formatCurrency(itineraryPlace.estimatedCost || 0)}
-                    </SSText>
+              </View>
+              {onMoveDown && (
+                <TouchableOpacity
+                  className="w-8 h-8 rounded-full bg-slate-100 justify-center items-center"
+                  onPress={onMoveDown}
+                >
+                  <ChevronDown size={16} color="#64748b" />
+                </TouchableOpacity>
+              )}
+            </View>
+            {itineraryPlace.place && (
+              <>
+                {itineraryPlace.imageUrl ? (
+                  <Image
+                    source={{ uri: itineraryPlace.imageUrl }}
+                    className="rounded-xl mr-3"
+                    style={{ resizeMode: 'cover', width: 60, height: 60 }}
+                  />
+                ) : null}
+                <View className="flex-1">
+                  <SSText
+                    variant="semibold"
+                    className="text-base text-gray-800 mb-2"
+                    numberOfLines={1}
+                  >
+                    {itineraryPlace.place.name}
+                  </SSText>
+                  <View className="flex-row gap-3">
+                    <View className="flex-row items-center gap-1">
+                      <Star size={12} color="#fbbf24" fill="#fbbf24" />
+                      <SSText
+                        variant="medium"
+                        className="text-xs text-slate-500"
+                      >
+                        {itineraryPlace.place.rating}
+                      </SSText>
+                    </View>
+                    <View className="flex-row items-center gap-1">
+                      <MapPin size={12} color="#64748b" />
+                      <SSText
+                        variant="medium"
+                        className="text-xs text-slate-500"
+                      >
+                        {itineraryPlace.place.distance}
+                      </SSText>
+                    </View>
+                    <View className="flex-row items-center gap-1">
+                      <Clock size={12} color="#64748b" />
+                      <SSText
+                        variant="medium"
+                        className="text-xs text-slate-500"
+                      >
+                        {formatDuration({
+                          hours: itineraryPlace.visitDuration || 2,
+                        })}
+                      </SSText>
+                    </View>
+                    <View className="flex-row items-center gap-1">
+                      <DollarSign size={12} color="#64748b" />
+                      <SSText
+                        variant="medium"
+                        className="text-xs text-slate-500"
+                      >
+                        {formatCurrency(itineraryPlace.estimatedCost || 0)}
+                      </SSText>
+                    </View>
                   </View>
                 </View>
-              </View>
-            </>
-          )}
+              </>
+            )}
+          </View>
           <View className="flex-row items-center gap-2">
-            {onMoveUp && (
+            {/* {onMoveUp && (
               <TouchableOpacity
                 className="w-8 h-8 rounded-full bg-slate-100 justify-center items-center"
                 onPress={onMoveUp}
@@ -182,7 +208,7 @@ export function PlaceScheduleCard({
               >
                 <ChevronDown size={16} color="#64748b" />
               </TouchableOpacity>
-            )}
+            )} */}
             <TouchableOpacity className="w-8 h-8 rounded-full bg-emerald-50 justify-center items-center">
               <EditIcon size={16} color="#10b981" />
             </TouchableOpacity>

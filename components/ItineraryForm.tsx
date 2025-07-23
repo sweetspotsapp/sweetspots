@@ -514,7 +514,7 @@ export function ItineraryForm({
           <TripSummaryCard summary={tripSummary} />
 
           <View className="mb-8">
-            <View className="flex-row items-end justify-between mb-4">
+            <View className="md:flex-row md:items-end justify-between mb-4">
               <View>
                 <SSText
                   variant="semibold"
@@ -526,7 +526,7 @@ export function ItineraryForm({
                   Press each place to configure when and how long you'll visit
                 </SSText>
               </View>
-              <Button onPress={() => setIsAddingPlace(true)}>
+              <Button onPress={() => setIsAddingPlace(true)} className='mt-2'>
                 <Plus size={16} color="white" />
                 <SSText>Add Place</SSText>
               </Button>
