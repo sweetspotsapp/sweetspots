@@ -62,7 +62,7 @@ export function SSDatePicker({
         placeholder={placeholder}
         // @ts-ignore - only valid on web
         type="date"
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onTextChange(e.target.value)}
         onFocus={onFocus}
         onBlur={onBlur}
         disabled={!editable}
@@ -158,7 +158,7 @@ export function SSTimePicker({
         placeholder={placeholder}
         // @ts-ignore - only valid on web
         type="time"
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onTextChange(e.target.value)}
         onFocus={onFocus}
         onBlur={onBlur}
         disabled={!editable}
@@ -266,7 +266,7 @@ export function SSDateTimePicker({
         placeholder={placeholder}
         // @ts-ignore - only valid on web
         type="datetime-local"
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onTextChange(e.target.value)}
         onFocus={onFocus}
         onBlur={onBlur}
         disabled={!editable}
