@@ -1,9 +1,9 @@
+import { GetItinerariesQueryDto } from '@/dto/itineraries/get-itineraries-query.dto';
 import { api } from '../client';
-import { IItinerary } from './dto/itinerary.dto';
-import { CreateItineraryDto } from './dto/create-itinerary.dto';
-import { UpdateItineraryDto } from './dto/update-itinerary.dto';
-import { GetItinerariesQueryDto } from './dto/get-itineraries-query.dto';
-import { ApiPluralResponse, ApiResponse, PaginationResult } from '../pagination.dto';
+import { ApiPluralResponse, ApiResponse } from '../pagination.dto';
+import { IItinerary } from '@/dto/itineraries/itinerary.dto';
+import { CreateItineraryDto } from '@/dto/itineraries/create-itinerary.dto';
+import { UpdateItineraryDto } from '@/dto/itineraries/update-itinerary.dto';
 
 export const getAllItineraries = async (
   params?: GetItinerariesQueryDto

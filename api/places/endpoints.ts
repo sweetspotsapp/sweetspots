@@ -1,10 +1,10 @@
+import { GetPlacesQueryDto } from '@/dto/places/get-places-query.dto';
 import { api } from '../client';
-import { IPlace } from './dto/place.dto';
-import { CreatePlaceDto } from './dto/create-place.dto';
-import { UpdatePlaceDto } from './dto/update-place.dto';
-import { GetPlacesQueryDto } from './dto/get-places-query.dto';
 import { ApiPluralResponse, ApiResponse } from '../pagination.dto';
-import { CalculateDistanceDto } from './dto/calculate-distance.dto';
+import { IPlace } from '@/dto/places/place.dto';
+import { CreatePlaceDto } from '@/dto/places/create-place.dto';
+import { UpdatePlaceDto } from '@/dto/places/update-place.dto';
+import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
 
 export const getAllPlaces = async (
   params?: GetPlacesQueryDto

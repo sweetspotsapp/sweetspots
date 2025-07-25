@@ -19,7 +19,7 @@ import { ImageGalleryModal } from '@/components/ImageGalleryModal';
 import { savePlaceToStorage, getVibePreferences } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearBackground from '@/components/ui/SSLinearBackground';
-import { IRecommendedPlace } from '@/api/recommendations/dto/recommendation.dto';
+import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
 import { getRecommendations } from '@/api/recommendations/endpoints';
 import { recordSwipe } from '@/api/swipes/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';

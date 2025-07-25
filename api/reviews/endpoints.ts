@@ -1,9 +1,9 @@
+import { GetReviewsQueryDto } from '@/dto/reviews/get-reviews-query.dto';
 import { api } from '../client';
-import { IReview } from './dto/review.dto';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
-import { GetReviewsQueryDto } from './dto/get-reviews-query.dto';
-import { ApiPluralResponse, ApiResponse, PaginationResult } from '../pagination.dto';
+import { ApiPluralResponse, ApiResponse } from '../pagination.dto';
+import { CreateReviewDto } from '@/dto/reviews/create-review.dto';
+import { IReview } from '@/dto/reviews/review.dto';
+import { UpdateReviewDto } from '@/dto/reviews/update-review.dto';
 
 // GET /reviews (with filters & pagination)
 export const getReviews = async (

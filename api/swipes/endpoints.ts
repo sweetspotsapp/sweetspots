@@ -1,6 +1,6 @@
 import { api } from '../client';
-import { SwipeDto } from './dto/swipe.dto';
-import { IUserSwipe } from './dto/user-swipe.dto';
+import { SwipeDto } from '../../dto/swipes/swipe.dto';
+import { IUserSwipe } from '../../dto/swipes/user-swipe.dto';
 import { ApiPluralResponse, ApiResponse } from '../pagination.dto';
 
 /**

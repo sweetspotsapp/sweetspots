@@ -21,7 +21,7 @@ import { router } from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
 import { getCurrentUserProfile } from '@/api/users/endpoints';
 import { getSwipeStats } from '@/api/swipes/endpoints';
-import { IUserProfile } from '@/api/users/dto/user-profile.dto';
+import { IUserProfile } from '@/dto/users/user-profile.dto';
 import SSLinearBackground from '@/components/ui/SSLinearBackground';
 
 export default function ProfileTab() {
