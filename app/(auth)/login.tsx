@@ -18,6 +18,7 @@ type LoginFormData = {
 };
 
 export default function LoginScreen() {
+  const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const router = useRouter();
   const {
     control,
@@ -31,6 +32,7 @@ export default function LoginScreen() {
   });
 
   const handleLogin = async (data: LoginFormData) => {
+    setIsLoggingIn(true);
     try {
       const userCred = await login(data.email, data.password);
       const token = await userCred.user.getIdToken();
@@ -38,6 +40,8 @@ export default function LoginScreen() {
       router.replace('/(tabs)');
     } catch (err) {
       Alert.alert('Login failed', 'Check your credentials.');
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -80,7 +84,7 @@ export default function LoginScreen() {
             error={errors.password?.message}
           />
         </View>
-        <Button onPress={handleSubmit(handleLogin)}>
+        <Button onPress={handleSubmit(handleLogin)} className="w-full" disabled={isLoggingIn}>
           <SSText>Login</SSText>
         </Button>
         <View className="flex-row items-center justify-between w-full gap-3 my-4">

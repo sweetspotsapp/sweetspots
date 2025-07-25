@@ -1,18 +1,18 @@
-import { ISavedPlace } from '@/api/places/dto/place.dto';
+import { getSavedPlaces } from '@/api/places/endpoints';
+import { ISavedPlace } from '@/dto/places/place.dto';
 import { useSavedPlacesStore } from '@/store/useSavedPlacesStore';
-import { getSavedPlaces } from '@/utils/storage';
 import { useState, useCallback } from 'react';
 
 export const useSavedPlaces = () => {
-    const { savedPlaces, setSavedPlaces } = useSavedPlacesStore();
-    const [refreshing, setRefreshing] = useState(false);
+    const { savedPlaces, setSavedPlaces, setRefreshing, refreshing } = useSavedPlacesStore();
 
     const loadSavedPlaces = useCallback(async () => {
+        console.log('Loading saved places...');
         setRefreshing(true);
         try {
             const res = await getSavedPlaces();
             const placesWithSelection: ISavedPlace[] =
-                res?.map((place: Omit<ISavedPlace, 'selected'>) => ({
+                res?.data?.map((place: Omit<ISavedPlace, 'selected'>) => ({
                     ...place,
                     selected: false,
                 })) ?? [];
@@ -24,16 +24,10 @@ export const useSavedPlaces = () => {
         }
     }, []);
 
-    // Action to refresh the saved places
-    const refresh = useCallback(async () => {
-        await loadSavedPlaces();
-    }, [loadSavedPlaces]);
-
     return {
         savedPlaces,
         refreshing,
         loadSavedPlaces,
         setSavedPlaces,
-        refresh,
     };
 };

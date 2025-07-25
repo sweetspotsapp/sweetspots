@@ -1,5 +1,6 @@
+import { IItinerary } from '@/dto/itineraries/itinerary.dto';
+import { ISavedPlace } from '@/dto/places/place.dto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SavedPlace, Itinerary, ItineraryPlace } from '@/types/Place';
 
 const SAVED_PLACES_KEY = 'saved_places';
 const ITINERARIES_KEY = 'itineraries';
@@ -9,7 +10,7 @@ const VIBE_PREFERENCES_KEY = 'vibe_preferences';
 export const savePlaceToStorage = async (place: any): Promise<void> => {
   try {
     const savedPlaces = await getSavedPlaces();
-    const savedPlace: SavedPlace = {
+    const savedPlace: ISavedPlace = {
       ...place,
       savedAt: new Date().toISOString(),
       selected: false,
@@ -25,7 +26,7 @@ export const savePlaceToStorage = async (place: any): Promise<void> => {
   }
 };
 
-export const getSavedPlaces = async (): Promise<SavedPlace[]> => {
+export const getSavedPlaces = async (): Promise<ISavedPlace[]> => {
   try {
     const data = await AsyncStorage.getItem(SAVED_PLACES_KEY);
     return data ? JSON.parse(data) : [];
@@ -95,7 +96,7 @@ export const clearSelectedPlaces = async (): Promise<void> => {
 //   }
 // };
 
-export const getItineraries = async (): Promise<Itinerary[]> => {
+export const getItineraries = async (): Promise<IItinerary[]> => {
   try {
     const data = await AsyncStorage.getItem(ITINERARIES_KEY);
     return data ? JSON.parse(data) : [];
@@ -105,7 +106,7 @@ export const getItineraries = async (): Promise<Itinerary[]> => {
   }
 };
 
-export const updateItinerary = async (id: string, updates: Partial<Itinerary>): Promise<void> => {
+export const updateItinerary = async (id: string, updates: Partial<IItinerary>): Promise<void> => {
   try {
     const itineraries = await getItineraries();
     const updatedItineraries = itineraries.map(itinerary =>

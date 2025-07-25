@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Alert } from 'react-native';
+import { View, TouchableOpacity, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CircleCheck as CheckCircle, Plus } from 'lucide-react-native';
+import { CircleCheck as CheckCircle, Plus, RefreshCcw } from 'lucide-react-native';
 
 import { CreateItineraryModal } from '@/components/CreateItineraryModal';
 import { SSText } from '@/components/ui/SSText';
@@ -17,9 +17,10 @@ export default function SavedTab() {
   const [selectedCount, setSelectedCount] = useState(0);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const { loadSavedPlaces } = useSavedPlaces();
 
   useEffect(() => {
-    const count = selectedPlaceIds.length
+    const count = selectedPlaceIds.length;
     setSelectedCount(count);
   }, [selectedPlaceIds]);
 
@@ -58,27 +59,38 @@ export default function SavedTab() {
 
   return (
     <>
-        <SSLinearGradient />
+      <SSLinearGradient />
       <SafeAreaView className="flex-1 container mx-auto">
-
         {/* Header */}
         <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
           <SSText variant="bold" className="text-3xl text-emerald-600">
             Saved Places
           </SSText>
-          <TouchableOpacity
-            className={`w-11 h-11 rounded-full justify-center items-center ${
-              isSelectionMode
-                ? 'bg-emerald-600'
-                : 'bg-white border-2 border-emerald-600'
-            }`}
-            onPress={toggleSelectionMode}
-          >
-            <CheckCircle
-              size={24}
-              color={isSelectionMode ? '#ffffff' : '#10b981'}
-            />
-          </TouchableOpacity>
+          <View className="flex-row items-center gap-3">
+            <TouchableOpacity
+              className={`w-11 h-11 rounded-full justify-center items-center ${
+                isSelectionMode
+                  ? 'bg-emerald-600'
+                  : 'bg-white border-2 border-emerald-600'
+              }`}
+              onPress={toggleSelectionMode}
+            >
+              <CheckCircle
+                size={24}
+                color={isSelectionMode ? '#ffffff' : '#10b981'}
+              />
+            </TouchableOpacity>
+            {
+              Platform.OS === 'web' && (
+                <TouchableOpacity
+                  className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
+                  onPress={() => loadSavedPlaces()}
+                >
+                  <RefreshCcw size={24} color="#10b981" />
+                </TouchableOpacity>
+              )
+            }
+          </View>
         </View>
 
         <SavedPlaces
@@ -104,7 +116,9 @@ export default function SavedTab() {
           visible={showCreateModal}
           onClose={() => setShowCreateModal(false)}
           onCreated={onItineraryCreated}
-          selectedPlaces={savedPlaces.filter((p) => selectedPlaceIds.includes(p.id))}
+          selectedPlaces={savedPlaces.filter((p) =>
+            selectedPlaceIds.includes(p.id)
+          )}
         />
       </SafeAreaView>
     </>

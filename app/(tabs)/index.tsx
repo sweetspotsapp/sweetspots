@@ -24,6 +24,7 @@ import { getRecommendations } from '@/api/recommendations/endpoints';
 import { recordSwipe } from '@/api/swipes/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
 import { getCurrentCoordinates } from '@/utils/location';
+import SSSpinner from '@/components/ui/SSSpinner';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -437,7 +438,7 @@ export default function DiscoverTab() {
 
           {isLoading ? (
             <View className="flex-1 items-center justify-center px-5">
-              <ActivityIndicator />
+              <SSSpinner />
               <SSText className="text-lg text-slate-500">
                 Loading places...
               </SSText>

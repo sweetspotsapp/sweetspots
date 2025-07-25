@@ -25,10 +25,10 @@ import { SSText } from './ui/SSText';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
-import { CalculateDistanceDto } from '@/api/places/dto/calculate-distance.dto';
 import { calculateTimeAndDistance } from '@/api/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
 import { formatDistance, formatDuration } from '@/utils/formatter';
+import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
 
 const { width: screenWidth } = Dimensions.get('window');
 

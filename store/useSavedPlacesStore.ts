@@ -1,4 +1,4 @@
-import { IPlace } from '@/api/places/dto/place.dto';
+import { IPlace } from '@/dto/places/place.dto';
 import { create } from 'zustand';
 
 type SavedPlace = IPlace & { selected?: boolean };
@@ -9,10 +9,14 @@ interface SavedPlacesStore {
   addSavedPlace: (place: SavedPlace) => void;
   removeSavedPlace: (id: string) => void;
   toggleSelected: (id: string) => void;
+  refreshing?: boolean;
+  setRefreshing: (refreshing: boolean) => void;
 }
 
 export const useSavedPlacesStore = create<SavedPlacesStore>((set) => ({
   savedPlaces: [],
+  refreshing: false,
+  setRefreshing: (refreshing) => set({ refreshing }),
   setSavedPlaces: (places) => set({ savedPlaces: places }),
   addSavedPlace: (place) =>
     set((state) => ({

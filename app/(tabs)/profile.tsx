@@ -23,6 +23,7 @@ import { getCurrentUserProfile } from '@/api/users/endpoints';
 import { getSwipeStats } from '@/api/swipes/endpoints';
 import { IUserProfile } from '@/dto/users/user-profile.dto';
 import SSLinearBackground from '@/components/ui/SSLinearBackground';
+import SSSpinner from '@/components/ui/SSSpinner';
 
 export default function ProfileTab() {
   const [profile, setProfile] = useState<IUserProfile | null>(null);
@@ -114,7 +115,7 @@ export default function ProfileTab() {
             {/* Profile Header */}
             <View className="items-center py-10">
               {loading ? ( 
-                <ActivityIndicator size="large" color="#10b981" />
+                <SSSpinner />
               ) : profile ? (
                 <>
                   <View className="relative mb-4">
