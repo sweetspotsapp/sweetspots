@@ -1,17 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { X, Plus, Mail, User } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { ItineraryPlace, TripSummary } from '@/types/Place';
-import { PlaceScheduleCard } from './PlaceScheduleCard';
-import { TripSummaryCard } from './TripSummaryCard';
-import { SSText } from './ui/SSText';
-import { PickerProvider } from './ui/SSDateTimePicker';
-import { Label } from './ui/label';
-import { Input } from './ui/input';
-import { Button } from './ui/button';
-import { IPlace } from '@/api/places/dto/place.dto';
-import { IItineraryPlace } from '@/api/itineraries/dto/itinerary.dto';
+
 import {
   createItinerary,
   getItineraryById,
@@ -23,6 +14,15 @@ import { useItinerarySocket } from '@/hooks/useItinerarySocket';
 import { useAuth } from '@/hooks/useAuth';
 import moment from 'moment';
 import AddPlaceToItineraryModal from './AddPlaceToItineraryModal';
+import { IItineraryPlace } from '@/dto/itineraries/itinerary.dto';
+import { IPlace } from '@/dto/places/place.dto';
+import { PlaceScheduleCard } from '../PlaceScheduleCard';
+import { TripSummaryCard } from '../TripSummaryCard';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { PickerProvider } from '../ui/SSDateTimePicker';
+import { SSText } from '../ui/SSText';
+import { Button } from '../ui/button';
 
 interface ItineraryFormProps {
   onCreated?: () => void;

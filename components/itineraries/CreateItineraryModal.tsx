@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, View } from 'react-native';
-import { IPlace } from '@/api/places/dto/place.dto';
 import { ItineraryForm } from './ItineraryForm';
+import { IPlace } from '@/dto/places/place.dto';
 
 interface CreateItineraryModalProps {
   visible: boolean;

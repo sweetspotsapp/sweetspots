@@ -1,12 +1,12 @@
 import { Modal, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
-import SavedPlaces from './SavedPlaces';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button } from './ui/button';
 import { Plus, X } from 'lucide-react-native';
-import { SSText } from './ui/SSText';
-import { IPlace } from '@/api/places/dto/place.dto';
 import { useSavedPlaces } from '@/hooks/useSavedPlaces';
+import { IPlace } from '@/dto/places/place.dto';
+import SavedPlaces from '../SavedPlaces';
+import { SSText } from '../ui/SSText';
+import { Button } from '../ui/button';
 
 interface AddPlaceToItineraryModalProps {
   visible: boolean;
