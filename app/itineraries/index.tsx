@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, TouchableOpacity, Image } from 'react-native';
+import { View, FlatList, TouchableOpacity, Image, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ArrowLeft,
@@ -8,23 +8,34 @@ import {
   MapPin,
   Clock,
   DollarSign,
+  RefreshCcw,
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
-import { IItinerary } from '@/api/itineraries/dto/itinerary.dto';
 import { getMyItineraries } from '@/api/itineraries/endpoints';
+import { IItinerary } from '@/dto/itineraries/itinerary.dto';
+import { formatCurrency } from '@/utils/formatter';
+import SSSpinner from '@/components/ui/SSSpinner';
 
 export default function ItinerariesScreen() {
   const [itineraries, setItineraries] = useState<IItinerary[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadItineraries();
   }, []);
 
   const loadItineraries = async () => {
-    const res = await getMyItineraries();
-    setItineraries(res.data?.data ?? []);
+    setIsLoading(true);
+    try {
+      const res = await getMyItineraries();
+      setItineraries(res.data?.data ?? []);
+    } catch (error) {
+      console.error('Error loading itineraries:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -33,10 +44,6 @@ export default function ItinerariesScreen() {
       month: 'short',
       day: 'numeric',
     });
-  };
-
-  const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(0)}`;
   };
 
   const formatDuration = (hours: number) => {
@@ -169,31 +176,46 @@ export default function ItinerariesScreen() {
           <SSText variant="bold" className="text-2xl text-emerald-600">
             My Itineraries
           </SSText>
-          <View className="w-11" />
+          {Platform.OS === 'web' ? (
+            <TouchableOpacity
+              className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
+              onPress={loadItineraries}
+            >
+              <RefreshCcw size={24} color="#10b981" />
+            </TouchableOpacity>
+          ) : (
+            <View className="w-11" />
+          )}
         </View>
 
         {/* Itineraries List */}
-        <FlatList
-          data={itineraries}
-          renderItem={renderItinerary}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <View className="flex-1 justify-center items-center pt-25 px-10">
-              <SSText
-                variant="bold"
-                className="text-2xl text-emerald-600 text-center mb-3"
-              >
-                No itineraries yet
-              </SSText>
-              <SSText className="text-base text-slate-500 text-center leading-6">
-                Create your first itinerary by selecting places from your saved
-                collection!
-              </SSText>
-            </View>
-          }
-        />
+        {
+          isLoading ? (
+            <SSSpinner className='mb-4'/>
+          ) : (
+            <FlatList
+              data={itineraries}
+              renderItem={renderItinerary}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <View className="flex-1 justify-center items-center pt-25 px-10">
+                  <SSText
+                    variant="bold"
+                    className="text-2xl text-emerald-600 text-center mb-3"
+                  >
+                    No itineraries yet
+                  </SSText>
+                  <SSText className="text-base text-slate-500 text-center leading-6">
+                    Create your first itinerary by selecting places from your saved
+                    collection!
+                  </SSText>
+                </View>
+              }
+            />
+          )
+        }
       </SafeAreaView>
     </>
   );

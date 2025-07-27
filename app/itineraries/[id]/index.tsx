@@ -18,8 +18,9 @@ import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
 import { Card, CardContent } from '@/components/ui/card';
 import { getItineraryById } from '@/api/itineraries/endpoints';
-import { IItinerary } from '@/api/itineraries/dto/itinerary.dto';
 import { formatCurrency, formatDuration } from '@/utils/formatter';
+import SSSpinner from '@/components/ui/SSSpinner';
+import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -94,6 +95,7 @@ export default function ItineraryDetailsScreen() {
       <SafeAreaView className="flex-1">
         <SSLinearGradient />
         <View className="flex-1 justify-center items-center">
+          <SSSpinner size="large" className="mb-4" />
           <SSText className="text-lg text-slate-500">
             Loading itinerary...
           </SSText>
