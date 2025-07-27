@@ -13,7 +13,6 @@ import Slider from '@react-native-community/slider';
 import { ItineraryPlace } from '@/types/Place';
 import { SSText } from './ui/SSText';
 import { SSDatePicker, SSTimePicker } from './ui/SSDateTimePicker';
-import { IItineraryPlace } from '@/api/itineraries/dto/itinerary.dto';
 import { Card } from './ui/card';
 import {
   formatCurrency,
@@ -23,6 +22,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { Input } from './ui/input';
+import { IItineraryPlace } from '@/dto/itineraries/itinerary.dto';
 
 interface PlaceScheduleCardProps {
   itineraryPlace: IItineraryPlace;

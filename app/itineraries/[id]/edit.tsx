@@ -5,9 +5,9 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
 import { getItineraryById } from '@/api/itineraries/endpoints';
-import { ItineraryForm } from '@/components/ItineraryForm';
 import SSSpinner from '@/components/ui/SSSpinner';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
+import { ItineraryForm } from '@/components/itineraries/ItineraryForm';
 
 export default function EditItineraryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

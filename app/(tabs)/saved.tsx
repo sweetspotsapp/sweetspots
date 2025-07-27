@@ -3,13 +3,13 @@ import { View, TouchableOpacity, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CircleCheck as CheckCircle, Plus, RefreshCcw } from 'lucide-react-native';
 
-import { CreateItineraryModal } from '@/components/CreateItineraryModal';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
 import { Button } from '@/components/ui/button';
 import { Toast } from 'toastify-react-native';
 import SavedPlaces from '@/components/SavedPlaces';
 import { useSavedPlaces } from '@/hooks/useSavedPlaces';
+import { CreateItineraryModal } from '@/components/itineraries/CreateItineraryModal';
 
 export default function SavedTab() {
   const { savedPlaces } = useSavedPlaces();
