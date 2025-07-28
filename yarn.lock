@@ -2903,6 +2903,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-clipboard/clipboard@npm:^1.16.3":
+  version: 1.16.3
+  resolution: "@react-native-clipboard/clipboard@npm:1.16.3"
+  peerDependencies:
+    react: ">= 16.9.0"
+    react-native: ">= 0.61.5"
+    react-native-macos: ">= 0.61.0"
+    react-native-windows: ">= 0.61.0"
+  peerDependenciesMeta:
+    react-native-macos:
+      optional: true
+    react-native-windows:
+      optional: true
+  checksum: 10c0/4e6478a3dfc8862f93dd47790d1357082966c59bc6624f58a2281f3de4e7dfd57a4655e16f6c0310e46924eac654558b88fb726187c19ed3fc47c67235a1ae07
+  languageName: node
+  linkType: hard
+
 "@react-native-community/datetimepicker@npm:8.4.1":
   version: 8.4.1
   resolution: "@react-native-community/datetimepicker@npm:8.4.1"
@@ -10838,6 +10855,7 @@ __metadata:
     "@hookform/resolvers": "npm:^5.1.1"
     "@lucide/lab": "npm:^0.1.2"
     "@react-native-async-storage/async-storage": "npm:2.1.2"
+    "@react-native-clipboard/clipboard": "npm:^1.16.3"
     "@react-native-community/datetimepicker": "npm:8.4.1"
     "@react-native-community/slider": "npm:4.5.6"
     "@react-navigation/bottom-tabs": "npm:^7.2.0"

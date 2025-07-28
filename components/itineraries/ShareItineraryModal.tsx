@@ -1,4 +1,4 @@
-import { Modal, View } from 'react-native';
+import { Linking, Modal, Share, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import { SSText } from '../ui/SSText';
@@ -14,7 +14,9 @@ import {
 } from '@/api/itineraries/endpoints';
 import SSSpinner from '../ui/SSSpinner';
 import { Toast } from 'toastify-react-native';
-import ToastManager from 'toastify-react-native/components/ToastManager';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { Separator } from '../ui/separator';
+import { Copy, EllipsisVertical, FacebookIcon, Mail, TwitterIcon } from 'lucide-react-native';
 
 interface ShareItineraryModalProps {
   visible: boolean;
@@ -97,6 +99,58 @@ export default function ShareItineraryModal({
     setIsRemoveDialogOpen(false);
   };
 
+  function handleShareTwitter() {
+    const url = `https://sweetspots.app/itineraries/${itinerary.id}`;
+    const text = `Check out my itinerary on Sweetspots: ${itinerary.name} - ${url}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      text
+    )}&url=${encodeURIComponent(url)}`;
+    Linking.openURL(twitterUrl).catch((err) =>
+      Toast.error('Failed to open Twitter')
+    );
+  }
+
+  function handleShareFacebook() {
+    const url = `https://sweetspots.app/itineraries/${itinerary.id}`;
+    const text = `Check out my itinerary on Sweetspots: ${itinerary.name} - ${url}`;
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+      url
+    )}&quote=${encodeURIComponent(text)}`;
+    Linking.openURL(facebookUrl).catch((err) =>
+      Toast.error('Failed to open Facebook')
+    );
+  }
+
+  function handleShareEmail() {
+    const url = `https://sweetspots.app/itineraries/${itinerary.id}`;
+    const subject = `Check out my itinerary: ${itinerary.name}`;
+    const body = `I wanted to share my itinerary with you: ${itinerary.name}\n\nYou can view it here: ${url}`;
+    const emailUrl = `mailto:?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+    Linking.openURL(emailUrl).catch((err) =>
+      Toast.error('Failed to open email client')
+    );
+  }
+
+  const [copyLinkMessage, setCopyLinkMessage] = useState<string | null>(null);
+  function handleShareCopyLink() {
+    const url = `https://sweetspots.app/itineraries/${itinerary.id}`;
+    Clipboard.setString(url);
+    setCopyLinkMessage('Link copied to clipboard!');
+    setTimeout(() => setCopyLinkMessage(null), 2000);
+  }
+
+  function handleShareOther() {
+    const url = `https://sweetspots.app/itineraries/${itinerary.id}`;
+    const text = `Check out my itinerary on Sweetspots! It's called ${itinerary.name}. You can view it here: ${url}`;
+
+    Share.share({
+      message: text,
+      url: url,
+      title: itinerary.name + ' - Sweetspots Itinerary',
+    })
+  }
   return (
     <Modal
       visible={visible}
@@ -112,7 +166,10 @@ export default function ShareItineraryModal({
         onConfirm={handleConfirmRemove}
       />
       <ModalHeader title="Share Itinerary" onClose={onClose} />
-      <ScrollView className="flex-1 px-5 pt-5" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        className="flex-1 px-5 pt-5"
+        showsVerticalScrollIndicator={false}
+      >
         <SSText className="mb-2">Collaborators</SSText>
         <View className="flex-row flex-wrap gap-2 mb-4">
           {collaborators.map((collaborator, index) => (
@@ -137,9 +194,44 @@ export default function ShareItineraryModal({
         {errorMessage && (
           <SSText className="text-red-500 mt-2">{errorMessage}</SSText>
         )}
-        <Button className="mt-4 w-full" onPress={handleAddCollaborator} disabled={isAdding}>
+        <Button
+          className="mt-4 w-full"
+          onPress={handleAddCollaborator}
+          disabled={isAdding}
+        >
           <SSText>Add Collaborator</SSText>
         </Button>
+        <View className="flex-row items-center justify-between w-full gap-3 my-4">
+          <Separator className="flex-1" />
+          <SSText className="text-sm text-muted-foreground">
+            or share via
+          </SSText>
+          <Separator className="flex-1" />
+        </View>
+        <View className="flex-row items-center justify-center gap-4 mb-4">
+          <TouchableOpacity onPress={handleShareTwitter}>
+            <TwitterIcon size={24} color="#10b981"/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleShareFacebook}>
+            <FacebookIcon size={24} color="#10b981"/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleShareEmail}>
+            <Mail size={24} color="#10b981"/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleShareCopyLink}>
+            <Copy size={24} color="#10b981"/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleShareOther}>
+            <EllipsisVertical size={24} color="#10b981"/>
+          </TouchableOpacity>
+        </View>
+        {
+          copyLinkMessage && (
+            <SSText className="text-center text-green-500 text-xs mb-4">
+              {copyLinkMessage}
+            </SSText>
+          )
+        }
       </ScrollView>
     </Modal>
   );
