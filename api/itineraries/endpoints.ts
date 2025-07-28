@@ -45,3 +45,16 @@ export const deleteItinerary = async (
   const res = await api.delete(`/itineraries/${id}`);
   return res.data;
 };
+
+export const removeCollaborator = async (
+  itineraryId: string,
+  userIdentity?: string,
+  userId?: string
+): Promise<ApiResponse<any>> => {
+  const res = await api.patch('/itineraries/remove-collaborator', {
+    itineraryId,
+    userIdentity,
+    userId,
+  });
+  return res.data;
+};
