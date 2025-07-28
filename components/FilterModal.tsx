@@ -10,6 +10,7 @@ import { X, Star } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SSText } from './ui/SSText';
 import SSLinearGradient from './ui/SSLinearGradient';
+import ModalHeader from './ui/ModalHeader';
 
 interface FilterModalProps {
   visible: boolean;
@@ -94,15 +95,10 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
       <View className="flex-1">
         <SSLinearGradient />
 
-        {/* Header */}
-        <View className="flex-row justify-between items-center px-5 pt-5 pb-4 border-b border-slate-100">
-          <SSText variant="bold" className="text-2xl text-gray-800">
-            Filters
-          </SSText>
-          <TouchableOpacity onPress={onClose} className="w-10 h-10 rounded-full bg-slate-100 justify-center items-center">
-            <X size={24} color="#1f2937" />
-          </TouchableOpacity>
-        </View>
+        <ModalHeader
+          title="Filters"
+          onClose={onClose}
+        />
 
         {/* Content */}
         <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
