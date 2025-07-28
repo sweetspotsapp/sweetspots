@@ -13,7 +13,6 @@ import {
   EditIcon,
 } from 'lucide-react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { getItineraries } from '@/utils/storage';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
 import { Card, CardContent } from '@/components/ui/card';
@@ -21,6 +20,7 @@ import { getItineraryById } from '@/api/itineraries/endpoints';
 import { formatCurrency, formatDuration } from '@/utils/formatter';
 import SSSpinner from '@/components/ui/SSSpinner';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
+import ShareItineraryModal from '@/components/itineraries/ShareItineraryModal';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -52,16 +52,9 @@ export default function ItineraryDetailsScreen() {
     }
   };
 
-  const handleShareItinerary = () => {
-    Alert.alert(
-      'Share Itinerary',
-      'Share this itinerary with friends and family',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Share Link', onPress: () => console.log('Share link') },
-        { text: 'Invite People', onPress: () => console.log('Invite people') },
-      ]
-    );
+  const [isSharing, setIsSharing] = useState(false);
+  const handleToggleShare = () => {
+    setIsSharing((prev) => !prev);
   };
 
   const handleEditItinerary = () => {
@@ -139,6 +132,12 @@ export default function ItineraryDetailsScreen() {
   return (
     <>
       <SSLinearGradient />
+      <ShareItineraryModal
+        visible={isSharing}
+        onClose={handleToggleShare}
+        itinerary={itinerary}
+        onFinished={loadItinerary}
+      />
       <SafeAreaView className="flex-1 container mx-auto">
         {/* Header */}
         <View className="flex-row justify-between items-center px-5 pt-2.5 pb-4">
@@ -152,7 +151,7 @@ export default function ItineraryDetailsScreen() {
           <View className="flex-row gap-3">
             <TouchableOpacity
               className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-              onPress={handleShareItinerary}
+              onPress={handleToggleShare}
             >
               <Share2 size={24} color="#10b981" />
             </TouchableOpacity>
