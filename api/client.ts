@@ -9,7 +9,8 @@ const isDev = process.env.NODE_ENV === 'development';
 // Replace this with your local machine's IP address
 
 let baseURL = 'https://sweetspots-nest.onrender.com/api/v1';
-export const API_URL = 'http://192.168.4.21:8080';
+// export const API_URL = 'http://118.139.73.6:8080';
+export const API_URL = 'http://localhost:8080';
 
 if (isDev) {
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
@@ -46,7 +47,7 @@ api.interceptors.response.use(
       const status = error.response.status;
       const message = error.response.data?.message || 'Unexpected error occurred';
 
-      console.log('API Error:', {
+      console.error('API Error:', {
         type: 'RESPONSE',
         status,
         message,
@@ -90,6 +91,6 @@ api.interceptors.response.use(
       Toast.error('Unexpected error. Please try again.');
     }
 
-    return Promise.reject(error);
+    return Promise.reject(error.response);
   }
 );
