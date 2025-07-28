@@ -23,6 +23,7 @@ import { Label } from '../ui/label';
 import { PickerProvider } from '../ui/SSDateTimePicker';
 import { SSText } from '../ui/SSText';
 import { Button } from '../ui/button';
+import CollaboratorPill from './CollaboratorPill';
 
 interface ItineraryFormProps {
   onCreated?: () => void;
@@ -571,27 +572,11 @@ export function ItineraryForm({
             {collaborators.length > 0 && (
               <View className="flex-row flex-wrap gap-2">
                 {collaborators.map((collaborator, index) => (
-                  <View
+                  <CollaboratorPill
                     key={index}
-                    className="flex-row items-center bg-emerald-50 border border-emerald-600 px-3 py-1.5 rounded-2xl gap-1.5"
-                  >
-                    {collaborator.includes('@') ? (
-                      <Mail size={14} color="#10b981" />
-                    ) : (
-                      <User size={14} color="#10b981" />
-                    )}
-                    <SSText
-                      variant="medium"
-                      className="text-xs text-emerald-600"
-                    >
-                      {collaborator}
-                    </SSText>
-                    <TouchableOpacity
-                      onPress={() => removeCollaborator(collaborator)}
-                    >
-                      <X size={14} color="#f43f5e" />
-                    </TouchableOpacity>
-                  </View>
+                    collaborator={collaborator}
+                    onRemove={() => removeCollaborator(collaborator)}
+                  />
                 ))}
               </View>
             )}
