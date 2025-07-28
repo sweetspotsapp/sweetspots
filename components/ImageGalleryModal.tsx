@@ -16,11 +16,11 @@ import Animated, {
   withSpring,
   runOnJS,
 } from 'react-native-reanimated';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import {
-  GestureDetector,
-  Gesture,
-} from 'react-native-gesture-handler';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import { X } from 'lucide-react-native';
 import { cn } from '@/lib/utils';
 
@@ -91,8 +91,12 @@ export function ImageGalleryModal({
       if (!isZoomed.value) return;
       const maxPanX = ((scale.value - 1) * width) / 2;
       const maxPanY = ((scale.value - 1) * height) / 2;
-      translateX.value = withSpring(Math.max(-maxPanX, Math.min(maxPanX, translateX.value)));
-      translateY.value = withSpring(Math.max(-maxPanY, Math.min(maxPanY, translateY.value)));
+      translateX.value = withSpring(
+        Math.max(-maxPanX, Math.min(maxPanX, translateX.value))
+      );
+      translateY.value = withSpring(
+        Math.max(-maxPanY, Math.min(maxPanY, translateY.value))
+      );
     });
 
   const pinchGesture = Gesture.Pinch()
@@ -102,7 +106,10 @@ export function ImageGalleryModal({
     .onUpdate((e) => {
       'worklet';
       if (!e || typeof e.scale !== 'number' || isNaN(e.scale)) return;
-      const next = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, scaleOffset.value * e.scale));
+      const next = Math.max(
+        MIN_ZOOM,
+        Math.min(MAX_ZOOM, scaleOffset.value * e.scale)
+      );
       scale.value = next;
       isZoomed.value = next > 1.05;
       runOnJS(setIsScrollEnabled)(next <= 1.05);
@@ -177,10 +184,25 @@ export function ImageGalleryModal({
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
-      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.9)', paddingTop: insets.top, paddingBottom: insets.bottom }}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={() => {
+        resetZoom();
+        onClose();
+      }}
+    >
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.9)',
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+        }}
+      >
         <GestureDetector gesture={composedGesture}>
-          <Animated.View className='flex-1'>
+          <Animated.View className="flex-1">
             <TouchableOpacity
               className="absolute left-4 z-10"
               onPress={() => {
@@ -202,10 +224,7 @@ export function ImageGalleryModal({
               bounces={false}
             >
               {images.map((uri, index) => (
-                <View
-                  key={index}
-                  style={{ width, height, overflow: 'hidden' }}
-                >
+                <View key={index} style={{ width, height, overflow: 'hidden' }}>
                   <Animated.Image
                     source={{ uri }}
                     className="w-full h-full"
@@ -224,13 +243,17 @@ export function ImageGalleryModal({
           keyExtractor={(_, i) => i.toString()}
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 10, backgroundColor: 'rgba(0,0,0,0.6)' }}
+          contentContainerStyle={{
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            backgroundColor: 'rgba(0,0,0,0.6)',
+          }}
           className="absolute bottom-12"
           renderItem={({ item, index }) => (
             <TouchableOpacity
               className={cn(
-                "mx-1 border rounded-md",
-                currentIndex === index ? "border-white" : "border-transparent"
+                'mx-1 border rounded-md',
+                currentIndex === index ? 'border-white' : 'border-transparent'
               )}
               onPress={() => handleThumbnailPress(index)}
             >
