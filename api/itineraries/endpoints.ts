@@ -19,7 +19,9 @@ export const getMyItineraries = async (
   return res.data;
 };
 
-export const getItineraryById = async (id: string): Promise<ApiResponse<IItinerary>> => {
+export const getItineraryById = async (
+  id: string
+): Promise<ApiResponse<IItinerary>> => {
   const res = await api.get(`/itineraries/${id}`);
   return res.data;
 };
@@ -46,12 +48,33 @@ export const deleteItinerary = async (
   return res.data;
 };
 
-export const removeCollaborator = async (
-  itineraryId: string,
-  userIdentity?: string,
-  userId?: string
-): Promise<ApiResponse<any>> => {
-  const res = await api.patch('/itineraries/remove-collaborator', {
+export const removeCollaborator = async ({
+  itineraryId,
+  userIdentity,
+  userId,
+}: {
+  itineraryId: string;
+  userIdentity?: string;
+  userId?: string;
+}): Promise<ApiResponse<any>> => {
+  const res = await api.patch('/collab-itinerary/remove-collaborator', {
+    itineraryId,
+    userIdentity,
+    userId,
+  });
+  return res.data;
+};
+
+export const addCollaborator = async ({
+  itineraryId,
+  userIdentity,
+  userId,
+}: {
+  itineraryId: string;
+  userIdentity?: string;
+  userId?: string;
+}): Promise<ApiResponse<any>> => {
+  const res = await api.patch('/collab-itinerary/add-collaborator', {
     itineraryId,
     userIdentity,
     userId,
