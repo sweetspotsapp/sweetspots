@@ -17,6 +17,7 @@ import { getMyItineraries } from '@/api/itineraries/endpoints';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import { formatCurrency } from '@/utils/formatter';
 import SSSpinner from '@/components/ui/SSSpinner';
+import { goBack } from '@/utils/goBack';
 
 export default function ItinerariesScreen() {
   const [itineraries, setItineraries] = useState<IItinerary[]>([]);
@@ -169,7 +170,7 @@ export default function ItinerariesScreen() {
         <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
           <TouchableOpacity
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-            onPress={() => router.back()}
+            onPress={() => goBack('/profile')}
           >
             <ArrowLeft size={24} color="#10b981" />
           </TouchableOpacity>

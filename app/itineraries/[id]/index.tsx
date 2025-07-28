@@ -21,6 +21,7 @@ import { formatCurrency, formatDuration } from '@/utils/formatter';
 import SSSpinner from '@/components/ui/SSSpinner';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import ShareItineraryModal from '@/components/itineraries/ShareItineraryModal';
+import { goBack } from '@/utils/goBack';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -113,7 +114,7 @@ export default function ItineraryDetailsScreen() {
           </SSText>
           <TouchableOpacity
             className="bg-emerald-600 px-6 py-3 rounded-xl"
-            onPress={() => router.back()}
+            onPress={() => goBack('/itineraries')}
           >
             <SSText variant="semibold" className="text-base text-white">
               Go Back
@@ -143,7 +144,7 @@ export default function ItineraryDetailsScreen() {
         <View className="flex-row justify-between items-center px-5 pt-2.5 pb-4">
           <TouchableOpacity
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-            onPress={() => router.back()}
+            onPress={() => goBack('/itineraries')}
           >
             <ArrowLeft size={24} color="#10b981" />
           </TouchableOpacity>

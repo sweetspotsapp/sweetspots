@@ -8,6 +8,7 @@ import { getItineraryById } from '@/api/itineraries/endpoints';
 import SSSpinner from '@/components/ui/SSSpinner';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import { ItineraryForm } from '@/components/itineraries/ItineraryForm';
+import { goBack } from '@/utils/goBack';
 
 export default function EditItineraryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -63,7 +64,7 @@ export default function EditItineraryScreen() {
           </SSText>
           <TouchableOpacity
             className="bg-emerald-600 px-6 py-3 rounded-xl"
-            onPress={() => router.back()}
+            onPress={() => goBack('/itineraries')}
           >
             <SSText variant="semibold" className="text-base text-white">
               Go Back
@@ -81,10 +82,10 @@ export default function EditItineraryScreen() {
         <ItineraryForm
           itineraryId={id}
           onCancel={() => {
-            router.back();
+            goBack(`/itineraries/${id}`);
           }}
           onUpdated={() => {
-            router.back();
+            goBack(`/itineraries/${id}`);
           }}
         />
         {/* <SSLinearGradient /> */}
