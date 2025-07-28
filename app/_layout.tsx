@@ -11,9 +11,9 @@ import {
 } from '@expo-google-fonts/plus-jakarta-sans';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import "../global.css"
+import '../global.css';
 import React from 'react';
-import ToastManager from 'toastify-react-native'
+import ToastManager from 'toastify-react-native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,14 +38,16 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ToastManager useModal={false}/>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </GestureHandlerRootView>
+    <>
+      <ToastManager useModal={false} />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </GestureHandlerRootView>
+    </>
   );
 }
