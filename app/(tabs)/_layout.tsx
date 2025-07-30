@@ -1,10 +1,9 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Heart, User, Compass } from 'lucide-react-native';
+import { Heart, User, Compass, Search } from 'lucide-react-native';
 import { Platform } from 'react-native';
 
 export default function TabLayout() {
-
   return (
     <Tabs
       screenOptions={{
@@ -23,7 +22,8 @@ export default function TabLayout() {
           fontFamily: 'PlusJakartaSans-Medium',
           fontSize: 12,
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -34,21 +34,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="search"
+        options={{
+          title: 'Search',
+          tabBarIcon: ({ size, color }) => <Search size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="saved"
         options={{
           title: 'Saved',
-          tabBarIcon: ({ size, color }) => (
-            <Heart size={size} color={color} />
-          ),
+          tabBarIcon: ({ size, color }) => <Heart size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ size, color }) => (
-            <User size={size} color={color} />
-          ),
+          tabBarIcon: ({ size, color }) => <User size={size} color={color} />,
         }}
       />
     </Tabs>

@@ -60,9 +60,9 @@ export default function SavedTab() {
   return (
     <>
       <SSLinearGradient />
-      <SafeAreaView className="flex-1 container mx-auto">
+      <SafeAreaView className="flex-1 container mx-auto !px-4">
         {/* Header */}
-        <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
+        <View className="flex-row justify-between items-center pt-2.5 pb-5">
           <SSText variant="bold" className="text-3xl text-emerald-600">
             Saved Places
           </SSText>

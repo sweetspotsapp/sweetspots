@@ -42,7 +42,6 @@ interface CardStackItem {
 export default function DiscoverTab() {
   // Fetch user's current location and set it in the store
   const { setLocation, location } = useLocationStore();
-
   useEffect(() => {
     const init = async () => {
       const coords = await getCurrentCoordinates();
@@ -389,6 +388,15 @@ export default function DiscoverTab() {
       },
     });
   };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center">
+        <SSSpinner />
+        <SSText className="text-lg text-slate-500">Loading places...</SSText>
+      </SafeAreaView>
+    );
+  }
 
   if (currentIndex >= places.length) {
     return (

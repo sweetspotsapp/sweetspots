@@ -4,7 +4,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -175,7 +174,7 @@ export default function ProfileTab() {
             </View>
 
             {/* Menu Items */}
-            <View className="px-5 pt-5">
+            <View className="px-4 pt-5">
               {menuItems.map((item, index) => (
                 <TouchableOpacity
                   key={index}

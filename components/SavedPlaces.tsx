@@ -6,6 +6,7 @@ import { SavedPlaceCard } from './SavedPlaceCard';
 import { useSavedPlaces } from '@/hooks/useSavedPlaces';
 import { IPlace, ISavedPlace } from '@/dto/places/place.dto';
 import SSSpinner from './ui/SSSpinner';
+import SearchInput from './ui/SearchInput';
 
 type SavedPlacesProps = {
   isSelectionMode?: boolean;
@@ -65,29 +66,23 @@ export default function SavedPlaces({
   return (
     <>
       {/* Search Bar */}
-      <View className="flex-row items-center bg-white mx-5 mb-5 px-4 py-3 rounded-xl gap-3 shadow-sm">
-        <Search size={20} color="#64748b" />
-        <TextInput
-          className="flex-1 text-base text-gray-800"
-          placeholder="Search saved places..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          placeholderTextColor="#94a3b8"
-        />
-      </View>
+      <SearchInput
+        value={searchQuery}
+        onTextChange={setSearchQuery}
+      />
 
       {refreshing ? <SSSpinner className='mb-4'/> : (
         <FlatList
           data={filteredPlaces}
           renderItem={renderPlaceCard}
           keyExtractor={(_, i) => i.toString()}
-          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
           refreshing={refreshing}
           contentContainerClassName="gap-3"
           onRefresh={loadSavedPlaces}
           ListEmptyComponent={
-            <View className="flex-1 justify-center items-center pt-25 px-10">
+            <View className="flex-1 justify-center items-center pt-25">
               <SSText
                 variant="bold"
                 className="text-2xl text-emerald-600 text-center mb-3"
