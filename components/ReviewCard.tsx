@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Image, TouchableOpacity, Alert } from 'react-native';
-import { Star, ThumbsUp } from 'lucide-react-native';
-import { IReview } from '@/api/reviews/dto/review.dto';
+import { ChevronDown, ChevronUp, Star, ThumbsUp } from 'lucide-react-native';
 import { SSText } from './ui/SSText';
 import { markReviewHelpful } from '@/api/reviews/endpoints';
 import { getSavedHelpfulReviews, saveHelpfulReview } from '@/utils/storage';
+import { IReview } from '@/dto/reviews/review.dto';
+import { cn } from '@/lib/utils';
 
 interface ReviewCardProps {
   review: IReview;
@@ -14,6 +15,7 @@ interface ReviewCardProps {
 export function ReviewCard({ review, hideHelpfulButton }: ReviewCardProps) {
   const [helpfulCount, setHelpfulCount] = React.useState(review.helpful);
   const [isLiked, setIsLiked] = React.useState(false);
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
   React.useEffect(() => {
     const checkLiked = async () => {
@@ -85,9 +87,28 @@ export function ReviewCard({ review, hideHelpfulButton }: ReviewCardProps) {
         </View>
       </View>
 
-      <SSText className="text-sm text-gray-600 leading-5 mb-4">
+      <SSText
+        className="text-sm text-gray-600 leading-5 mb-1"
+        numberOfLines={isExpanded ? undefined : 3}
+      >
         {review.comment}
       </SSText>
+
+      {/* Toggle link */}
+      {(review.comment ?? '').length > 100 && (
+        <TouchableOpacity className='flex-row items-center mb-3 gap-1' onPress={() => setIsExpanded(!isExpanded)}>
+          {
+            !isExpanded ? (
+              <ChevronDown size={12} className={'text-emerald-500'}/>
+            ) : (
+              <ChevronUp size={12} className={'text-emerald-500'}/>
+            )
+          }
+          <SSText className="text-xs !text-emerald-500">
+            {isExpanded ? 'Read less' : 'Read more'}
+          </SSText>
+        </TouchableOpacity>
+      )}
 
       {!hideHelpfulButton && (
         <View className="flex-row justify-end">
