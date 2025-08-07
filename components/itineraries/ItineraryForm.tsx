@@ -24,6 +24,8 @@ import { PickerProvider } from '../ui/SSDateTimePicker';
 import { SSText } from '../ui/SSText';
 import { Button } from '../ui/button';
 import CollaboratorPill from './CollaboratorPill';
+import { updateSuggestionStatus } from '@/api/collab-itinerary/endpoints';
+import SuggestionCardList, { Suggestion } from './SuggestionCardList';
 
 interface ItineraryFormProps {
   onCreated?: () => void;
@@ -46,14 +48,21 @@ export function ItineraryForm({
 
   const [name, setName] = useState('');
   const [nameInput, setNameInput] = useState('');
+  const [nameSuggestions, setNameSuggestions] = useState<Suggestion[]>([]);
 
   const [description, setDescription] = useState('');
   const [descriptionInput, setDescriptionInput] = useState('');
+  const [descriptionSuggestions, setDescriptionSuggestions] = useState<Suggestion[]>([]);
 
   const [collaborators, setCollaborators] = useState<string[]>([]);
   const [newCollaborator, setNewCollaborator] = useState('');
+
   const [isPublic, setIsPublic] = useState(false);
-  const [itineraryPlaces, setItineraryPlaces] = useState<IItineraryPlace[]>([]);
+  const [allItineraryPlaces, setItineraryPlaces] = useState<IItineraryPlace[]>([]);
+
+  const itineraryPlaces = allItineraryPlaces.filter((p) => p.suggestionStatus === 'accepted')
+  const suggestedPlaces = allItineraryPlaces.filter((p) => p.suggestionStatus === 'pending');
+
   const [tripSummary, setTripSummary] = useState<TripSummary>({
     totalCost: 0,
     totalDuration: 0,
@@ -83,12 +92,20 @@ export function ItineraryForm({
           });
         },
         suggestedChange: (data) => {
-          const { field, value, userId } = data;
+          const { field, value, userId, id } = data;
           if (user?.uid !== userId) {
             if (field === 'name') {
-              setName(value);
+              // setName(value);
+              setNameSuggestions((prev) => [
+                ...prev,
+                { id, uid: userId, value },
+              ]);
             } else if (field === 'description') {
-              setDescription(value);
+              // setDescription(value);
+              setDescriptionSuggestions((prev) => [
+                ...prev,
+                { id, uid: userId, value },
+              ]);
             } else {
               const [fieldName, index] = field.split('.');
               const placeIndex = parseInt(index, 10) - 1;
@@ -102,6 +119,12 @@ export function ItineraryForm({
         },
       },
     });
+
+  const handleAcceptRejectPlaceSuggestion = (id: string, status: 'accepted' | 'rejected') => {
+    const selectedPlace = allItineraryPlaces.find((p) => p.id === id);
+    if (!selectedPlace || selectedPlace.suggestionStatus !== 'pending') return;
+    updateSuggestionStatus(id, status)
+  }
 
   useEffect(() => {
     if (itineraryId) {
@@ -419,7 +442,7 @@ export function ItineraryForm({
   return (
     <PickerProvider>
       <View className="flex-1">
-        <View className="flex-row justify-between items-center px-5 pt-5 pb-4 border-b border-slate-100">
+        {/* <View className="flex-row justify-between items-center px-5 pt-5 pb-4 border-b border-slate-100">
           <SSText variant="bold" className="text-2xl text-gray-800">
             {editMode ? 'Edit' : 'Create'} Itinerary
           </SSText>
@@ -431,7 +454,7 @@ export function ItineraryForm({
               <X size={24} color="#1f2937" />
             </TouchableOpacity>
           )}
-        </View>
+        </View> */}
 
         <ScrollView
           className="flex-1 px-5"
@@ -454,6 +477,12 @@ export function ItineraryForm({
                 editable={!userLockedFields.includes('name')}
               />
             </View>
+
+            <SuggestionCardList
+              suggestions={nameSuggestions}
+              title="Name Suggestions"
+              onSuggestionStatusChange={handleAcceptRejectPlaceSuggestion}
+            />
 
             <View className="mb-4">
               <SSText
@@ -582,33 +611,37 @@ export function ItineraryForm({
             )}
           </View>
 
-          <View className="mb-8">
-            <TouchableOpacity
-              className="flex-row items-start gap-3"
-              onPress={() => setIsPublic(!isPublic)}
-            >
-              <View
-                className={`w-5 h-5 rounded-full border-2 justify-center items-center mt-0.5 ${
-                  isPublic ? 'border-emerald-600' : 'border-slate-200'
-                }`}
-              >
-                {isPublic && (
-                  <View className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
-                )}
-              </View>
-              <View className="flex-1">
-                <SSText
-                  variant="medium"
-                  className="text-base text-gray-800 mb-1"
+          {
+            !editMode && (
+              <View className="mb-8">
+                <TouchableOpacity
+                  className="flex-row items-start gap-3"
+                  onPress={() => setIsPublic(!isPublic)}
                 >
-                  Make this itinerary public
-                </SSText>
-                <SSText className="text-sm text-slate-500">
-                  Others can discover and view your itinerary
-                </SSText>
+                  <View
+                    className={`w-5 h-5 rounded-full border-2 justify-center items-center mt-0.5 ${
+                      isPublic ? 'border-emerald-600' : 'border-slate-200'
+                    }`}
+                  >
+                    {isPublic && (
+                      <View className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
+                    )}
+                  </View>
+                  <View className="flex-1">
+                    <SSText
+                      variant="medium"
+                      className="text-base text-gray-800 mb-1"
+                    >
+                      Make this itinerary public
+                    </SSText>
+                    <SSText className="text-sm text-slate-500">
+                      Others can discover and view your itinerary
+                    </SSText>
+                  </View>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          </View>
+            ) 
+          }
         </ScrollView>
 
         <View className="flex-row px-5 pb-10 pt-5 gap-3 bg-white border-t border-slate-100">

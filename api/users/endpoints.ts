@@ -6,3 +6,8 @@ export const getCurrentUserProfile = async (): Promise<ApiResponse<IUserProfile>
     const res = await api.get('/auth/profile');
     return res.data;
 };
+
+export const getUserProfileById = async (userId: string): Promise<ApiResponse<IUserProfile>> => {
+    const res = await api.get(`/users/${userId}`);
+    return res.data;
+};

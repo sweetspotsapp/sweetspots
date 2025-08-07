@@ -10,6 +10,7 @@ interface SSControlledInputProps extends InputProps {
   control: Control<any>;
   helperText?: string;
   error?: string;
+  valueAsNumber?: boolean;
 }
 
 export const SSControlledInput: React.FC<SSControlledInputProps> = ({
@@ -18,6 +19,7 @@ export const SSControlledInput: React.FC<SSControlledInputProps> = ({
   helperText,
   error,
   className,
+  valueAsNumber = false,
   ...rest
 }) => {
   return (
@@ -28,9 +30,10 @@ export const SSControlledInput: React.FC<SSControlledInputProps> = ({
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
             value={value}
-            onChangeText={onChange}
+            onChangeText={(text) => onChange(valueAsNumber ? Number(text) : text)}
             onBlur={onBlur}
             {...rest}
+            keyboardType={valueAsNumber ? 'numeric' : (rest.keyboardType)}
           />
         )}
       />

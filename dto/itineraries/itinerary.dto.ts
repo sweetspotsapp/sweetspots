@@ -1,4 +1,4 @@
-import { IPlace } from '@/api/places/dto/place.dto';
+import { IPlace } from "../places/place.dto";
 
 export interface IItinerary {
   id: string;
@@ -37,7 +37,7 @@ export interface IItineraryPlace {
   orderIndex: number;
   createdAt: string;
   imageUrl?: string | null; // Optional image URL for the place
-
+  suggestionStatus?: "accepted" | "rejected" | "pending";
   // Optional populated place
   place?: IPlace;
 }

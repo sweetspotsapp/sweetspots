@@ -9,7 +9,7 @@ const isDev = process.env.NODE_ENV === 'development';
 // Replace this with your local machine's IP address
 
 let baseURL = 'https://sweetspots-nest.onrender.com/api/v1';
-// export const API_URL = 'http://118.139.73.6:8080';
+// export const API_URL = 'http://10.130.32.10:8080';
 export const API_URL = 'http://localhost:8080';
 
 if (isDev) {

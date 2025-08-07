@@ -1,5 +1,5 @@
 // hooks/useItinerarySocket.ts
-import { MOBILE_URL } from '@/api/client';
+import { API_URL } from '@/api/client';
 import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 
@@ -10,7 +10,12 @@ interface SocketOptions {
     fieldLocked?: (data: { field: string; userId: string }) => void;
     fieldUnlocked?: (data: { field: string }) => void;
     userJoined?: (data: { userId: string }) => void;
-    suggestedChange?: (data: any) => void;
+    suggestedChange?: (data: {
+      userId: string;
+      field: string;
+      value: any;
+      id: string;
+    }) => void;
     changeLogged?: (data: any) => void;
   };
 }
@@ -19,7 +24,7 @@ export function useItinerarySocket({ itineraryId, userId, onEvents }: SocketOpti
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    const socket = io(`${MOBILE_URL}/itinerary`, {
+    const socket = io(`${API_URL}/itinerary`, {
       transports: ['websocket'],
     });
 

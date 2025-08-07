@@ -46,7 +46,6 @@ export default function DiscoverTab() {
     const init = async () => {
       const coords = await getCurrentCoordinates();
       if (coords) {
-        console.log('Fetched current coordinates:', coords);
         setLocation(coords);
       }
     };
@@ -112,7 +111,7 @@ export default function DiscoverTab() {
         rating: ratingFilter > 0 ? ratingFilter : undefined,
         distance: distanceFilter,
         priceRange: priceFilter,
-        latitude: location?.latitude || -37.8136, // Example: Melbourne CBD
+        latitude: location?.latitude || -37.8136,
         longitude: location?.longitude || 144.9631,
       });
       setPlaces(res.data || []);
