@@ -117,7 +117,7 @@ export function PlaceScheduleCard({
                   <ChevronUp size={16} color="#64748b" />
                 </TouchableOpacity>
               )}
-              <View className="w-8 h-8 rounded-full bg-emerald-600 justify-center items-center mr-3">
+              <View className="w-8 h-8 rounded-full bg-orange-600 justify-center items-center mr-3">
                 <SSText variant="bold" className="text-sm text-white">
                   {itineraryPlace.orderIndex}
                 </SSText>
@@ -209,7 +209,7 @@ export function PlaceScheduleCard({
                 <ChevronDown size={16} color="#64748b" />
               </TouchableOpacity>
             )} */}
-            <TouchableOpacity className="w-8 h-8 rounded-full bg-emerald-50 justify-center items-center">
+            <TouchableOpacity className="w-8 h-8 rounded-full bg-orange-50 justify-center items-center">
               <EditIcon size={16} color="#10b981" />
             </TouchableOpacity>
           </View>

@@ -282,9 +282,9 @@ export function PlaceCard({
             {place.vibes.map((vibe, index) => (
               <View
                 key={index}
-                className="bg-emerald-50 border border-emerald-600 px-3 py-1.5 rounded-2xl"
+                className="bg-orange-50 border border-orange-600 px-3 py-1.5 rounded-2xl"
               >
-                <SSText variant="medium" className="text-xs text-emerald-600">
+                <SSText variant="medium" className="text-xs text-orange-600">
                   {vibe}
                 </SSText>
               </View>
@@ -313,7 +313,7 @@ export function PlaceCard({
 
             <Button variant="outline" onPress={onFindSimilar}>
               <Zap size={20} color="#10b981" />
-              <SSText variant="semibold" className="text-base text-emerald-600">
+              <SSText variant="semibold" className="text-base text-orange-600">
                 Find Similar
               </SSText>
             </Button>

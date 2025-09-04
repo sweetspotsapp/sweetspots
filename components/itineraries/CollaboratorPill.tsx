@@ -17,13 +17,13 @@ export default function CollaboratorPill({
 }: CollaboratorPillProps) {
   const identity = profile?.username || profile?.email || collaborator;
   return (
-    <View className="flex-row items-center bg-emerald-50 border border-emerald-600 px-3 py-1.5 rounded-2xl gap-1.5">
+    <View className="flex-row items-center bg-orange-50 border border-orange-600 px-3 py-1.5 rounded-2xl gap-1.5">
       {collaborator.includes('@') ? (
         <Mail size={14} color="#10b981" />
       ) : (
         <User size={14} color="#10b981" />
       )}
-      <SSText variant="medium" className="text-xs text-emerald-600">
+      <SSText variant="medium" className="text-xs text-orange-600">
         {collaborator}
       </SSText>
       {onRemove && (

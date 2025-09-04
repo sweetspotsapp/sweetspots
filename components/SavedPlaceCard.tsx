@@ -28,7 +28,7 @@ export function SavedPlaceCard({
   return (
     <TouchableOpacity
       // className={`flex-row bg-white rounded-2xl mb-4 overflow-hidden shadow-sm ${
-      //   place.selected ? 'border-2 border-emerald-700' : ''
+      //   place.selected ? 'border-2 border-orange-700' : ''
       // }`}
       onPress={isSelectionMode ? onSelect : undefined}
       activeOpacity={isSelectionMode ? 0.7 : 1}
@@ -36,9 +36,9 @@ export function SavedPlaceCard({
       <Card
         className={cn(
           'flex-row items-center',
-          isSelected && '!border-2 !border-emerald-400',
+          isSelected && '!border-2 !border-orange-400',
           {
-            'border-2 border-emerald-70': isSelected,
+            'border-2 border-orange-70': isSelected,
           }
         )}
       >
@@ -100,9 +100,9 @@ export function SavedPlaceCard({
               {place.vibes.slice(0, 3).map((vibe, index) => (
                 <View
                   key={index}
-                  className="bg-teal-50 border border-emerald-700 px-2 py-1 rounded-xl"
+                  className="bg-teal-50 border border-orange-700 px-2 py-1 rounded-xl"
                 >
-                  <SSText variant="medium" className="text-xs text-emerald-700">
+                  <SSText variant="medium" className="text-xs text-orange-700">
                     {vibe}
                   </SSText>
                 </View>

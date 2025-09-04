@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  ScrollView,
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
@@ -24,8 +23,6 @@ import { useLocationStore } from '@/store/useLocationStore';
 import { formatDistance, formatDuration } from '@/utils/formatter';
 import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
 
-const { width: screenWidth } = Dimensions.get('window');
-
 interface PlaceDetailsProps {
   place: IRecommendedPlace;
   onGoNow?: () => void;
@@ -37,7 +34,6 @@ export function PlaceDetails({
   onGoNow,
   onFindSimilar,
 }: PlaceDetailsProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [distance, setDistance] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
@@ -73,12 +69,6 @@ export function PlaceDetails({
     fetchDistanceAndDuration();
   }, [place]);
 
-  const handleImageChange = (newIndex: number) => {
-    setCurrentImageIndex(newIndex);
-  };
-
-  const imageScrollRef = React.useRef<ScrollView>(null);
-
   return (
     <Card elevation={4} className="flex-1 !rounded-3xl">
       {/* Image Carousel */}
@@ -99,7 +89,6 @@ export function PlaceDetails({
         </View>
       </View> */}
       <View className="p-4">
-
         {/* Location & Time */}
         <View className="flex-row justify-between mb-5">
           <View className="flex-row items-center gap-1.5">
@@ -137,9 +126,9 @@ export function PlaceDetails({
           {place.vibes.map((vibe, index) => (
             <View
               key={index}
-              className="bg-emerald-50 border border-emerald-600 px-3 py-1.5 rounded-2xl"
+              className="bg-orange-50 border border-orange-600 px-3 py-1.5 rounded-2xl"
             >
-              <SSText variant="medium" className="text-xs text-emerald-600">
+              <SSText variant="medium" className="text-xs text-orange-600">
                 {vibe}
               </SSText>
             </View>
@@ -168,7 +157,7 @@ export function PlaceDetails({
 
           <Button variant="outline" onPress={onFindSimilar}>
             <Zap size={20} color="#10b981" />
-            <SSText variant="semibold" className="text-base text-emerald-600">
+            <SSText variant="semibold" className="text-base text-orange-600">
               Find Similar
             </SSText>
           </Button>

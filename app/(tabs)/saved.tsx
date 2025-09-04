@@ -63,15 +63,15 @@ export default function SavedTab() {
       <SafeAreaView className="flex-1 container mx-auto !px-4">
         {/* Header */}
         <View className="flex-row justify-between items-center pt-2.5 pb-5">
-          <SSText variant="bold" className="text-3xl text-emerald-600">
+          <SSText variant="bold" className="text-3xl text-orange-600">
             Saved Places
           </SSText>
           <View className="flex-row items-center gap-3">
             <TouchableOpacity
               className={`w-11 h-11 rounded-full justify-center items-center ${
                 isSelectionMode
-                  ? 'bg-emerald-600'
-                  : 'bg-white border-2 border-emerald-600'
+                  ? 'bg-orange-600'
+                  : 'bg-white border-2 border-orange-600'
               }`}
               onPress={toggleSelectionMode}
             >

@@ -105,7 +105,7 @@ export default function ItineraryDetailsScreen() {
         <View className="flex-1 justify-center items-center px-10">
           <SSText
             variant="bold"
-            className="text-2xl text-emerald-600 text-center mb-3"
+            className="text-2xl text-orange-600 text-center mb-3"
           >
             Itinerary not found
           </SSText>
@@ -113,7 +113,7 @@ export default function ItineraryDetailsScreen() {
             The itinerary you're looking for doesn't exist or has been removed.
           </SSText>
           <TouchableOpacity
-            className="bg-emerald-600 px-6 py-3 rounded-xl"
+            className="bg-orange-600 px-6 py-3 rounded-xl"
             onPress={() => goBack('/itineraries')}
           >
             <SSText variant="semibold" className="text-base text-white">
@@ -195,17 +195,17 @@ export default function ItineraryDetailsScreen() {
 
             {/* Trip Dates */}
             {itinerary.startDate && itinerary.endDate && (
-              <View className="flex-row items-center bg-emerald-50 px-4 py-3 rounded-xl mb-6 gap-3">
+              <View className="flex-row items-center bg-orange-50 px-4 py-3 rounded-xl mb-6 gap-3">
                 <Calendar size={20} color="#10b981" />
                 <View className="flex-1">
                   <SSText
                     variant="semibold"
-                    className="text-base text-emerald-600"
+                    className="text-base text-orange-600"
                   >
                     {formatDate(itinerary.startDate)} -{' '}
                     {formatDate(itinerary.endDate)}
                   </SSText>
-                  <SSText className="text-sm text-emerald-700">
+                  <SSText className="text-sm text-orange-700">
                     {tripDays} days
                   </SSText>
                 </View>
@@ -310,7 +310,7 @@ export default function ItineraryDetailsScreen() {
                         key={index}
                         className="flex-row items-center bg-slate-100 px-3 py-2 rounded-full gap-2"
                       >
-                        <View className="w-6 h-6 rounded-full bg-emerald-600 justify-center items-center">
+                        <View className="w-6 h-6 rounded-full bg-orange-600 justify-center items-center">
                           <SSText
                             variant="semibold"
                             className="text-xs text-white"
@@ -341,7 +341,7 @@ export default function ItineraryDetailsScreen() {
                 <Card key={place.id}>
                   <CardContent>
                     <View className="flex-row items-start mb-3">
-                      <View className="w-8 h-8 rounded-full bg-emerald-600 justify-center items-center mr-3 mt-1">
+                      <View className="w-8 h-8 rounded-full bg-orange-600 justify-center items-center mr-3 mt-1">
                         <SSText variant="bold" className="text-sm text-white">
                           {place.orderIndex || index + 1}
                         </SSText>
@@ -370,7 +370,7 @@ export default function ItineraryDetailsScreen() {
                       </View>
 
                       <TouchableOpacity
-                        className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-600 justify-center items-center ml-2 mt-1"
+                        className="w-10 h-10 rounded-full bg-orange-50 border border-orange-600 justify-center items-center ml-2 mt-1"
                         onPress={() => handleNavigateToPlace(place)}
                       >
                         <Navigation size={20} color="#10b981" />
@@ -451,8 +451,8 @@ export default function ItineraryDetailsScreen() {
                     {/* VIBES */}
                     {/* <View className="flex-row flex-wrap gap-1.5 items-center mb-2">
                       {place.vibes.slice(0, 3).map((vibe, vibeIndex) => (
-                        <View key={vibeIndex} className="bg-emerald-50 border border-emerald-600 px-2 py-1 rounded-xl">
-                          <SSText variant="medium" className="text-xs text-emerald-600">
+                        <View key={vibeIndex} className="bg-orange-50 border border-orange-600 px-2 py-1 rounded-xl">
+                          <SSText variant="medium" className="text-xs text-orange-600">
                             {vibe}
                           </SSText>
                         </View>

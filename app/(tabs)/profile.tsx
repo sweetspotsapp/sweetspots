@@ -120,9 +120,9 @@ export default function ProfileTab() {
                   <View className="relative mb-4">
                     <Image
                       source={{ uri: profile.avatarUrl || 'https://placehold.co/200x200' }}
-                      className="w-25 h-25 rounded-full border-4 border-emerald-600"
+                      className="w-25 h-25 rounded-full border-4 border-orange-600"
                     />
-                    <TouchableOpacity className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-emerald-600 justify-center items-center border-3 border-white">
+                    <TouchableOpacity className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-orange-600 justify-center items-center border-3 border-white">
                       <User size={16} color="#ffffff" />
                     </TouchableOpacity>
                   </View>
@@ -137,7 +137,7 @@ export default function ProfileTab() {
                   {/* Stats */}
                   <View className="flex-row items-center bg-white px-8 py-5 rounded-2xl shadow-sm">
                     <View className="items-center flex-1">
-                      <SSText variant="bold" className="text-2xl text-emerald-600 mb-1">
+                      <SSText variant="bold" className="text-2xl text-orange-600 mb-1">
                         {swipeStats?.rightSwipes ?? 0}
                       </SSText>
                       <SSText variant="medium" className="text-xs text-slate-500">

@@ -113,7 +113,7 @@ export function SSDatePicker({
                 }}
               />
               <TouchableOpacity
-                className="p-4 bg-emerald-600 items-center"
+                className="p-4 bg-orange-600 items-center"
                 onPress={() => {
                   onChange(tempDate.toISOString().split('T')[0]);
                   onBlur?.();
@@ -217,7 +217,7 @@ export function SSTimePicker({
                 }}
               />
               <TouchableOpacity
-                className="p-4 bg-emerald-600 items-center"
+                className="p-4 bg-orange-600 items-center"
                 onPress={() => {
                   const hours = tempTime.getHours().toString().padStart(2, '0');
                   const minutes = tempTime
@@ -317,7 +317,7 @@ export function SSDateTimePicker({
                 }}
               />
               <TouchableOpacity
-                className="p-4 bg-emerald-600 items-center"
+                className="p-4 bg-orange-600 items-center"
                 onPress={() => {
                   onChange(tempValue.toISOString());
                   setOpenPickerId(null);

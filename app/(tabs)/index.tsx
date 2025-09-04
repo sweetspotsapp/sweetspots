@@ -405,7 +405,7 @@ export default function DiscoverTab() {
         <View className="flex-1 justify-center items-center px-10">
           <SSText
             variant="bold"
-            className="text-3xl text-emerald-600 text-center mb-3"
+            className="text-3xl text-orange-600 text-center mb-3"
           >
             No more places!
           </SSText>
@@ -423,7 +423,7 @@ export default function DiscoverTab() {
         <SafeAreaView className="flex-1">
           {/* Header */}
           <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
-            <SSText variant="bold" className="text-3xl text-emerald-600">
+            <SSText variant="bold" className="text-3xl text-orange-600">
               SweetSpots
             </SSText>
             <View className="flex-row gap-3">
@@ -516,7 +516,7 @@ export default function DiscoverTab() {
                         <>
                           {/* Swipe Indicators */}
                           <Animated.View
-                            className="absolute top-12 left-5 bg-emerald-600 px-5 py-2.5 rounded-lg z-10"
+                            className="absolute top-12 left-5 bg-orange-600 px-5 py-2.5 rounded-lg z-10"
                             style={[
                               { opacity: likeOpacity },
                               { transform: [{ rotate: '-12deg' }] },

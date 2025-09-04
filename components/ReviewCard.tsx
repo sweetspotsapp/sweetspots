@@ -99,12 +99,12 @@ export function ReviewCard({ review, hideHelpfulButton }: ReviewCardProps) {
         <TouchableOpacity className='flex-row items-center mb-3 gap-1' onPress={() => setIsExpanded(!isExpanded)}>
           {
             !isExpanded ? (
-              <ChevronDown size={12} className={'text-emerald-500'}/>
+              <ChevronDown size={12} className={'text-orange-500'}/>
             ) : (
-              <ChevronUp size={12} className={'text-emerald-500'}/>
+              <ChevronUp size={12} className={'text-orange-500'}/>
             )
           }
-          <SSText className="text-xs !text-emerald-500">
+          <SSText className="text-xs !text-orange-500">
             {isExpanded ? 'Read less' : 'Read more'}
           </SSText>
         </TouchableOpacity>
@@ -114,7 +114,7 @@ export function ReviewCard({ review, hideHelpfulButton }: ReviewCardProps) {
         <View className="flex-row justify-end">
           <TouchableOpacity
             className={`flex-row items-center gap-1.5 px-3 py-1.5 rounded-2xl ${
-              isLiked ? 'bg-emerald-100' : 'bg-slate-100'
+              isLiked ? 'bg-orange-100' : 'bg-slate-100'
             }`}
             onPress={markAsHelpful}
             disabled={isLiked}
@@ -123,7 +123,7 @@ export function ReviewCard({ review, hideHelpfulButton }: ReviewCardProps) {
             <SSText
               variant="medium"
               className={`text-xs ${
-                isLiked ? 'text-emerald-600' : 'text-slate-500'
+                isLiked ? 'text-orange-600' : 'text-slate-500'
               }`}
             >
               Helpful ({helpfulCount})

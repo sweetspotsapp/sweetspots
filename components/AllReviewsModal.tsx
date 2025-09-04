@@ -158,7 +158,7 @@ export function AllReviewsModal({
                 <Star size={12} color="#fbbf24" fill="#fbbf24" />
                 <View className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                   <View
-                    className={`h-full rounded-full ${selectedRating === rating ? 'bg-emerald-600' : 'bg-amber-400'
+                    className={`h-full rounded-full ${selectedRating === rating ? 'bg-orange-600' : 'bg-amber-400'
                       }`}
                     style={{
                       width: `${(ratingDistribution[rating as keyof typeof ratingDistribution] / (reviews.length || 1)) * 100}%`

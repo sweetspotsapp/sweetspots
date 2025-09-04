@@ -85,7 +85,7 @@ export default function SavedPlaces({
             <View className="flex-1 justify-center items-center pt-25">
               <SSText
                 variant="bold"
-                className="text-2xl text-emerald-600 text-center mb-3"
+                className="text-2xl text-orange-600 text-center mb-3"
               >
                 No saved places yet
               </SSText>

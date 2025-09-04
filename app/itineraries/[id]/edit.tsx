@@ -55,7 +55,7 @@ export default function EditItineraryScreen() {
         <View className="flex-1 justify-center items-center px-10">
           <SSText
             variant="bold"
-            className="text-2xl text-emerald-600 text-center mb-3"
+            className="text-2xl text-orange-600 text-center mb-3"
           >
             Itinerary not found
           </SSText>
@@ -63,7 +63,7 @@ export default function EditItineraryScreen() {
             The itinerary you're looking for doesn't exist or has been removed.
           </SSText>
           <TouchableOpacity
-            className="bg-emerald-600 px-6 py-3 rounded-xl"
+            className="bg-orange-600 px-6 py-3 rounded-xl"
             onPress={() => goBack('/itineraries')}
           >
             <SSText variant="semibold" className="text-base text-white">

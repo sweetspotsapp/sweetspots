@@ -112,7 +112,7 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
                 <TouchableOpacity
                   key={rating}
                   className={`flex-row items-center border-2 px-4 py-2.5 rounded-full gap-1.5 ${selectedRating === rating
-                      ? 'bg-emerald-600 border-emerald-600'
+                      ? 'bg-orange-600 border-orange-600'
                       : 'bg-white border-slate-200'
                     }`}
                   onPress={() => setSelectedRating(rating)}>
@@ -166,7 +166,7 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
                 <TouchableOpacity
                   key={range}
                   className={`border-2 px-5 py-3 rounded-full min-w-15 items-center ${selectedPriceRanges.includes(range)
-                      ? 'bg-emerald-600 border-emerald-600'
+                      ? 'bg-orange-600 border-orange-600'
                       : 'bg-white border-slate-200'
                     }`}
                   onPress={() => togglePriceRange(range)}>
@@ -194,7 +194,7 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
                 <TouchableOpacity
                   key={vibe}
                   className={`border-2 px-4 py-2.5 rounded-full ${selectedVibes.includes(vibe)
-                      ? 'bg-emerald-600 border-emerald-600'
+                      ? 'bg-orange-600 border-orange-600'
                       : 'bg-white border-slate-200'
                     }`}
                   onPress={() => toggleVibe(vibe)}>
@@ -218,7 +218,7 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
             </SSText>
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-1 bg-emerald-600 py-4 rounded-xl items-center" onPress={handleApply}>
+          <TouchableOpacity className="flex-1 bg-orange-600 py-4 rounded-xl items-center" onPress={handleApply}>
             <SSText variant="semibold" className="text-base text-white">
               Apply {getTotalFilters() > 0 && `(${getTotalFilters()})`}
             </SSText>

@@ -591,7 +591,7 @@ export function ItineraryForm({
                 keyboardType="email-address"
               />
               <TouchableOpacity
-                className="w-12 h-12 bg-emerald-50 border border-emerald-600 rounded-xl justify-center items-center"
+                className="w-12 h-12 bg-orange-50 border border-orange-600 rounded-xl justify-center items-center"
                 onPress={addCollaborator}
               >
                 <Plus size={20} color="#10b981" />
@@ -620,11 +620,11 @@ export function ItineraryForm({
                 >
                   <View
                     className={`w-5 h-5 rounded-full border-2 justify-center items-center mt-0.5 ${
-                      isPublic ? 'border-emerald-600' : 'border-slate-200'
+                      isPublic ? 'border-orange-600' : 'border-slate-200'
                     }`}
                   >
                     {isPublic && (
-                      <View className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
+                      <View className="w-2.5 h-2.5 rounded-full bg-orange-600" />
                     )}
                   </View>
                   <View className="flex-1">

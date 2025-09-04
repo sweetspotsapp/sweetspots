@@ -56,7 +56,7 @@ export const AlertDialog: React.FC<AlertDialogProps> = ({
               className={cn(
                 destructive
                   ? 'bg-red-500'
-                  : 'bg-emerald-500'
+                  : 'bg-orange-500'
               )}
             >
               <SSText>{confirmText}</SSText>

@@ -96,17 +96,17 @@ export default function ItinerariesScreen() {
 
         {/* Trip Dates */}
         {item.startDate && item.endDate && (
-          <View className="flex-row items-center bg-emerald-50 px-3 py-2 rounded-xl mb-4 gap-2">
+          <View className="flex-row items-center bg-orange-50 px-3 py-2 rounded-xl mb-4 gap-2">
             <Calendar size={14} color="#10b981" />
             <SSText
               variant="medium"
-              className="text-sm text-emerald-600 flex-1"
+              className="text-sm text-orange-600 flex-1"
             >
               {formatDate(item.startDate)} - {formatDate(item.endDate)}
             </SSText>
             <SSText
               variant="semibold"
-              className="text-xs text-emerald-600 bg-white px-2 py-1 rounded-lg"
+              className="text-xs text-orange-600 bg-white px-2 py-1 rounded-lg"
             >
               {getDurationInDays(item.startDate, item.endDate)} days
             </SSText>
@@ -174,7 +174,7 @@ export default function ItinerariesScreen() {
           >
             <ArrowLeft size={24} color="#10b981" />
           </TouchableOpacity>
-          <SSText variant="bold" className="text-2xl text-emerald-600">
+          <SSText variant="bold" className="text-2xl text-orange-600">
             My Itineraries
           </SSText>
           {Platform.OS === 'web' ? (
@@ -204,7 +204,7 @@ export default function ItinerariesScreen() {
                 <View className="flex-1 justify-center items-center pt-25 px-10">
                   <SSText
                     variant="bold"
-                    className="text-2xl text-emerald-600 text-center mb-3"
+                    className="text-2xl text-orange-600 text-center mb-3"
                   >
                     No itineraries yet
                   </SSText>

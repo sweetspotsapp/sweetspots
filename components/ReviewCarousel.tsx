@@ -77,7 +77,7 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
               className={`w-9 h-9 rounded-full justify-center items-center ${
                 currentIndex === 0 
                   ? 'bg-slate-100 border border-slate-200' 
-                  : 'bg-emerald-50 border border-emerald-600'
+                  : 'bg-orange-50 border border-orange-600'
               }`}
               onPress={goToPrevious}
               disabled={currentIndex === 0}>
@@ -95,7 +95,7 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
               className={`w-9 h-9 rounded-full justify-center items-center ${
                 currentIndex === reviews.length - 1 
                   ? 'bg-slate-100 border border-slate-200' 
-                  : 'bg-emerald-50 border border-emerald-600'
+                  : 'bg-orange-50 border border-orange-600'
               }`}
               onPress={goToNext}
               disabled={currentIndex === reviews.length - 1}>
@@ -120,7 +120,7 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
               onPress={() => goToIndex(index)}
               className={`h-2 rounded-full ${
                 index === currentIndex 
-                  ? 'w-6 bg-emerald-600' 
+                  ? 'w-6 bg-orange-600' 
                   : 'w-2 bg-slate-200'
               }`}
             />
@@ -133,8 +133,8 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
         <Button 
           variant='outline'
           onPress={onSeeAll}>
-          <Eye size={16} color="#10b981" />
-          <SSText className="text-emerald-600">
+          <Eye size={16} className='text-orange-500' />
+          <SSText className="text-orange-600">
             See All Reviews ({reviews.length})
           </SSText>
         </Button>
