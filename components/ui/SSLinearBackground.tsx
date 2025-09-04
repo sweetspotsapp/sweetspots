@@ -10,7 +10,7 @@ interface SSLinearBackgroundProps {
 const SSLinearBackground: React.FC<SSLinearBackgroundProps> = ({ style, children }) => (
     <View style={[styles.container, style]}>
         <LinearGradient
-            colors={['#f0fdf4', '#ffffff']}
+            colors={['#fff7ed', '#ffffff']}
             style={StyleSheet.absoluteFill}
         />
         {children}

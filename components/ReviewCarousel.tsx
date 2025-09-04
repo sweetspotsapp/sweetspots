@@ -6,13 +6,10 @@ import {
   Dimensions,
 } from 'react-native';
 import { Star, ThumbsUp, ChevronLeft, ChevronRight, Eye } from 'lucide-react-native';
-import { Review } from '@/types/Place';
 import { SSText } from './ui/SSText';
 import { Button } from './ui/button';
-import { IReview } from '@/api/reviews/dto/review.dto';
 import { ReviewCard } from './ReviewCard';
-
-const { width: screenWidth } = Dimensions.get('window');
+import { IReview } from '@/dto/reviews/review.dto';
 
 interface ReviewCarouselProps {
   reviews: IReview[];
@@ -133,7 +130,7 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
         <Button 
           variant='outline'
           onPress={onSeeAll}>
-          <Eye size={16} className='text-orange-500' />
+          <Eye size={16} className='text-orange-50' />
           <SSText className="text-orange-600">
             See All Reviews ({reviews.length})
           </SSText>

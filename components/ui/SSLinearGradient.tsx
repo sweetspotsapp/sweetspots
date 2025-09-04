@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const SSLinearGradient: React.FC = () => (
     <LinearGradient
-        colors={['#f0fdf4', '#ffffff']}
+        colors={['#fff7ed', '#ffffff']}
         style={StyleSheet.absoluteFill}
     />
 );
