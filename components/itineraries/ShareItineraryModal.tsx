@@ -210,19 +210,19 @@ export default function ShareItineraryModal({
         </View>
         <View className="flex-row items-center justify-center gap-4 mb-4">
           <TouchableOpacity onPress={handleShareTwitter}>
-            <TwitterIcon size={24} color="#10b981"/>
+            <TwitterIcon size={24} className="text-orange-500"/>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleShareFacebook}>
-            <FacebookIcon size={24} color="#10b981"/>
+            <FacebookIcon size={24} className="text-orange-500"/>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleShareEmail}>
-            <Mail size={24} color="#10b981"/>
+            <Mail size={24} className="text-orange-500"/>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleShareCopyLink}>
-            <Copy size={24} color="#10b981"/>
+            <Copy size={24} className="text-orange-500"/>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleShareOther}>
-            <EllipsisVertical size={24} color="#10b981"/>
+            <EllipsisVertical size={24} className="text-orange-500"/>
           </TouchableOpacity>
         </View>
         {

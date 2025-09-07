@@ -8,9 +8,9 @@ import {
 } from 'lucide-react-native';
 // import { SavedPlace } from '@/types/Place';
 import { SSText } from './ui/SSText';
-import { IPlace } from '@/api/places/dto/place.dto';
 import { Card, CardContent } from './ui/card';
 import { cn } from '@/lib/utils';
+import { IPlace } from '@/dto/places/place.dto';
 
 interface SavedPlaceCardProps {
   place: IPlace;
@@ -100,7 +100,7 @@ export function SavedPlaceCard({
               {place.vibes.slice(0, 3).map((vibe, index) => (
                 <View
                   key={index}
-                  className="bg-teal-50 border border-orange-700 px-2 py-1 rounded-xl"
+                  className="border border-orange-700 px-2 py-1 rounded-xl"
                 >
                   <SSText variant="medium" className="text-xs text-orange-700">
                     {vibe}

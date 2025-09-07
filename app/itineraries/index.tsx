@@ -97,7 +97,7 @@ export default function ItinerariesScreen() {
         {/* Trip Dates */}
         {item.startDate && item.endDate && (
           <View className="flex-row items-center bg-orange-50 px-3 py-2 rounded-xl mb-4 gap-2">
-            <Calendar size={14} color="#10b981" />
+            <Calendar size={14} className="text-orange-500" />
             <SSText
               variant="medium"
               className="text-sm text-orange-600 flex-1"
@@ -172,7 +172,7 @@ export default function ItinerariesScreen() {
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
             onPress={() => goBack('/profile')}
           >
-            <ArrowLeft size={24} color="#10b981" />
+            <ArrowLeft size={24} className="text-orange-500" />
           </TouchableOpacity>
           <SSText variant="bold" className="text-2xl text-orange-600">
             My Itineraries
@@ -182,7 +182,7 @@ export default function ItinerariesScreen() {
               className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
               onPress={loadItineraries}
             >
-              <RefreshCcw size={24} color="#10b981" />
+              <RefreshCcw size={24} className="text-orange-500" />
             </TouchableOpacity>
           ) : (
             <View className="w-11" />

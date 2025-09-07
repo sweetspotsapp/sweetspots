@@ -147,7 +147,6 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
                 step={1}
                 minimumTrackTintColor="#10b981"
                 maximumTrackTintColor="#e2e8f0"
-              // thumbStyle={{ backgroundColor: '#10b981', width: 20, height: 20 }}
               />
               <View className="flex-row justify-between mt-2">
                 <SSText className="text-xs text-slate-500">1 km</SSText>

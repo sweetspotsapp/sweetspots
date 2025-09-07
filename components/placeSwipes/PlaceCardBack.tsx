@@ -18,12 +18,12 @@ import {
   ChevronRight,
 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ReviewCarousel } from './ReviewCarousel';
-import { AllReviewsModal } from './AllReviewsModal';
-import { ImageGalleryModal } from './ImageGalleryModal';
-import { SSText } from './ui/SSText';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
+import { ReviewCarousel } from '../ReviewCarousel';
+import { AllReviewsModal } from '../AllReviewsModal';
+import { ImageGalleryModal } from '../ImageGalleryModal';
+import { SSText } from '../ui/SSText';
+import { Button } from '../ui/button';
+import { Card } from '../ui/card';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
 import { calculateTimeAndDistance } from '@/api/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
@@ -312,7 +312,7 @@ export function PlaceCard({
             </Button>
 
             <Button variant="outline" onPress={onFindSimilar}>
-              <Zap size={20} color="#10b981" />
+              <Zap size={20} className="text-orange-500" />
               <SSText variant="semibold" className="text-base text-orange-600">
                 Find Similar
               </SSText>

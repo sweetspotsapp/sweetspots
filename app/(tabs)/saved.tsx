@@ -77,7 +77,7 @@ export default function SavedTab() {
             >
               <CheckCircle
                 size={24}
-                color={isSelectionMode ? '#ffffff' : '#10b981'}
+                className={isSelectionMode ? "text-white" : "text-orange-500"}
               />
             </TouchableOpacity>
             {
@@ -86,7 +86,7 @@ export default function SavedTab() {
                   className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
                   onPress={() => loadSavedPlaces()}
                 >
-                  <RefreshCcw size={24} color="#10b981" />
+                  <RefreshCcw size={24} className="text-orange-500" />
                 </TouchableOpacity>
               )
             }

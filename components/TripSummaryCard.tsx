@@ -28,7 +28,7 @@ export function TripSummaryCard({ summary }: TripSummaryCardProps) {
       <View className="flex-row flex-wrap gap-4 mb-4">
         <View className="flex-1 min-w-[45%] items-center bg-slate-50 p-4 rounded-xl">
           <View className="w-10 h-10 rounded-full bg-white justify-center items-center mb-2 shadow-sm">
-            <DollarSign size={20} color="#10b981" />
+            <DollarSign size={20} className="text-orange-500" />
           </View>
           <SSText variant="bold" className="text-xl text-gray-800 mb-1">
             {formatCurrency(summary.totalCost)}

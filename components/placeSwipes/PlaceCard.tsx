@@ -5,29 +5,18 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
-  ActivityIndicator,
 } from 'react-native';
 import {
   Star,
-  MapPin,
-  Clock,
-  DollarSign,
-  Navigation,
-  Zap,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { ReviewCarousel } from './ReviewCarousel';
-import { AllReviewsModal } from './AllReviewsModal';
-import { ImageGalleryModal } from './ImageGalleryModal';
-import { SSText } from './ui/SSText';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
+import { ImageGalleryModal } from '../ImageGalleryModal';
+import { SSText } from '../ui/SSText';
+import { Card } from '../ui/card';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
 import { calculateTimeAndDistance } from '@/api/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
-import { formatDistance, formatDuration } from '@/utils/formatter';
 import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
 
 const { width: screenWidth } = Dimensions.get('window');

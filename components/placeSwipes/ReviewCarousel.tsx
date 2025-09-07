@@ -3,13 +3,14 @@ import {
   View,
   Image,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native';
-import { Star, ThumbsUp, ChevronLeft, ChevronRight, Eye } from 'lucide-react-native';
-import { SSText } from './ui/SSText';
-import { Button } from './ui/button';
+import { Star, ChevronLeft, ChevronRight, Eye } from 'lucide-react-native';
 import { ReviewCard } from './ReviewCard';
 import { IReview } from '@/dto/reviews/review.dto';
+import { SSText } from '../ui/SSText';
+import { Button } from '../ui/button';
+import { Card } from '../ui/card';
+import { cn } from '@/lib/utils';
 
 interface ReviewCarouselProps {
   reviews: IReview[];
@@ -35,25 +36,6 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
     setCurrentIndex(index);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, index) => (
-      <Star
-        key={index}
-        size={14}
-        color="#fbbf24"
-        fill={index < rating ? "#fbbf24" : "transparent"}
-      />
-    ));
-  };
-
   if (!reviews || reviews.length === 0) {
     return null;
   }
@@ -61,10 +43,10 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
   const currentReview = reviews[currentIndex];
 
   return (
-    <View className="mb-6">
+    <Card className="p-4 mb-6">
       <View className="flex-row justify-between items-center mb-4">
         <SSText variant="semibold" className="text-xl text-gray-800">
-          Recent Reviews
+          Reviews
         </SSText>
         
         {/* Navigation Controls */}
@@ -80,7 +62,7 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
               disabled={currentIndex === 0}>
               <ChevronLeft 
                 size={20} 
-                color={currentIndex === 0 ? "#94a3b8" : "#10b981"} 
+                className={cn(currentIndex === 0 ? "text-slate-400" : "text-orange-600")}
               />
             </TouchableOpacity>
             
@@ -98,7 +80,7 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
               disabled={currentIndex === reviews.length - 1}>
               <ChevronRight 
                 size={20} 
-                color={currentIndex === reviews.length - 1 ? "#94a3b8" : "#10b981"} 
+                className={cn(currentIndex === reviews.length - 1 ? "text-slate-400" : "text-orange-600")}
               />
             </TouchableOpacity>
           </View>
@@ -127,7 +109,7 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
 
       {/* See All Button */}
       {onSeeAll && (
-        <Button 
+        <Button
           variant='outline'
           onPress={onSeeAll}>
           <Eye size={16} className='text-orange-50' />
@@ -136,6 +118,6 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
           </SSText>
         </Button>
       )}
-    </View>
+    </Card>
   );
 }

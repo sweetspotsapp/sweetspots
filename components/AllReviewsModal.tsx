@@ -6,15 +6,15 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import { X, Star, ThumbsUp, Search } from 'lucide-react-native';
+import { X, Star, Search } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SSText } from './ui/SSText';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { getReviews } from '@/api/reviews/endpoints';
-import { IReview } from '@/api/reviews/dto/review.dto';
-import { ReviewCard } from './ReviewCard';
+import { IReview } from '@/dto/reviews/review.dto';
+import { ReviewCard } from './placeSwipes/ReviewCard';
 
 interface AllReviewsModalProps {
   visible: boolean;

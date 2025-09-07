@@ -594,7 +594,7 @@ export function ItineraryForm({
                 className="w-12 h-12 bg-orange-50 border border-orange-600 rounded-xl justify-center items-center"
                 onPress={addCollaborator}
               >
-                <Plus size={20} color="#10b981" />
+                <Plus size={20} className="text-orange-500" />
               </TouchableOpacity>
             </View>
 

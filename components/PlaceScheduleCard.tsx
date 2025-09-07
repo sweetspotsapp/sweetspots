@@ -210,7 +210,7 @@ export function PlaceScheduleCard({
               </TouchableOpacity>
             )} */}
             <TouchableOpacity className="w-8 h-8 rounded-full bg-orange-50 justify-center items-center">
-              <EditIcon size={16} color="#10b981" />
+              <EditIcon size={16} className="text-orange-500" />
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -303,7 +303,6 @@ export function PlaceScheduleCard({
                 step={0.5}
                 minimumTrackTintColor="#10b981"
                 maximumTrackTintColor="#e2e8f0"
-                // thumbStyle={{ backgroundColor: '#10b981', width: 20, height: 20 }}
               />
               <View className="flex-row justify-between mt-1">
                 <SSText className="text-xs text-slate-500">30min</SSText>
@@ -344,7 +343,6 @@ export function PlaceScheduleCard({
                 step={5}
                 minimumTrackTintColor="#10b981"
                 maximumTrackTintColor="#e2e8f0"
-                // thumbStyle={{ backgroundColor: '#10b981', width: 20, height: 20 }}
               />
               <View className="flex-row justify-between mt-1">
                 <SSText className="text-xs text-slate-500">Free</SSText>

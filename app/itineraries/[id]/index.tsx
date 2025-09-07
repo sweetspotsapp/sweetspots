@@ -146,7 +146,7 @@ export default function ItineraryDetailsScreen() {
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
             onPress={() => goBack('/itineraries')}
           >
-            <ArrowLeft size={24} color="#10b981" />
+            <ArrowLeft size={24} className="text-orange-500" />
           </TouchableOpacity>
 
           <View className="flex-row gap-3">
@@ -154,13 +154,13 @@ export default function ItineraryDetailsScreen() {
               className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
               onPress={handleToggleShare}
             >
-              <Share2 size={24} color="#10b981" />
+              <Share2 size={24} className="text-orange-500" />
             </TouchableOpacity>
             <TouchableOpacity
               className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
               onPress={handleEditItinerary}
             >
-              <EditIcon size={24} color="#10b981" />
+              <EditIcon size={24} className="text-orange-500" />
             </TouchableOpacity>
           </View>
         </View>
@@ -196,7 +196,7 @@ export default function ItineraryDetailsScreen() {
             {/* Trip Dates */}
             {itinerary.startDate && itinerary.endDate && (
               <View className="flex-row items-center bg-orange-50 px-4 py-3 rounded-xl mb-6 gap-3">
-                <Calendar size={20} color="#10b981" />
+                <Calendar size={20} className="text-orange-500" />
                 <View className="flex-1">
                   <SSText
                     variant="semibold"
@@ -224,7 +224,7 @@ export default function ItineraryDetailsScreen() {
                 <View className="flex-row flex-wrap gap-4">
                   {itinerary.totalEstimatedCost && (
                     <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
-                      <DollarSign size={20} color="#10b981" />
+                      <DollarSign size={20} className="text-orange-500" />
                       <SSText
                         variant="bold"
                         className="text-xl text-gray-800 mt-2 mb-1"
@@ -373,7 +373,7 @@ export default function ItineraryDetailsScreen() {
                         className="w-10 h-10 rounded-full bg-orange-50 border border-orange-600 justify-center items-center ml-2 mt-1"
                         onPress={() => handleNavigateToPlace(place)}
                       >
-                        <Navigation size={20} color="#10b981" />
+                        <Navigation size={20} className="text-orange-500" />
                       </TouchableOpacity>
                     </View>
 

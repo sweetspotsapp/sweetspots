@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Heart, X, Navigation, Filter, RotateCcw } from 'lucide-react-native';
-import { PlaceCard } from '@/components/PlaceCard';
+import { PlaceCard } from '@/components/placeSwipes/PlaceCard';
 import { FilterModal } from '@/components/FilterModal';
 import { ImageGalleryModal } from '@/components/ImageGalleryModal';
 import { savePlaceToStorage, getVibePreferences } from '@/utils/storage';
@@ -26,7 +26,7 @@ import { useLocationStore } from '@/store/useLocationStore';
 import { getCurrentCoordinates } from '@/utils/location';
 import SSSpinner from '@/components/ui/SSSpinner';
 import { ScrollView } from 'react-native-gesture-handler';
-import { PlaceDetails } from '@/components/PlaceDetails';
+import { PlaceDetails } from '@/components/placeSwipes/PlaceDetails';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -431,7 +431,7 @@ export default function DiscoverTab() {
                 className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
                 onPress={() => setShowFilterModal(true)}
               >
-                <Filter size={24} color="#10b981" />
+                <Filter size={24} className="text-orange-500" />
               </TouchableOpacity>
               {/* <TouchableOpacity
                 className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
@@ -440,7 +440,7 @@ export default function DiscoverTab() {
                   resetCardStack();
                 }}
               >
-                <RotateCcw size={24} color="#10b981" />
+                <RotateCcw size={24} className="text-orange-500" />
               </TouchableOpacity> */}
             </View>
           </View>

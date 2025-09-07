@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, Image, TouchableOpacity, Alert } from 'react-native';
 import { ChevronDown, ChevronUp, Star, ThumbsUp } from 'lucide-react-native';
-import { SSText } from './ui/SSText';
 import { markReviewHelpful } from '@/api/reviews/endpoints';
 import { getSavedHelpfulReviews, saveHelpfulReview } from '@/utils/storage';
 import { IReview } from '@/dto/reviews/review.dto';
-import { cn } from '@/lib/utils';
+import { SSText } from '../ui/SSText';
 
 interface ReviewCardProps {
   review: IReview;
@@ -119,7 +118,7 @@ export function ReviewCard({ review, hideHelpfulButton }: ReviewCardProps) {
             onPress={markAsHelpful}
             disabled={isLiked}
           >
-            <ThumbsUp size={14} color={isLiked ? '#10b981' : '#64748b'} />
+            <ThumbsUp size={14} className={isLiked ? 'text-orange-500' : 'text-slate-500'} />
             <SSText
               variant="medium"
               className={`text-xs ${
