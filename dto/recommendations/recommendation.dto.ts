@@ -1,4 +1,4 @@
-import { IReview } from "@/api/reviews/dto/review.dto";
+import { IReview } from "../reviews/review.dto";
 
 export interface IRecommendedPlace {
   id: string;
@@ -16,4 +16,5 @@ export interface IRecommendedPlace {
   category: string;
   address: string;
   reviews?: IReview[];
+  openingHours?: string[];
 }

@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, Dimensions, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import {
-  Star,
   MapPin,
   Clock,
   DollarSign,
-  Navigation,
-  Zap,
 } from 'lucide-react-native';
 import { ReviewCarousel } from './ReviewCarousel';
 import { AllReviewsModal } from '../AllReviewsModal';
 import { SSText } from '../ui/SSText';
-import { Button } from '../ui/button';
-import { Card } from '../ui/card';
+// import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
 import { calculateTimeAndDistance } from '@/api/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
 import { formatDistance, formatDuration } from '@/utils/formatter';
 import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
+import { cn } from '@/lib/utils';
 
 interface PlaceDetailsProps {
   place: IRecommendedPlace;
@@ -27,8 +25,8 @@ interface PlaceDetailsProps {
 
 export function PlaceDetails({
   place,
-  onGoNow,
-  onFindSimilar,
+  // onGoNow,
+  // onFindSimilar,
 }: PlaceDetailsProps) {
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [distance, setDistance] = useState<number | null>(null);
@@ -65,6 +63,9 @@ export function PlaceDetails({
     fetchDistanceAndDuration();
   }, [place]);
 
+  console.log(place.openingHours);
+
+  const openingHours = place.openingHours;
   return (
     <View className='pb-40'>
       {/* Location & Time */}
@@ -97,6 +98,49 @@ export function PlaceDetails({
             {place.priceRange}
           </SSText>
         </View>
+      </Card>
+
+      <Card className="mb-5">
+        {/* <CardHeader>
+          <CardTitle>
+            About {place.name}
+          </CardTitle>
+        </CardHeader> */}
+        <CardContent>
+          <SSText className='text-justify'>
+            {place.description}
+          </SSText>
+        </CardContent>
+      </Card>
+
+      <Card className="mb-5">
+        <CardContent>
+          <SSText variant="semibold" className="text-xl text-gray-800 mb-2">
+            Opening Hours
+          </SSText>
+          <SSText className='text-justify'>
+            {openingHours?.map((openHour, index) => {
+              const openHoursArr = openHour.split(': ');
+              const day = openHoursArr[0];
+              const time = openHoursArr[1];
+              const isToday = day === new Date().toLocaleDateString('en-US', { weekday: 'long' });
+              return(
+              <View key={index} className="flex-row justify-between w-full mb-1">
+                <SSText className={cn('capitalize', isToday && 'font-bold text-orange-500')}>{day}</SSText>
+                <SSText>
+                  {time ? (
+                    <>
+                      {time}
+                    </>
+                  ) : (
+                    'Closed'
+                  ) }
+                </SSText>
+              </View>
+            )})}
+            {/* {place.} */}
+          </SSText>
+        </CardContent>
       </Card>
 
       {/* Reviews Carousel */}

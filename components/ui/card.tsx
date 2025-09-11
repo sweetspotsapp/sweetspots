@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import * as React from 'react';
 import { Text, View, Platform, type ViewProps, type TextProps } from 'react-native';
-import { TextClassContext } from './SSText';
+import { SSText, TextClassContext } from './SSText';
 
 type Elevation = 0 | 1 | 2 | 3 | 4;
 
@@ -68,7 +68,7 @@ function CardHeader({
 }: ViewProps & {
   ref?: React.RefObject<View>;
 }) {
-  return <View className={cn('flex flex-col space-y-1.5 p-6', className)} {...props} />;
+  return <View className={cn('flex flex-col space-y-1.5 p-4', className)} {...props} />;
 }
 
 function CardTitle({
@@ -78,11 +78,11 @@ function CardTitle({
   ref?: React.RefObject<Text>;
 }) {
   return (
-    <Text
+    <SSText
       role="heading"
       aria-level={3}
       className={cn(
-        'text-2xl text-card-foreground font-semibold leading-none tracking-tight',
+        'text-xl text-card-foreground font-semibold leading-none tracking-tight',
         className
       )}
       {...props}
@@ -107,7 +107,7 @@ function CardContent({
 }) {
   return (
     <TextClassContext.Provider value="text-card-foreground">
-      <View className={cn('p-6', className)} {...props} />
+      <View className={cn('p-4', className)} {...props} />
     </TextClassContext.Provider>
   );
 }
@@ -118,7 +118,7 @@ function CardFooter({
 }: ViewProps & {
   ref?: React.RefObject<View>;
 }) {
-  return <View className={cn('flex flex-row items-center p-6 pt-0', className)} {...props} />;
+  return <View className={cn('flex flex-row items-center p-4 pt-0', className)} {...props} />;
 }
 
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };
