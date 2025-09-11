@@ -11,6 +11,8 @@ import { Label } from '../ui/label';
 import CollaboratorPill from './CollaboratorPill';
 import { SSText } from '../ui/SSText';
 import { X } from 'lucide-react-native';
+import { Card } from '../ui/card';
+import { Button } from '../ui/button';
 
 interface CreateItineraryModalProps {
   visible: boolean;
@@ -82,74 +84,102 @@ export function CreateItineraryModal({
   return (
     <Modal
       visible={visible}
-      animationType="slide"
+      animationType="fade"
       presentationStyle="pageSheet"
       onRequestClose={onClose}
+      transparent
+      className='flex justify-center items-center'
     >
-      <View className="flex-row justify-between items-center px-5 pt-5 pb-4 border-b border-slate-100">
-        <SSText variant="bold" className="text-2xl text-gray-800">
-          Make Plan!
-        </SSText>
-        {/* {onCancel && ( */}
-        <TouchableOpacity
-          onPress={onClose}
-          className="w-10 h-10 rounded-full bg-slate-100 justify-center items-center"
-        >
-          <X size={24} color="#1f2937" />
-        </TouchableOpacity>
-        {/* )} */}
-      </View>
-      <View className="container mx-auto flex-1">
-        <View className="mb-4">
-          <Label className="text-xl font-bold" htmlFor="trip-name">
-            Where do you want to go?
-          </Label>
-          <SSControlledInput control={control} name="location" />
-        </View>
-        <View className="mb-4">
-          <Label className="text-xl font-bold" htmlFor="trip-dates">
-            When do you want to go?
-          </Label>
-          <SSControlledPicker
-            control={control}
-            name="startDate"
-            placeholder="From..."
-            valueAsDate
-          />
-          <SSControlledPicker
-            control={control}
-            name="endDate"
-            placeholder="To..."
-            valueAsDate
-          />
-        </View>
-        <View className="mb-4">
-          <Label className="text-xl font-bold" htmlFor="trip-budget">
-            What is your budget?
-          </Label>
-          <SSControlledInput control={control} name="budget" valueAsNumber />
-        </View>
-        <View className="mb-4">
-          <Label className="text-xl font-bold" htmlFor="trip-collaborator">
-            Who is going with you?
-          </Label>
-          <SSControlledInput
-            control={control}
-            name="collaborator"
-            helperText="Add a collaborator"
-            onSubmitEditing={(e) => handleAddCollaborator(e.nativeEvent.text)}
-          />
-          <View className="flex-row flex-wrap gap-2">
-            {collaborators.map((collaborator, index) => (
-              <CollaboratorPill
-                key={index}
-                collaborator={collaborator}
-                onRemove={() => handleRemoveCollaborator(collaborator)}
-              />
-            ))}
+      <TouchableOpacity
+        // activeOpacity={1}
+        onPress={onClose} // closes modal when pressing outside
+        className="bg-black/50 justify-center absolute inset-0" // Tailwind style for dark transparent background
+      >
+        {/* <View className="flex-row justify-between items-center px-5 pt-5 pb-4 border-b border-slate-100">
+          <SSText variant="bold" className="text-2xl text-gray-800">
+            Make Plan!
+          </SSText>
+          <TouchableOpacity
+            onPress={onClose}
+            className="w-10 h-10 rounded-full bg-slate-100 justify-center items-center"
+          >
+            <X size={24} className="text-orange-500" />
+          </TouchableOpacity>
+        </View> */}
+      </TouchableOpacity>
+      <View className="container my-auto max-w-4xl mx-auto px-4 gap-4 justify-center">
+        <Card className='p-4'>
+          <View>
+            <Label className="text-xl font-bold" htmlFor="trip-name">
+              Where do you want to go?
+            </Label>
+            <SSControlledInput control={control} name="location" />
           </View>
-        </View>
-
+        </Card>
+        <Card className='p-4'>
+          <View>
+            <Label className="text-xl font-bold" htmlFor="trip-dates">
+              When do you want to go?
+            </Label>
+            <View className='flex-row gap-2'>
+              <View className='flex-1'>
+                <Label htmlFor="startDate">
+                  From...
+                </Label>
+                <SSControlledPicker
+                  control={control}
+                  name="startDate"
+                  placeholder="From..."
+                  valueAsDate
+                />
+              </View>
+              <View className='flex-1'>
+                <Label htmlFor="endDate">
+                  To...
+                </Label>
+                <SSControlledPicker
+                  control={control}
+                  name="endDate"
+                  placeholder="To..."
+                  valueAsDate
+                />
+              </View>
+            </View>
+          </View>
+        </Card>
+        <Card className='p-4 gap-4'>
+          <View>
+            <Label className="text-xl font-bold" htmlFor="trip-budget">
+              What is your budget?
+            </Label>
+            <SSControlledInput control={control} name="budget" valueAsNumber />
+          </View>
+          <View>
+            <Label className="text-xl font-bold" htmlFor="trip-collaborator">
+              Who is going with you?
+            </Label>
+            <SSControlledInput
+              control={control}
+              name="collaborator"
+              helperText="Add a collaborator"
+              onSubmitEditing={(e) => handleAddCollaborator(e.nativeEvent.text)}
+            />
+            <View className="flex-row flex-wrap gap-2">
+              {collaborators.map((collaborator, index) => (
+                <CollaboratorPill
+                  key={index}
+                  collaborator={collaborator}
+                  onRemove={() => handleRemoveCollaborator(collaborator)}
+                />
+              ))}
+            </View>
+          </View>
+        </Card>
+        <Button>
+          <SSText>
+            Let's Go!
+          </SSText>
+        </Button>
         {/* <ItineraryForm selectedPlaces={selectedPlaces} onCancel={onClose} onCreated={onCreated} /> */}
       </View>
     </Modal>

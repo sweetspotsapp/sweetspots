@@ -102,7 +102,7 @@ export default function SavedTab() {
         {/* Floating Create Button */}
         {selectedCount > 0 && (
           <Button
-            className="absolute bottom-7 left-5 right-5 shadow-lg"
+            className="absolute bottom-24 left-5 right-5 shadow-lg"
             onPress={handleCreateItinerary}
           >
             <Plus size={24} color="#ffffff" />

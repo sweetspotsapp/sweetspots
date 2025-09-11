@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Platform, TextInput, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { SSText } from './ui/SSText';
-import { Search } from 'lucide-react-native';
 import { SavedPlaceCard } from './SavedPlaceCard';
 import { useSavedPlaces } from '@/hooks/useSavedPlaces';
 import { IPlace, ISavedPlace } from '@/dto/places/place.dto';
@@ -79,7 +78,7 @@ export default function SavedPlaces({
           contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
           refreshing={refreshing}
-          contentContainerClassName="gap-3"
+          contentContainerClassName="gap-3 grid grid-cols-2"
           onRefresh={loadSavedPlaces}
           ListEmptyComponent={
             <View className="flex-1 justify-center items-center pt-25">

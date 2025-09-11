@@ -18,6 +18,7 @@ import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
 import { calculateTimeAndDistance } from '@/api/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
 import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
+import VibePill from '../ui/VibePill';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -241,14 +242,7 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
         {/* Vibes Pills */}
         <View className="flex-row flex-wrap gap-2 mb-6">
           {place.vibes.map((vibe, index) => (
-            <View
-              key={index}
-              className="bg-white border border-orange-600 px-3 py-1.5 rounded-2xl"
-            >
-              <SSText variant="medium" className="text-xs text-orange-600">
-                {vibe}
-              </SSText>
-            </View>
+            <VibePill vibe={vibe} key={index} />
           ))}
         </View>
       </View>
