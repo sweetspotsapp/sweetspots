@@ -8,16 +8,28 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarShowLabel: false,
         tabBarStyle: {
+          position: 'absolute',          // Floating position
+          bottom: 20,                     // Distance from bottom
+          left: 20,                        // Distance from left edge
+          right: 20,                       // Distance from right edge
+          elevation: 5,                    // Android shadow
           backgroundColor: '#ffffff',
-          borderTopWidth: 1,
-          borderTopColor: '#f1f5f9',
-          paddingBottom: Platform.OS === 'ios' ? 20 : 10,
-          // paddingTop: 10,
-          // height: Platform.OS === 'ios' ? 80 : 60,
+          borderRadius: 30,                // Rounded corners
+          borderTopWidth: 0,               // Remove top border
+          height: Platform.OS === 'ios' ? 70 : 60,
+          paddingTop: Platform.OS === 'ios' ? 20 : 10,
+          shadowColor: '#000',             // iOS shadow
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          shadowOffset: {
+            width: 0,
+            height: 4,
+          },
         },
-        tabBarActiveTintColor: '#065f46',
-        tabBarInactiveTintColor: '#64748b',
+        tabBarActiveTintColor: '#f97316',
+        tabBarInactiveTintColor: '#fdba74',
         tabBarLabelStyle: {
           fontFamily: 'PlusJakartaSans-Medium',
           fontSize: 12,

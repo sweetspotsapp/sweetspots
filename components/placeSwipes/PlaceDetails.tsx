@@ -66,7 +66,7 @@ export function PlaceDetails({
   }, [place]);
 
   return (
-    <>
+    <View className='pb-40'>
       {/* Location & Time */}
       <Card className="p-4 flex-row justify-between mb-5">
         <View className="flex-row items-center gap-1.5">
@@ -135,6 +135,6 @@ export function PlaceDetails({
           placeId={place.id}
         />
       )}
-    </>
+    </View>
   );
 }

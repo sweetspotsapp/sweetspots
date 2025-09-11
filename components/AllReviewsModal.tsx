@@ -15,6 +15,7 @@ import { Badge } from './ui/badge';
 import { getReviews } from '@/api/reviews/endpoints';
 import { IReview } from '@/dto/reviews/review.dto';
 import { ReviewCard } from './placeSwipes/ReviewCard';
+import SSLinearGradient from './ui/SSLinearGradient';
 
 interface AllReviewsModalProps {
   visible: boolean;
@@ -112,10 +113,7 @@ export function AllReviewsModal({
       presentationStyle="pageSheet"
       onRequestClose={onClose}>
       <SafeAreaView className="flex-1">
-        <LinearGradient
-          colors={['#f0fdf4', '#ffffff']}
-          className="absolute inset-0"
-        />
+        <SSLinearGradient/>
 
         {/* Header */}
         <View className="flex-row justify-between items-start px-5 pt-5 pb-4 border-b border-slate-100">

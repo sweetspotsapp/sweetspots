@@ -431,7 +431,7 @@ export default function DiscoverTab() {
                 className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
                 onPress={() => setShowFilterModal(true)}
               >
-                <Filter size={24} className="text-orange-500" />
+                <Filter size={24} className="text-orange-300" />
               </TouchableOpacity>
               {/* <TouchableOpacity
                 className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
@@ -445,7 +445,7 @@ export default function DiscoverTab() {
             </View>
           </View>
 
-          <ScrollView className='flex-1'>
+          <ScrollView className="flex-1">
             {isLoading ? (
               <View className="flex-1 items-center justify-center px-5">
                 <SSSpinner />
@@ -454,131 +454,139 @@ export default function DiscoverTab() {
                 </SSText>
               </View>
             ) : (
-              <View className="flex-1 items-center justify-center px-5 pb-30">
-                {cardStack.map((card, index) => {
-                  const isTopCard = index === 0;
-                  const panResponder = isTopCard
-                    ? createPanResponder(card)
-                    : null;
-
-                  const rotateAndTranslate = {
-                    transform: [
-                      {
-                        rotate: card.rotate.interpolate({
-                          inputRange: [-1, 0, 1],
-                          outputRange: ['-30deg', '0deg', '30deg'],
-                        }),
-                      },
-                      { scale: card.scale },
-                      ...card.position.getTranslateTransform(),
-                    ],
-                  };
-
-                  const likeOpacity = isTopCard
-                    ? card.position.x.interpolate({
-                        inputRange: [0, 150],
-                        outputRange: [0, 1],
-                        extrapolate: 'clamp',
-                      })
-                    : new Animated.Value(0);
-
-                  const passOpacity = isTopCard
-                    ? card.position.x.interpolate({
-                        inputRange: [-150, 0],
-                        outputRange: [1, 0],
-                        extrapolate: 'clamp',
-                      })
-                    : new Animated.Value(0);
-
-                  return (
-                    <Animated.View
-                      key={card.id}
-                      {...(panResponder?.panHandlers || {})}
-                      style={[
-                        {
-                          width: screenWidth - 40,
-                          height: screenHeight * 0.80,
-                          position: 'absolute',
-                          top: 0,
-                          zIndex: card.zIndex,
-                        },
-                        rotateAndTranslate,
-                        { opacity: card.opacity },
-                      ]}
+              <View className="flex-1 grid md:grid-cols-2 gap-6 container mx-auto justify-center px-5 pb-30">
+                <View className="relative h-full w-full" style={{ height: screenHeight * 0.8 }}>
+                  <View
+                    className="absolute bottom-0 left-0 right-0 flex-row justify-center items-center px-10 gap-10 z-10"
+                    // style={{ bottom: Platform.OS === 'ios' ? 80 : 96 }}
+                  >
+                    <TouchableOpacity
+                      className="w-16 h-16 rounded-full border bg-white border-orange-500 justify-center items-center shadow-lg"
+                      onPress={() => handleSwipe('left')}
                     >
-                      <PlaceCard
-                        place={card.place}
-                        onImagePress={handleImagePress}
+                      <X
+                        size={32}
+                        className="text-orange-500"
+                        strokeWidth={3}
                       />
+                    </TouchableOpacity>
 
-                      {/* Swipe Indicators - Only show on top card */}
-                      {isTopCard && (
-                        <>
-                          {/* Swipe Indicators */}
-                          <Animated.View
-                            className="absolute top-12 left-5 bg-orange-600 px-5 py-2.5 rounded-lg z-10"
-                            style={[
-                              { opacity: likeOpacity },
-                              { transform: [{ rotate: '-12deg' }] },
-                            ]}
-                          >
-                            <SSText
-                              variant="bold"
-                              className="text-white text-lg"
+                    <TouchableOpacity
+                      className="w-16 h-16 rounded-full bg-orange-500 justify-center items-center shadow-lg"
+                      onPress={() => handleSwipe('right')}
+                    >
+                      <Heart size={32} color="#ffffff" strokeWidth={3} />
+                    </TouchableOpacity>
+                  </View>
+                  {cardStack.map((card, index) => {
+                    const isTopCard = index === 0;
+                    const panResponder = isTopCard
+                      ? createPanResponder(card)
+                      : null;
+
+                    const rotateAndTranslate = {
+                      transform: [
+                        {
+                          rotate: card.rotate.interpolate({
+                            inputRange: [-1, 0, 1],
+                            outputRange: ['-30deg', '0deg', '30deg'],
+                          }),
+                        },
+                        { scale: card.scale },
+                        ...card.position.getTranslateTransform(),
+                      ],
+                    };
+
+                    const likeOpacity = isTopCard
+                      ? card.position.x.interpolate({
+                          inputRange: [0, 150],
+                          outputRange: [0, 1],
+                          extrapolate: 'clamp',
+                        })
+                      : new Animated.Value(0);
+
+                    const passOpacity = isTopCard
+                      ? card.position.x.interpolate({
+                          inputRange: [-150, 0],
+                          outputRange: [1, 0],
+                          extrapolate: 'clamp',
+                        })
+                      : new Animated.Value(0);
+
+                    return (
+                      <Animated.View
+                        key={card.id}
+                        {...(panResponder?.panHandlers || {})}
+                        style={[
+                          {
+                            // width: screenWidth - 40,
+                            width: '100%',
+                            height: screenHeight * 0.8,
+                            position: 'absolute',
+                            top: 0,
+                            zIndex: card.zIndex,
+                          },
+                          rotateAndTranslate,
+                          { opacity: card.opacity },
+                        ]}
+                      >
+                        <PlaceCard
+                          place={card.place}
+                          onImagePress={handleImagePress}
+                        />
+
+                        {/* Swipe Indicators - Only show on top card */}
+                        {isTopCard && (
+                          <>
+                            {/* Swipe Indicators */}
+                            <Animated.View
+                              className="absolute top-12 left-5 bg-orange-600 px-5 py-2.5 rounded-lg z-10"
+                              style={[
+                                { opacity: likeOpacity },
+                                { transform: [{ rotate: '-12deg' }] },
+                              ]}
                             >
-                              LIKE
-                            </SSText>
-                          </Animated.View>
-                          <Animated.View
-                            className="absolute top-12 right-5 bg-rose-500 px-5 py-2.5 rounded-lg z-10"
-                            style={[
-                              { opacity: passOpacity },
-                              { transform: [{ rotate: '12deg' }] },
-                            ]}
-                          >
-                            <SSText
-                              variant="bold"
-                              className="text-white text-lg"
+                              <SSText
+                                variant="bold"
+                                className="text-white text-lg"
+                              >
+                                LIKE
+                              </SSText>
+                            </Animated.View>
+                            <Animated.View
+                              className="absolute top-12 right-5 bg-rose-500 px-5 py-2.5 rounded-lg z-10"
+                              style={[
+                                { opacity: passOpacity },
+                                { transform: [{ rotate: '12deg' }] },
+                              ]}
                             >
-                              PASS
-                            </SSText>
-                          </Animated.View>
-                        </>
-                      )}
-                    </Animated.View>
-                  );
-                })}
-                <View className='mt-[80dvh]'>
+                              <SSText
+                                variant="bold"
+                                className="text-white text-lg"
+                              >
+                                PASS
+                              </SSText>
+                            </Animated.View>
+                          </>
+                        )}
+                      </Animated.View>
+                    );
+                  })}
+                  {/* Action Buttons */}
+                </View>
+                <View className="w-full">
                   <PlaceDetails
                     place={places[currentIndex]}
                     onGoNow={() => handleGoNow(places[currentIndex])}
-                    onFindSimilar={() => handleFindSimilar(places[currentIndex])}
+                    onFindSimilar={() =>
+                      handleFindSimilar(places[currentIndex])
+                    }
                   />
                 </View>
               </View>
             )}
           </ScrollView>
           {/* Card Stack */}
-
-          {/* Action Buttons */}
-          <View
-            className="absolute left-0 right-0 flex-row justify-center items-center px-10 gap-10 z-10"
-            style={{ bottom: Platform.OS === 'ios' ? 40 : 30 }}
-          >
-            <TouchableOpacity
-              className="w-16 h-16 rounded-full border bg-white border-orange-500 justify-center items-center shadow-lg"
-              onPress={() => handleSwipe('left')}
-            >
-              <X size={32} className='text-orange-500' strokeWidth={3} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className="w-16 h-16 rounded-full bg-orange-500 justify-center items-center shadow-lg"
-              onPress={() => handleSwipe('right')}
-            >
-              <Heart size={32} color="#ffffff" strokeWidth={3} />
-            </TouchableOpacity>
-          </View>
         </SafeAreaView>
       </SSLinearBackground>
       <FilterModal
