@@ -1,4 +1,4 @@
-import { IReview } from '@/api/reviews/dto/review.dto';
+import { IReview } from "../reviews/review.dto";
 
 export interface IPlace {
   id: string;
