@@ -4,7 +4,7 @@ import { AutocompleteCitiesQueryDto, CitySuggestionDto } from '@/dto/google-maps
 
 export const getAutocompleteCities = async (
   params?: AutocompleteCitiesQueryDto
-): Promise<ApiResponse<CitySuggestionDto[]>> => {
+): Promise<ApiResponse<{ suggestions: CitySuggestionDto[] }>> => {
   const res = await api.get('/maps/autocomplete-cities', { params });
   return res.data;
 };

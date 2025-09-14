@@ -10,6 +10,9 @@ export class AutocompleteCitiesQueryDto {
   input!: string;
   country?: string;
   limit?: number = 8;
+  languageCode?: string;
+  regionCode?: string;
+  sessionToken?: string;
 }
 
 /** One suggestion item */
