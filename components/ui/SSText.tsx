@@ -37,10 +37,10 @@ export function SSText({
   ...props
 }: SSTextProps) {
   const fontFamily = {
-    regular: 'PlusJakartaSans-Regular',
-    medium: 'PlusJakartaSans-Medium',
-    semibold: 'PlusJakartaSans-SemiBold',
-    bold: 'PlusJakartaSans-Bold',
+    regular: 'Poppins-Regular',
+    medium: 'Poppins-Medium',
+    semibold: 'Poppins-SemiBold',
+    bold: 'Poppins-Bold',
   }[variant];
 
   return (

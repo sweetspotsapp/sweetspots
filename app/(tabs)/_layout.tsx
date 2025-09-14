@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Heart, User, Compass, Search } from 'lucide-react-native';
+import { Heart, User, Compass, Search, Briefcase } from 'lucide-react-native';
 import { Platform } from 'react-native';
 
 export default function TabLayout() {
@@ -31,7 +31,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: '#f97316',
         tabBarInactiveTintColor: '#fdba74',
         tabBarLabelStyle: {
-          fontFamily: 'PlusJakartaSans-Medium',
+          fontFamily: 'Poppins-Medium',
           fontSize: 12,
         },
       }}
@@ -57,6 +57,20 @@ export default function TabLayout() {
         options={{
           title: 'Saved',
           tabBarIcon: ({ size, color }) => <Heart size={size} color={color} />,
+        }}
+      />
+      {/* <Tabs.Screen
+        name="saved"
+        options={{
+          title: 'Saved',
+          tabBarIcon: ({ size, color }) => <Heart size={size} color={color} />,
+        }}
+      /> */}
+      <Tabs.Screen
+        name="itineraries"
+        options={{
+          title: 'Itineraries',
+          tabBarIcon: ({ size, color }) => <Briefcase size={size} color={color} />,
         }}
       />
       <Tabs.Screen

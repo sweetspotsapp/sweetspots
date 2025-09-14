@@ -1159,6 +1159,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@expo-google-fonts/poppins@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@expo-google-fonts/poppins@npm:0.4.0"
+  checksum: 10c0/308bab2d2080cb84d32f976e0752a75897bda7a95ca7388c8d6b051efc9c09586ccb72b458d6b13e5d7426cc1d67abe5db512fc3d594fb62f1445248e76cf84d
+  languageName: node
+  linkType: hard
+
 "@expo/cli@npm:0.24.20":
   version: 0.24.20
   resolution: "@expo/cli@npm:0.24.20"
@@ -10851,6 +10858,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.25.2"
     "@expo-google-fonts/plus-jakarta-sans": "npm:^0.2.3"
+    "@expo-google-fonts/poppins": "npm:^0.4.0"
     "@expo/vector-icons": "npm:^14.1.0"
     "@hookform/resolvers": "npm:^5.1.1"
     "@lucide/lab": "npm:^0.1.2"

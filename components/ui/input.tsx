@@ -21,7 +21,7 @@ function Input({
         props.editable === false && 'opacity-50 web:cursor-not-allowed',
         className
       )}
-      style={{ fontFamily: 'PlusJakartaSans-Medium' }}
+      style={{ fontFamily: 'Poppins-Medium' }}
       placeholderClassName={cn('text-muted-foreground', placeholderClassName)}
       {...props}
     />

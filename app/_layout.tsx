@@ -4,11 +4,11 @@ import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useFonts } from 'expo-font';
 import {
-  PlusJakartaSans_400Regular,
-  PlusJakartaSans_500Medium,
-  PlusJakartaSans_600SemiBold,
-  PlusJakartaSans_700Bold,
-} from '@expo-google-fonts/plus-jakarta-sans';
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_600SemiBold,
+  Poppins_700Bold,
+} from '@expo-google-fonts/poppins';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '../global.css';
@@ -21,10 +21,10 @@ export default function RootLayout() {
   useFrameworkReady();
 
   const [fontsLoaded, fontError] = useFonts({
-    'PlusJakartaSans-Regular': PlusJakartaSans_400Regular,
-    'PlusJakartaSans-Medium': PlusJakartaSans_500Medium,
-    'PlusJakartaSans-SemiBold': PlusJakartaSans_600SemiBold,
-    'PlusJakartaSans-Bold': PlusJakartaSans_700Bold,
+    'Poppins-Regular': Poppins_400Regular,
+    'Poppins-Medium': Poppins_500Medium,
+    'Poppins-SemiBold': Poppins_600SemiBold,
+    'Poppins-Bold': Poppins_700Bold,
   });
 
   useEffect(() => {

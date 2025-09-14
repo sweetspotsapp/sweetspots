@@ -13,7 +13,7 @@ function Label({
 }: LabelPrimitive.TextProps & {
   ref?: React.RefObject<LabelPrimitive.TextRef>;
 }) {
-  const fontFamily = 'PlusJakartaSans-SemiBold'
+  const fontFamily = 'Poppins-SemiBold'
   return (
     <LabelPrimitive.Root
       className='web:cursor-default mb-2'

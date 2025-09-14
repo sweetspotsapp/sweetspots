@@ -376,7 +376,7 @@ export function PlaceScheduleCard({
                 numberOfLines={3}
                 placeholderTextColor="#94a3b8"
                 style={{
-                  fontFamily: 'PlusJakartaSans-Regular',
+                  fontFamily: 'Poppins-Regular',
                   textAlignVertical: 'top',
                 }}
               />
