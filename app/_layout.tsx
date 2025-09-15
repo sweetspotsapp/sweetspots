@@ -14,6 +14,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '../global.css';
 import React from 'react';
 import ToastManager from 'toastify-react-native';
+import { PortalHost } from '@rn-primitives/portal';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,6 +40,7 @@ export default function RootLayout() {
 
   return (
     <>
+      {/* <PortalHost /> */}
       <ToastManager useModal={false} />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack screenOptions={{ headerShown: false }}>

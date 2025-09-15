@@ -27,6 +27,7 @@ import SSSpinner from '@/components/ui/SSSpinner';
 import { goBack } from '@/utils/goBack';
 import { Button } from '@/components/ui/button';
 import { CreateItineraryModal } from '@/components/itineraries/CreateItineraryModal';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 export default function ItinerariesScreen() {
   const [itineraries, setItineraries] = useState<IItinerary[]>([]);
@@ -208,6 +209,14 @@ export default function ItinerariesScreen() {
           <SSText variant="bold" className="text-3xl text-orange-600">
             My Trips
           </SSText>
+          <Dialog>
+            <DialogTrigger>
+            hello
+            </DialogTrigger>
+            <DialogContent>
+              Apa si
+            </DialogContent>
+          </Dialog>
           {Platform.OS === 'web' ? (
             <TouchableOpacity
               className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"

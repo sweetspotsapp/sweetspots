@@ -2534,7 +2534,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-dialog@npm:1.1.15":
+"@radix-ui/react-dialog@npm:1.1.15, @radix-ui/react-dialog@npm:^1.1.14":
   version: 1.1.15
   resolution: "@radix-ui/react-dialog@npm:1.1.15"
   dependencies:
@@ -3241,6 +3241,28 @@ __metadata:
     react-native-web:
       optional: true
   checksum: 10c0/a8b82c72edeeded30b6db95cfe1b5b3a54e9eaab67b89d8cf3abe542a91c672c5171d9bfa4e6d3ecbedfa4346efcb7a00ab419961cec0a9e98ee36e8c24b873a
+  languageName: node
+  linkType: hard
+
+"@rn-primitives/dialog@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@rn-primitives/dialog@npm:1.2.0"
+  dependencies:
+    "@radix-ui/react-dialog": "npm:^1.1.14"
+    "@rn-primitives/hooks": "npm:1.3.0"
+    "@rn-primitives/slot": "npm:1.2.0"
+    "@rn-primitives/types": "npm:1.2.0"
+  peerDependencies:
+    "@rn-primitives/portal": "*"
+    react: "*"
+    react-native: "*"
+    react-native-web: "*"
+  peerDependenciesMeta:
+    react-native:
+      optional: true
+    react-native-web:
+      optional: true
+  checksum: 10c0/b902392236c9940f94977dcd93ada5d882e6c737e666a31c412ca38161543cfb8ae9968fbe2a2d7d7d62329dbb93241f7a89f52341ad5e1bd75abbc101261d48
   languageName: node
   linkType: hard
 
@@ -9291,6 +9313,7 @@ __metadata:
     "@react-navigation/native": "npm:^7.0.14"
     "@rn-primitives/accordion": "npm:^1.2.0"
     "@rn-primitives/alert-dialog": "npm:^1.2.0"
+    "@rn-primitives/dialog": "npm:^1.2.0"
     "@rn-primitives/label": "npm:^1.2.0"
     "@rn-primitives/portal": "npm:^1.3.0"
     "@rn-primitives/separator": "npm:^1.2.0"
@@ -9298,6 +9321,7 @@ __metadata:
     "@types/react": "npm:~19.0.10"
     axios: "npm:^1.10.0"
     class-variance-authority: "npm:^0.7.1"
+    clsx: "npm:^2.1.1"
     dotenv: "npm:^16.5.0"
     expo: "npm:53.0.20"
     expo-auth-session: "npm:~6.2.1"
@@ -9339,6 +9363,7 @@ __metadata:
     react-native-webview: "npm:13.13.5"
     react-native-worklets: "npm:^0.5.1"
     socket.io-client: "npm:^4.8.1"
+    tailwind-merge: "npm:^3.3.1"
     tailwindcss: "npm:^3.4.17"
     tailwindcss-animate: "npm:^1.0.7"
     toastify-react-native: "npm:^7.2.3"
@@ -9347,6 +9372,13 @@ __metadata:
     zustand: "npm:^5.0.5"
   languageName: unknown
   linkType: soft
+
+"tailwind-merge@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "tailwind-merge@npm:3.3.1"
+  checksum: 10c0/b84c6a78d4669fa12bf5ab8f0cdc4400a3ce0a7c006511af4af4be70bb664a27466dbe13ee9e3b31f50ddf6c51d380e8192ce0ec9effce23ca729d71a9f63818
+  languageName: node
+  linkType: hard
 
 "tailwindcss-animate@npm:^1.0.7":
   version: 1.0.7

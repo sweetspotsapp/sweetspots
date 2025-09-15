@@ -13,6 +13,13 @@ import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { getAutocompleteCities } from '@/api/google-maps/endpoints';
 import SSSpinner from '../ui/SSSpinner';
+import {
+  Dialog,
+  DialogContent,
+  DialogPortal,
+  DialogTrigger,
+} from '../ui/dialog';
+import { PortalHost } from '@rn-primitives/portal';
 
 interface CreateItineraryModalProps {
   visible: boolean;
@@ -50,7 +57,9 @@ const initItinerarySchema = yup.object().shape({
     .required('Collaborator is required')
     .min(3, 'Collaborator must be at least 3 characters'),
 
-  collaborators: yup.array().of(yup.string().required('Collaborator is required')),
+  collaborators: yup
+    .array()
+    .of(yup.string().required('Collaborator is required')),
 });
 
 type FormData = yup.InferType<typeof initItinerarySchema>;
@@ -59,19 +68,31 @@ export function CreateItineraryModal({
   visible,
   onClose,
   onCreated,
-  // selectedPlaces,
-}: CreateItineraryModalProps) {
-  const { control, setValue, getValues, watch, formState: { errors }, handleSubmit } = useForm({
+}: // selectedPlaces,
+CreateItineraryModalProps) {
+  const {
+    control,
+    setValue,
+    getValues,
+    watch,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
     resolver: yupResolver(initItinerarySchema),
   });
 
   const handleAddCollaborator = (collaborator: string) => {
-    setValue('collaborators', [...(getValues('collaborators') || []), collaborator]);
+    setValue('collaborators', [
+      ...(getValues('collaborators') || []),
+      collaborator,
+    ]);
   };
 
   const handleRemoveCollaborator = (collaborator: string) => {
     const currentCollaborators = getValues('collaborators') || [];
-    const updatedCollaborators = currentCollaborators.filter((c: string) => c !== collaborator);
+    const updatedCollaborators = currentCollaborators.filter(
+      (c: string) => c !== collaborator
+    );
     setValue('collaborators', updatedCollaborators);
   };
 
@@ -130,126 +151,176 @@ export function CreateItineraryModal({
     };
   }, [query, suppressFetch, selectedCity]);
 
-  console.log(watch(), errors)
+  console.log(watch(), errors);
+
+  const [isDoneForm, setIsDoneForm] = React.useState(false);
 
   function onSubmit(data: FormData) {
-    console.log('Form submitted:', data);
+    setIsDoneForm(true);
     // onCreated();
     // onClose();
   }
 
+  function onSelectOwnSpots() {
+    // Logic to select user's own spots
+  }
+
+  function onSelectSuggestedSpot() {
+    // Logic to select a suggested spot
+  }
+
   return (
-    <Modal
-      visible={visible}
-      animationType="fade"
-      presentationStyle="pageSheet"
-      onRequestClose={onClose}
-      transparent
-      className="flex justify-center items-center"
-    >
-      {/* Overlay to close when tapping outside */}
-      <TouchableOpacity
-        onPress={onClose}
-        className="bg-black/50 justify-center absolute inset-0"
-        activeOpacity={1}
-      />
+    <>
+      <Modal
+        visible={visible && !isDoneForm}
+        animationType="fade"
+        presentationStyle="pageSheet"
+        onRequestClose={onClose}
+        transparent
+        className="flex justify-center items-center"
+      >
+        {/* Overlay to close when tapping outside */}
+        <TouchableOpacity
+          onPress={onClose}
+          className="bg-black/50 justify-center absolute inset-0"
+          activeOpacity={1}
+        />
 
-      <View className="container my-auto max-w-4xl mx-auto px-4 gap-4 justify-center">
-        {/* Destination */}
-        <Card className="p-4">
-          <View>
-            <Label className="text-xl font-bold" htmlFor="trip-name">
-              Where do you want to go?
-            </Label>
-            <SSControlledInput control={control} name="query" />
-          </View>
+        <View className="container my-auto max-w-4xl mx-auto px-4 gap-4 justify-center">
+          {/* Destination */}
+          <Card className="p-4">
+            <View>
+              <Label className="text-xl font-bold" htmlFor="trip-name">
+                Where do you want to go?
+              </Label>
+              <SSControlledInput control={control} name="query" />
+            </View>
 
-          {loadingCities ? (
-            <SSSpinner />
-          ) : (
-            cities.length > 0 && (
-              <View className="mt-2 max-h-40 overflow-y-auto rounded border border-gray-200">
-                {cities.map((city, index) => (
-                  <TouchableOpacity
-                    key={`${city}-${index}`}
-                    onPress={() => {
-                      setSelectedCity(city);
-                      setValue('location', city);
-                      setValue('query', city); // show chosen city in the input
-                      setCities([]); // hide list
-                      setSuppressFetch(true); // freeze future fetches until user edits
-                    }}
-                    className="p-2 border-b border-gray-200"
-                  >
-                    <SSText>{city}</SSText>
-                  </TouchableOpacity>
+            {loadingCities ? (
+              <SSSpinner />
+            ) : (
+              cities.length > 0 && (
+                <View className="mt-2 max-h-40 overflow-y-auto rounded border border-gray-200">
+                  {cities.map((city, index) => (
+                    <TouchableOpacity
+                      key={`${city}-${index}`}
+                      onPress={() => {
+                        setSelectedCity(city);
+                        setValue('location', city);
+                        setValue('query', city); // show chosen city in the input
+                        setCities([]); // hide list
+                        setSuppressFetch(true); // freeze future fetches until user edits
+                      }}
+                      className="p-2 border-b border-gray-200"
+                    >
+                      <SSText>{city}</SSText>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )
+            )}
+          </Card>
+
+          {/* Dates */}
+          <Card className="p-4">
+            <View>
+              <Label className="text-xl font-bold" htmlFor="trip-dates">
+                When do you want to go?
+              </Label>
+              <View className="flex-row gap-2">
+                <View className="flex-1">
+                  <Label htmlFor="startDate">From...</Label>
+                  <SSControlledPicker
+                    control={control}
+                    name="startDate"
+                    placeholder="From..."
+                    valueAsDate
+                  />
+                </View>
+                <View className="flex-1">
+                  <Label htmlFor="endDate">To...</Label>
+                  <SSControlledPicker
+                    control={control}
+                    name="endDate"
+                    placeholder="To..."
+                    valueAsDate
+                  />
+                </View>
+              </View>
+            </View>
+          </Card>
+
+          {/* Budget & Collaborators */}
+          <Card className="p-4 gap-4">
+            <View>
+              <Label className="text-xl font-bold" htmlFor="trip-budget">
+                What is your budget?
+              </Label>
+              <View className="flex-row gap-2 items-center">
+                <SSText>AU$</SSText>
+                <SSControlledInput
+                  control={control}
+                  name="budget"
+                  className="flex-1"
+                  valueAsNumber
+                />
+              </View>
+            </View>
+
+            <View>
+              <Label className="text-xl font-bold" htmlFor="trip-collaborator">
+                Who is going with you?
+              </Label>
+              <SSControlledInput
+                control={control}
+                name="collaborator"
+                helperText="Add a collaborator"
+                onSubmitEditing={(e) => {
+                  const v = e.nativeEvent.text?.trim();
+                  if (v) handleAddCollaborator(v);
+                }}
+              />
+              <View className="flex-row flex-wrap gap-2 mt-2">
+                {collaborators.map((collaborator: string, index: number) => (
+                  <CollaboratorPill
+                    key={`${collaborator}-${index}`}
+                    collaborator={collaborator}
+                    onRemove={() => handleRemoveCollaborator(collaborator)}
+                  />
                 ))}
               </View>
-            )
-          )}
-        </Card>
-
-        {/* Dates */}
-        <Card className="p-4">
-          <View>
-            <Label className="text-xl font-bold" htmlFor="trip-dates">
-              When do you want to go?
-            </Label>
-            <View className="flex-row gap-2">
-              <View className="flex-1">
-                <Label htmlFor="startDate">From...</Label>
-                <SSControlledPicker control={control} name="startDate" placeholder="From..." valueAsDate />
-              </View>
-              <View className="flex-1">
-                <Label htmlFor="endDate">To...</Label>
-                <SSControlledPicker control={control} name="endDate" placeholder="To..." valueAsDate />
-              </View>
             </View>
-          </View>
-        </Card>
+          </Card>
 
-        {/* Budget & Collaborators */}
-        <Card className="p-4 gap-4">
-          <View>
-            <Label className="text-xl font-bold" htmlFor="trip-budget">
-              What is your budget?
-            </Label>
-            <View className='flex-row gap-2 items-center'>
-              <SSText >AU$</SSText>
-            <SSControlledInput control={control} name="budget" className='flex-1' valueAsNumber />
-            </View>
-          </View>
-
-          <View>
-            <Label className="text-xl font-bold" htmlFor="trip-collaborator">
-              Who is going with you?
-            </Label>
-            <SSControlledInput
-              control={control}
-              name="collaborator"
-              helperText="Add a collaborator"
-              onSubmitEditing={(e) => {
-                const v = e.nativeEvent.text?.trim();
-                if (v) handleAddCollaborator(v);
-              }}
-            />
-            <View className="flex-row flex-wrap gap-2 mt-2">
-              {collaborators.map((collaborator: string, index: number) => (
-                <CollaboratorPill
-                  key={`${collaborator}-${index}`}
-                  collaborator={collaborator}
-                  onRemove={() => handleRemoveCollaborator(collaborator)}
-                />
-              ))}
-            </View>
-          </View>
-        </Card>
-
-        <Button onPress={() => handleSubmit(onSubmit)()} className="self-end">
-          <SSText>Let&apos;s Go!</SSText>
-        </Button>
-        {/* <ItineraryForm selectedPlaces={selectedPlaces} onCancel={onClose} onCreated={onCreated} /> */}
-      </View>
-    </Modal>
+          <Button
+            onPress={() => handleSubmit(onSubmit)()}
+            className="self-end"
+          >
+            <SSText>Let&apos;s Go!</SSText>
+          </Button>
+          {/* <ItineraryForm selectedPlaces={selectedPlaces} onCancel={onClose} onCreated={onCreated} /> */}
+        </View>
+      </Modal>
+      <Dialog open={isDoneForm} onOpenChange={setIsDoneForm}>
+        <DialogContent>
+          <SSText className="text-center">
+            Do you want us to choose spots for you?
+          </SSText>
+          <Button className="mt-2" onPress={onSelectSuggestedSpot}>
+            <SSText>
+            Yes, please!
+            </SSText>
+          </Button>
+          <Button
+            variant="outline"
+            onPress={onSelectOwnSpots}
+          >
+            <SSText>
+            No, let me choose my own
+            </SSText>
+          </Button>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
