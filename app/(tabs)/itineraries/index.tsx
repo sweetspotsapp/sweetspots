@@ -168,14 +168,14 @@ export default function ItinerariesScreen() {
       <SafeAreaView className="flex-1 container mx-auto">
         {/* Header */}
         <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
-          <TouchableOpacity
+          {/* <TouchableOpacity
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
             onPress={() => goBack('/profile')}
           >
             <ArrowLeft size={24} className="text-orange-500" />
-          </TouchableOpacity>
-          <SSText variant="bold" className="text-2xl text-orange-600">
-            My Itineraries
+          </TouchableOpacity> */}
+          <SSText variant="bold" className="text-3xl text-orange-600">
+            My Trips
           </SSText>
           {Platform.OS === 'web' ? (
             <TouchableOpacity
