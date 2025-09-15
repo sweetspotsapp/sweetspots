@@ -2,24 +2,15 @@ import axios from 'axios';
 import { getToken } from '@/utils/token';
 import { router } from 'expo-router'; // or useRouter() inside component scope
 import { Toast } from 'toastify-react-native';
-import { Platform } from 'react-native';
+// import { Platform } from 'react-native';
 
 const isDev = process.env.NODE_ENV === 'development';
 
 // Replace this with your local machine's IP address
 
-let baseURL = 'https://sweetspots-nest.onrender.com/api/v1';
-// export const API_URL = 'http://10.130.32.10:8080';
-export const API_URL = 'http://localhost:8080';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8080';
 
-if (isDev) {
-  if (Platform.OS === 'ios' || Platform.OS === 'android') {
-    baseURL = `${API_URL}/api/v1`;
-  } else {
-    // for web
-    baseURL = `${API_URL}/api/v1`;
-  }
-}
+let baseURL = `${API_URL}/api/v1`;
 
 export const api = axios.create({
   baseURL,
