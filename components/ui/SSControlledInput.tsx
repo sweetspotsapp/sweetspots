@@ -23,26 +23,35 @@ export const SSControlledInput: React.FC<SSControlledInputProps> = ({
   ...rest
 }) => {
   return (
-    <View className={cn("w-full gap-1", className)}>
+    <View className={cn('w-full gap-1', className)}>
       <Controller
         control={control}
         name={name}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            value={value}
-            onChangeText={(text) => onChange(valueAsNumber ? Number(text) : text)}
-            onBlur={onBlur}
-            {...rest}
-            keyboardType={valueAsNumber ? 'numeric' : (rest.keyboardType)}
-          />
+        render={({
+          field: { onChange, onBlur, value },
+          fieldState: { error },
+        }) => (
+          <>
+            <Input
+              value={value}
+              onChangeText={(text) =>
+                onChange(valueAsNumber ? Number(text) : text)
+              }
+              onBlur={onBlur}
+              {...rest}
+              keyboardType={valueAsNumber ? 'numeric' : rest.keyboardType}
+            />
+            {helperText && !error && (
+              <SSText className="text-xs text-muted-foreground">
+                {helperText}
+              </SSText>
+            )}
+            {error && (
+              <SSText className="text-xs text-red-500">{error?.message}</SSText>
+            )}
+          </>
         )}
       />
-      {helperText && !error && (
-        <SSText className="text-xs text-muted-foreground">{helperText}</SSText>
-      )}
-      {error && (
-        <SSText className="text-xs text-red-500">{error}</SSText>
-      )}
     </View>
   );
 };

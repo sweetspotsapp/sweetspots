@@ -62,7 +62,10 @@ export function SSDatePicker({
         placeholder={placeholder}
         // @ts-ignore - only valid on web
         type="date"
-        onChange={(e) => onTextChange(e.target.value)}
+        onChange={(e) => {
+          console.log(e.target.value);
+          onTextChange(e.target.value);
+        }}
         onFocus={onFocus}
         onBlur={onBlur}
         disabled={!editable}
