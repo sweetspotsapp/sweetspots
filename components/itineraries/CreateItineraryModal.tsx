@@ -18,7 +18,7 @@ interface CreateItineraryModalProps {
   visible: boolean;
   onClose: () => void;
   onCreated: () => void;
-  selectedPlaces: IPlace[];
+  selectedPlaces?: IPlace[];
 }
 
 const initItinerarySchema = yup.object().shape({
@@ -53,13 +53,15 @@ const initItinerarySchema = yup.object().shape({
   collaborators: yup.array().of(yup.string().required('Collaborator is required')),
 });
 
+type FormData = yup.InferType<typeof initItinerarySchema>;
+
 export function CreateItineraryModal({
   visible,
   onClose,
   onCreated,
-  selectedPlaces,
+  // selectedPlaces,
 }: CreateItineraryModalProps) {
-  const { control, setValue, getValues, watch } = useForm({
+  const { control, setValue, getValues, watch, formState: { errors }, handleSubmit } = useForm({
     resolver: yupResolver(initItinerarySchema),
   });
 
@@ -127,6 +129,14 @@ export function CreateItineraryModal({
       clearTimeout(t);
     };
   }, [query, suppressFetch, selectedCity]);
+
+  console.log(watch(), errors)
+
+  function onSubmit(data: FormData) {
+    console.log('Form submitted:', data);
+    // onCreated();
+    // onClose();
+  }
 
   return (
     <Modal
@@ -204,7 +214,10 @@ export function CreateItineraryModal({
             <Label className="text-xl font-bold" htmlFor="trip-budget">
               What is your budget?
             </Label>
-            <SSControlledInput control={control} name="budget" valueAsNumber />
+            <View className='flex-row gap-2 items-center'>
+              <SSText >AU$</SSText>
+            <SSControlledInput control={control} name="budget" className='flex-1' valueAsNumber />
+            </View>
           </View>
 
           <View>
@@ -232,7 +245,7 @@ export function CreateItineraryModal({
           </View>
         </Card>
 
-        <Button onPress={onCreated}>
+        <Button onPress={() => handleSubmit(onSubmit)()} className="self-end">
           <SSText>Let&apos;s Go!</SSText>
         </Button>
         {/* <ItineraryForm selectedPlaces={selectedPlaces} onCancel={onClose} onCreated={onCreated} /> */}

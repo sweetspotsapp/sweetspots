@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, TouchableOpacity, Image, Platform } from 'react-native';
+import {
+  View,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Platform,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ArrowLeft,
@@ -9,6 +15,7 @@ import {
   Clock,
   DollarSign,
   RefreshCcw,
+  Plus,
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
@@ -18,6 +25,8 @@ import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import { formatCurrency } from '@/utils/formatter';
 import SSSpinner from '@/components/ui/SSSpinner';
 import { goBack } from '@/utils/goBack';
+import { Button } from '@/components/ui/button';
+import { CreateItineraryModal } from '@/components/itineraries/CreateItineraryModal';
 
 export default function ItinerariesScreen() {
   const [itineraries, setItineraries] = useState<IItinerary[]>([]);
@@ -98,10 +107,7 @@ export default function ItinerariesScreen() {
         {item.startDate && item.endDate && (
           <View className="flex-row items-center bg-orange-50 px-3 py-2 rounded-xl mb-4 gap-2">
             <Calendar size={14} className="text-orange-500" />
-            <SSText
-              variant="medium"
-              className="text-sm text-orange-600 flex-1"
-            >
+            <SSText variant="medium" className="text-sm text-orange-600 flex-1">
               {formatDate(item.startDate)} - {formatDate(item.endDate)}
             </SSText>
             <SSText
@@ -162,10 +168,35 @@ export default function ItinerariesScreen() {
     </TouchableOpacity>
   );
 
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  const handleCreateItinerary = () => {
+    setShowCreateModal(true);
+  };
+
+  const handleCreatedItinerary = () => {
+    setShowCreateModal(true);
+  };
+
   return (
     <>
       <SSLinearGradient />
-      <SafeAreaView className="flex-1 container mx-auto">
+      <CreateItineraryModal
+        visible={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onCreated={handleCreatedItinerary}
+        // selectedPlaces={savedPlaces.filter((p) =>
+        //   selectedPlaceIds.includes(p.id)
+        // )}
+      />
+      <SafeAreaView className="flex-1 container mx-auto mb-16 md:mb-0">
+        <Button
+          className="absolute bottom-24 right-5 shadow-lg z-10 w-fit"
+          onPress={handleCreateItinerary}
+        >
+          <Plus size={24} className="text-white" />
+          <SSText variant="semibold">Create Itinerary</SSText>
+        </Button>
         {/* Header */}
         <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
           {/* <TouchableOpacity
@@ -190,33 +221,31 @@ export default function ItinerariesScreen() {
         </View>
 
         {/* Itineraries List */}
-        {
-          isLoading ? (
-            <SSSpinner className='mb-4'/>
-          ) : (
-            <FlatList
-              data={itineraries}
-              renderItem={renderItinerary}
-              keyExtractor={(item) => item.id}
-              contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
-              showsVerticalScrollIndicator={false}
-              ListEmptyComponent={
-                <View className="flex-1 justify-center items-center pt-25 px-10">
-                  <SSText
-                    variant="bold"
-                    className="text-2xl text-orange-600 text-center mb-3"
-                  >
-                    No itineraries yet
-                  </SSText>
-                  <SSText className="text-base text-slate-500 text-center leading-6">
-                    Create your first itinerary by selecting places from your saved
-                    collection!
-                  </SSText>
-                </View>
-              }
-            />
-          )
-        }
+        {isLoading ? (
+          <SSSpinner className="mb-4" />
+        ) : (
+          <FlatList
+            data={itineraries}
+            renderItem={renderItinerary}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <View className="flex-1 justify-center items-center pt-25 px-10">
+                <SSText
+                  variant="bold"
+                  className="text-2xl text-orange-600 text-center mb-3"
+                >
+                  No itineraries yet
+                </SSText>
+                <SSText className="text-base text-slate-500 text-center leading-6">
+                  Create your first itinerary by selecting places from your
+                  saved collection!
+                </SSText>
+              </View>
+            }
+          />
+        )}
       </SafeAreaView>
     </>
   );
