@@ -9,6 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useItineraryDraft } from '@/store/useItineraryDraft';
 import DiscoverPlaces from '@/components/discoverPlaces/DiscoverPlaces';
 import { ScrollView } from 'react-native-gesture-handler';
+import { createAutoItinerary } from '@/api/auto-itinerary/endpoints';
+import { useAuth } from '@/hooks/useAuth';
+import { router } from 'expo-router';
+import CreatingItineraryLoadingDialog from '@/components/itineraries/CreatingItineraryLoadingDialog';
 
 export default function ChoosePlaces() {
   const draft = useItineraryDraft((state) => state.draft);
@@ -39,8 +43,33 @@ export default function ChoosePlaces() {
 
   const [tab, setTab] = useState('saved');
 
+  const { user } = useAuth();
+
+  const [isCreatingItinerary, setIsCreatingItinerary] = useState(false);
+
+  function handleCreateItinerary() {
+    setIsCreatingItinerary(true);
+    createAutoItinerary({
+      placeIds: selectedPlaceIds,
+      startDate: draft.startDateISO,
+      // endDate: draft.endDateISO,
+      userId: user?.uid,
+    }).then((res) => {
+      const itineraryId = res.data?.id;
+      if (itineraryId) {
+        router.replace(`/itineraries/${itineraryId}`);
+      }
+    }).finally(() => {
+      setIsCreatingItinerary(false);
+    });
+  }
+
   return (
     <SSContainer>
+      <CreatingItineraryLoadingDialog
+        open={isCreatingItinerary}
+        onOpenChange={() => {}}
+      />
       {!draft ? null : (
         <>
           <View className="mb-5 flex-row items-center gap-4">
@@ -94,7 +123,7 @@ export default function ChoosePlaces() {
           {selectedCount > 0 && (
             <Button
               className="absolute bottom-24 left-5 right-5 shadow-lg"
-              // onPress={handleCreateItinerary}
+              onPress={handleCreateItinerary}
             >
               <SSText variant="semibold" className="text-white text-base">
                 Create Itinerary ({selectedCount})
