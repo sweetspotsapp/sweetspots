@@ -19,11 +19,9 @@ import SSSpinner from '../ui/SSSpinner';
 import {
   Dialog,
   DialogContent,
-  DialogPortal,
-  DialogTrigger,
 } from '../ui/dialog';
-import { PortalHost } from '@rn-primitives/portal';
 import { router } from 'expo-router';
+import { useItineraryDraft } from '@/store/useItineraryDraft';
 
 interface CreateItineraryModalProps {
   visible: boolean;
@@ -106,7 +104,7 @@ CreateItineraryModalProps) {
   const [loadingCities, setLoadingCities] = React.useState(false);
   const [coords, setCoords] = React.useState<{
     lat: number;
-    lng: number;
+    lon: number;
   } | null>(null);
   const [cities, setCities] = React.useState<
     {
@@ -127,7 +125,7 @@ CreateItineraryModalProps) {
     getPlaceCoordinates(selectedCity.placeId)
       .then((res) => {
         if (res?.data) {
-          setCoords({ lat: res.data.latitude, lng: res.data.longitude });
+          setCoords({ lat: res.data.latitude, lon: res.data.longitude });
         }
       })
       .finally(() => setIsLoadingCoords(false));
@@ -188,15 +186,22 @@ CreateItineraryModalProps) {
     // onClose();
   }
 
+  const saveDraft = useItineraryDraft((s) => s.saveDraft);
+
   function onSelectOwnSpots() {
     setIsDoneForm(false);
+    saveDraft({
+      location: getValues('location'),
+      startDateISO: getValues('startDate').toISOString(),
+      endDateISO: getValues('endDate').toISOString(),
+      budget: getValues('budget'),
+      collaborators: getValues('collaborators') || [],
+      lat: coords?.lat || null,
+      lon: coords?.lon || null,
+    })
     onClose?.();
     router.push({
       pathname: '/(tabs)/itineraries/choose-places',
-      params: {
-        lat: coords?.lat?.toString() || '-37.8136',
-        lng: coords?.lng?.toString() || '144.9631',
-      },
     });
     // Logic to select user's own spots
   }
