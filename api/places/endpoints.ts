@@ -13,7 +13,9 @@ export const getAllPlaces = async (
   return res.data;
 };
 
-export const getPlaceById = async (id: string): Promise<ApiResponse<IPlace>> => {
+export const getPlaceById = async (
+  id: string
+): Promise<ApiResponse<IPlace>> => {
   const res = await api.get(`/places/${id}`);
   return res.data;
 };
@@ -47,8 +49,10 @@ export const savePlace = async (
   return res.data;
 };
 
-export const getSavedPlaces = async (): Promise<ApiResponse<IPlace[]>> => {
-  const res = await api.get(`/places/saved/me`);
+export const getSavedPlaces = async (
+  params?: GetPlacesQueryDto
+): Promise<ApiResponse<IPlace[]>> => {
+  const res = await api.get(`/places/saved/me`, { params });
   return res.data;
 };
 
