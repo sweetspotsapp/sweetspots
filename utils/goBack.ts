@@ -1,10 +1,10 @@
 import { router, Link } from 'expo-router';
 
-type RoutePath = React.ComponentProps<typeof Link>['href'];
+export type RoutePath = React.ComponentProps<typeof Link>['href'];
 
-export function goBack(fallbackUrl: RoutePath) {
+export function goBack(fallbackUrl: RoutePath, forceFallback = false) {
   const canGoBack = router.canGoBack();
-  if (canGoBack) {
+  if (!forceFallback && canGoBack) {
     try {
       router.back();
     } catch {

@@ -20,6 +20,7 @@ import {
   DialogTrigger,
 } from '../ui/dialog';
 import { PortalHost } from '@rn-primitives/portal';
+import { router } from 'expo-router';
 
 interface CreateItineraryModalProps {
   visible: boolean;
@@ -162,6 +163,9 @@ CreateItineraryModalProps) {
   }
 
   function onSelectOwnSpots() {
+    setIsDoneForm(false);
+    onClose?.();
+    router.push('/(tabs)/itineraries/choose-places');
     // Logic to select user's own spots
   }
 
@@ -291,9 +295,8 @@ CreateItineraryModalProps) {
               </View>
             </View>
           </Card>
-
           <Button
-            onPress={() => handleSubmit(onSubmit)()}
+            onPress={handleSubmit(onSubmit)}
             className="self-end"
           >
             <SSText>Let&apos;s Go!</SSText>
