@@ -11,7 +11,10 @@ import CollaboratorPill from './CollaboratorPill';
 import { SSText } from '../ui/SSText';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
-import { getAutocompleteCities } from '@/api/google-maps/endpoints';
+import {
+  getAutocompleteCities,
+  getPlaceCoordinates,
+} from '@/api/google-maps/endpoints';
 import SSSpinner from '../ui/SSSpinner';
 import {
   Dialog,
@@ -101,13 +104,38 @@ CreateItineraryModalProps) {
   const query = watch('query');
 
   const [loadingCities, setLoadingCities] = React.useState(false);
-  const [cities, setCities] = React.useState<string[]>([]);
-  const [selectedCity, setSelectedCity] = React.useState<string | null>(null);
+  const [coords, setCoords] = React.useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const [cities, setCities] = React.useState<
+    {
+      placeId: string;
+      description: string;
+    }[]
+  >([]);
+  const [selectedCity, setSelectedCity] = React.useState<{
+    placeId: string;
+    description: string;
+  } | null>(null);
   const [suppressFetch, setSuppressFetch] = React.useState(false);
+  const [isLoadingCoords, setIsLoadingCoords] = React.useState(false);
+
+  useEffect(() => {
+    if (!selectedCity?.placeId) return;
+    setIsLoadingCoords(true);
+    getPlaceCoordinates(selectedCity.placeId)
+      .then((res) => {
+        if (res?.data) {
+          setCoords({ lat: res.data.latitude, lng: res.data.longitude });
+        }
+      })
+      .finally(() => setIsLoadingCoords(false));
+  }, [selectedCity?.placeId]);
 
   // If the user edits the input after picking a city, unfreeze search
   useEffect(() => {
-    if (selectedCity && query !== selectedCity) {
+    if (selectedCity && query !== selectedCity.description) {
       setSelectedCity(null);
       setSuppressFetch(false);
     }
@@ -116,7 +144,7 @@ CreateItineraryModalProps) {
   // Fetch suggestions with a small debounce; don't fetch when frozen
   useEffect(() => {
     // Clear list and loading state when query is empty or fetch is suppressed
-    if (!query || (suppressFetch && selectedCity === query)) {
+    if (!query || (suppressFetch && selectedCity?.description === query)) {
       setCities([]);
       setLoadingCities(false);
       return;
@@ -136,7 +164,7 @@ CreateItineraryModalProps) {
         .then((results) => {
           if (cancelled) return;
           const suggs = results?.data?.suggestions ?? [];
-          setCities(suggs.map((s: any) => s.description));
+          setCities(suggs);
         })
         .catch(() => {
           if (!cancelled) setCities([]);
@@ -152,8 +180,6 @@ CreateItineraryModalProps) {
     };
   }, [query, suppressFetch, selectedCity]);
 
-  console.log(watch(), errors);
-
   const [isDoneForm, setIsDoneForm] = React.useState(false);
 
   function onSubmit(data: FormData) {
@@ -165,7 +191,13 @@ CreateItineraryModalProps) {
   function onSelectOwnSpots() {
     setIsDoneForm(false);
     onClose?.();
-    router.push('/(tabs)/itineraries/choose-places');
+    router.push({
+      pathname: '/(tabs)/itineraries/choose-places',
+      params: {
+        lat: coords?.lat?.toString() || '-37.8136',
+        lng: coords?.lng?.toString() || '144.9631',
+      },
+    });
     // Logic to select user's own spots
   }
 
@@ -197,7 +229,7 @@ CreateItineraryModalProps) {
               <Label className="text-xl font-bold" htmlFor="trip-name">
                 Where do you want to go?
               </Label>
-              <SSControlledInput control={control} name="query" />
+              <SSControlledInput readOnly={isLoadingCoords} control={control} name="query" />
             </View>
 
             {loadingCities ? (
@@ -207,17 +239,17 @@ CreateItineraryModalProps) {
                 <View className="mt-2 max-h-40 overflow-y-auto rounded border border-gray-200">
                   {cities.map((city, index) => (
                     <TouchableOpacity
-                      key={`${city}-${index}`}
+                      key={`${city.placeId}-${index}`}
                       onPress={() => {
                         setSelectedCity(city);
-                        setValue('location', city);
-                        setValue('query', city); // show chosen city in the input
+                        setValue('location', city.description);
+                        setValue('query', city.description); // show chosen city in the input
                         setCities([]); // hide list
                         setSuppressFetch(true); // freeze future fetches until user edits
                       }}
                       className="p-2 border-b border-gray-200"
                     >
-                      <SSText>{city}</SSText>
+                      <SSText>{city.description}</SSText>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -295,10 +327,7 @@ CreateItineraryModalProps) {
               </View>
             </View>
           </Card>
-          <Button
-            onPress={handleSubmit(onSubmit)}
-            className="self-end"
-          >
+          <Button onPress={handleSubmit(onSubmit)} className="self-end">
             <SSText>Let&apos;s Go!</SSText>
           </Button>
           {/* <ItineraryForm selectedPlaces={selectedPlaces} onCancel={onClose} onCreated={onCreated} /> */}
@@ -310,17 +339,10 @@ CreateItineraryModalProps) {
             Do you want us to choose spots for you?
           </SSText>
           <Button className="mt-2" onPress={onSelectSuggestedSpot}>
-            <SSText>
-            Yes, please!
-            </SSText>
+            <SSText>Yes, please!</SSText>
           </Button>
-          <Button
-            variant="outline"
-            onPress={onSelectOwnSpots}
-          >
-            <SSText>
-            No, let me choose my own
-            </SSText>
+          <Button variant="outline" onPress={onSelectOwnSpots}>
+            <SSText>No, let me choose my own</SSText>
           </Button>
         </DialogContent>
       </Dialog>
