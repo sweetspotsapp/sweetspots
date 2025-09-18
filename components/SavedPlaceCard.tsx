@@ -65,8 +65,7 @@ export function SavedPlaceCard({
               {isSelectionMode && (
                 <CheckCircle
                   size={24}
-                  color={isSelected ? '#065f46' : '#e2e8f0'}
-                  fill={isSelected ? '#065f46' : 'transparent'}
+                  className={isSelected ? 'text-orange-600' : 'text-gray-300'}
                 />
               )}
             </View>
