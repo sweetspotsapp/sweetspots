@@ -12,6 +12,7 @@ type SavedPlacesProps = {
   onSelectPlace?: (placeId: string) => void;
   selectedPlaceIds?: string[];
   hiddenPlaceIds?: string[];
+  coords?: { lat: number; lon: number };
 };
 
 export default function SavedPlaces({
@@ -19,8 +20,14 @@ export default function SavedPlaces({
   onSelectPlace = () => {},
   selectedPlaceIds = [],
   hiddenPlaceIds = [],
+  coords,
 }: SavedPlacesProps) {
-  const { savedPlaces, loadSavedPlaces, refreshing } = useSavedPlaces();
+  const { savedPlaces, loadSavedPlaces, refreshing } = useSavedPlaces(coords ? {
+    latitude: coords?.lat,
+    longitude: coords?.lon,
+    page: 1,
+    limit: 999999,
+  } : undefined);
   const [filteredPlaces, setFilteredPlaces] = useState<ISavedPlace[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
