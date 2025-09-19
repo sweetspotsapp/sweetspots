@@ -11,8 +11,17 @@ const config: ExpoConfig = {
   scheme: 'myapp',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
+  android: {
+    permissions: [
+      'ACCESS_FINE_LOCATION',
+      'ACCESS_COARSE_LOCATION',
+    ],
+  },
   ios: {
     supportsTablet: true,
+    infoPlist: {
+      NSLocationWhenInUseUsageDescription: 'This app uses your location to show nearby places.',
+    }
   },
   web: {
     bundler: 'metro',
