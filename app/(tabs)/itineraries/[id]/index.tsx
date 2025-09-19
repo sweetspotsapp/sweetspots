@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -22,6 +22,7 @@ import SSSpinner from '@/components/ui/SSSpinner';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import ShareItineraryModal from '@/components/itineraries/ShareItineraryModal';
 import { goBack } from '@/utils/goBack';
+import SSContainer from '@/components/SSContainer';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -132,14 +133,13 @@ export default function ItineraryDetailsScreen() {
 
   return (
     <>
-      <SSLinearGradient />
       <ShareItineraryModal
         visible={isSharing}
         onClose={handleToggleShare}
         itinerary={itinerary}
         onFinished={loadItinerary}
       />
-      <SafeAreaView className="flex-1 container mx-auto">
+      <SSContainer>
         {/* Header */}
         <View className="flex-row justify-between items-center px-5 pt-2.5 pb-4">
           <TouchableOpacity
@@ -483,7 +483,7 @@ export default function ItineraryDetailsScreen() {
             </View>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </SSContainer>
     </>
   );
 }

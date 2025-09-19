@@ -9,6 +9,7 @@ import SSSpinner from '@/components/ui/SSSpinner';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import { ItineraryForm } from '@/components/itineraries/ItineraryForm';
 import { goBack } from '@/utils/goBack';
+import SSContainer from '@/components/SSContainer';
 
 export default function EditItineraryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -50,8 +51,7 @@ export default function EditItineraryScreen() {
 
   if (!itinerary) {
     return (
-      <SafeAreaView className="flex-1">
-        <SSLinearGradient />
+      <SSContainer>
         <View className="flex-1 justify-center items-center px-10">
           <SSText
             variant="bold"
@@ -71,14 +71,13 @@ export default function EditItineraryScreen() {
             </SSText>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </SSContainer>
     );
   }
 
   return (
     <>
-      <SSLinearGradient />
-      <SafeAreaView className="flex-1 container mx-auto">
+      <SSContainer>
         <ItineraryForm
           itineraryId={id}
           onCancel={() => {
@@ -89,7 +88,7 @@ export default function EditItineraryScreen() {
           }}
         />
         {/* <SSLinearGradient /> */}
-      </SafeAreaView>
+      </SSContainer>
     </>
   );
 }

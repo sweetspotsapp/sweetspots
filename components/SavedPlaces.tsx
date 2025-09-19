@@ -82,7 +82,6 @@ export default function SavedPlaces({
           data={filteredPlaces}
           renderItem={renderPlaceCard}
           keyExtractor={(_, i) => i.toString()}
-          contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
           refreshing={refreshing}
           contentContainerClassName="gap-3 grid grid-cols-2"

@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Alert, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { CircleCheck as CheckCircle, Plus, RefreshCcw } from 'lucide-react-native';
+import {
+  CircleCheck as CheckCircle,
+  Plus,
+  RefreshCcw,
+} from 'lucide-react-native';
 
 import { SSText } from '@/components/ui/SSText';
-import SSLinearGradient from '@/components/ui/SSLinearGradient';
 import { Button } from '@/components/ui/button';
 import { Toast } from 'toastify-react-native';
 import SavedPlaces from '@/components/SavedPlaces';
 import { useSavedPlaces } from '@/hooks/useSavedPlaces';
 import { CreateItineraryModal } from '@/components/itineraries/CreateItineraryModal';
+import SSContainer from '@/components/SSContainer';
 
 export default function SavedTab() {
   const { savedPlaces } = useSavedPlaces();
@@ -59,10 +62,9 @@ export default function SavedTab() {
 
   return (
     <>
-      <SSLinearGradient />
-      <SafeAreaView className="flex-1 container mx-auto !px-4">
+      <SSContainer>
         {/* Header */}
-        <View className="flex-row justify-between items-center pt-2.5 pb-5">
+        <View className="flex-row justify-between items-center pt-2.5">
           <SSText variant="bold" className="text-3xl text-orange-600">
             Saved Places
           </SSText>
@@ -77,19 +79,17 @@ export default function SavedTab() {
             >
               <CheckCircle
                 size={24}
-                className={isSelectionMode ? "text-white" : "text-orange-500"}
+                className={isSelectionMode ? 'text-white' : 'text-orange-500'}
               />
             </TouchableOpacity>
-            {
-              Platform.OS === 'web' && (
-                <TouchableOpacity
-                  className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-                  onPress={() => loadSavedPlaces()}
-                >
-                  <RefreshCcw size={24} className="text-orange-500" />
-                </TouchableOpacity>
-              )
-            }
+            {Platform.OS === 'web' && (
+              <TouchableOpacity
+                className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
+                onPress={() => loadSavedPlaces()}
+              >
+                <RefreshCcw size={24} className="text-orange-500" />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
@@ -111,16 +111,16 @@ export default function SavedTab() {
             </SSText>
           </Button>
         )}
+      </SSContainer>
 
-        <CreateItineraryModal
-          visible={showCreateModal}
-          onClose={() => setShowCreateModal(false)}
-          onCreated={onItineraryCreated}
-          selectedPlaces={savedPlaces.filter((p) =>
-            selectedPlaceIds.includes(p.id)
-          )}
-        />
-      </SafeAreaView>
+      <CreateItineraryModal
+        visible={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onCreated={onItineraryCreated}
+        selectedPlaces={savedPlaces.filter((p) =>
+          selectedPlaceIds.includes(p.id)
+        )}
+      />
     </>
   );
 }

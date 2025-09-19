@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import {
   Heart,
   MapPin,
@@ -21,8 +15,8 @@ import { SSText } from '@/components/ui/SSText';
 import { getCurrentUserProfile } from '@/api/users/endpoints';
 import { getSwipeStats } from '@/api/swipes/endpoints';
 import { IUserProfile } from '@/dto/users/user-profile.dto';
-import SSLinearBackground from '@/components/ui/SSLinearBackground';
 import SSSpinner from '@/components/ui/SSSpinner';
+import SSContainer from '@/components/SSContainer';
 
 export default function ProfileTab() {
   const [profile, setProfile] = useState<IUserProfile | null>(null);
@@ -108,107 +102,121 @@ export default function ProfileTab() {
 
   return (
     <>
-      <SSLinearBackground>
-        <SafeAreaView className="flex-1 container mx-auto">
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {/* Profile Header */}
-            <View className="items-center py-10">
-              {loading ? ( 
-                <SSSpinner />
-              ) : profile ? (
-                <>
-                  <View className="relative mb-4">
-                    <Image
-                      source={{ uri: profile.avatarUrl || 'https://placehold.co/200x200' }}
-                      className="w-25 h-25 rounded-full border-4 border-orange-600"
-                    />
-                    <TouchableOpacity className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-orange-600 justify-center items-center border-3 border-white">
-                      <User size={16} color="#ffffff" />
-                    </TouchableOpacity>
-                  </View>
+      <SSContainer>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Profile Header */}
+          <View className="items-center py-10">
+            {loading ? (
+              <SSSpinner />
+            ) : profile ? (
+              <>
+                <View className="relative mb-4">
+                  <Image
+                    source={{
+                      uri: profile.avatarUrl || 'https://placehold.co/200x200',
+                    }}
+                    className="w-25 h-25 rounded-full border-4 border-orange-600"
+                  />
+                  <TouchableOpacity className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-orange-600 justify-center items-center border-3 border-white">
+                    <User size={16} color="#ffffff" />
+                  </TouchableOpacity>
+                </View>
 
-                  <SSText variant="bold" className="text-3xl text-gray-800 mb-1">
-                    {profile.firstName || ''} {profile.lastName || ''}
-                  </SSText>
-                  <SSText className="text-base text-slate-500 mb-6">
-                    {profile.bio || 'Traveler'}
-                  </SSText>
-
-                  {/* Stats */}
-                  <View className="flex-row items-center bg-white px-8 py-5 rounded-2xl shadow-sm">
-                    <View className="items-center flex-1">
-                      <SSText variant="bold" className="text-2xl text-orange-600 mb-1">
-                        {swipeStats?.rightSwipes ?? 0}
-                      </SSText>
-                      <SSText variant="medium" className="text-xs text-slate-500">
-                        Liked
-                      </SSText>
-                    </View>
-                    <View className="w-px h-7 bg-slate-200 mx-4" />
-                    <View className="items-center flex-1">
-                      <SSText variant="bold" className="text-2xl text-rose-500 mb-1">
-                        {swipeStats?.leftSwipes ?? 0}
-                      </SSText>
-                      <SSText variant="medium" className="text-xs text-slate-500">
-                        Skipped
-                      </SSText>
-                    </View>
-                    <View className="w-px h-7 bg-slate-200 mx-4" />
-                    <View className="items-center flex-1">
-                      <SSText variant="bold" className="text-2xl text-amber-500 mb-1">
-                        {swipeStats?.rightSwipeRate
-                          ? `${swipeStats.rightSwipeRate.toFixed(0)}%`
-                          : '0%'}
-                      </SSText>
-                      <SSText variant="medium" className="text-xs text-slate-500">
-                        Match Rate
-                      </SSText>
-                    </View>
-                  </View>
-                </>
-              ) : (
-                <SSText variant="bold" className="text-lg text-slate-500">
-                  Failed to load profile
+                <SSText variant="bold" className="text-3xl text-gray-800 mb-1">
+                  {profile.firstName || ''} {profile.lastName || ''}
                 </SSText>
-              )}
-            </View>
+                <SSText className="text-base text-slate-500 mb-6">
+                  {profile.bio || 'Traveler'}
+                </SSText>
 
-            {/* Menu Items */}
-            <View className="px-4 pt-5">
-              {menuItems.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  className="flex-row items-center bg-white px-5 py-4 rounded-xl mb-3 shadow-sm"
-                  onPress={item.onPress}>
-                  <View
-                    className="w-12 h-12 rounded-xl justify-center items-center mr-4"
-                    style={{ backgroundColor: `${item.color}15` }}>
-                    <item.icon size={24} color={item.color} />
-                  </View>
-                  <View className="flex-1">
-                    <SSText variant="semibold" className="text-base text-gray-800 mb-0.5">
-                      {item.title}
+                {/* Stats */}
+                <View className="flex-row items-center bg-white px-8 py-5 rounded-2xl shadow-sm">
+                  <View className="items-center flex-1">
+                    <SSText
+                      variant="bold"
+                      className="text-2xl text-orange-600 mb-1"
+                    >
+                      {swipeStats?.rightSwipes ?? 0}
                     </SSText>
-                    <SSText className="text-sm text-slate-500">
-                      {item.subtitle}
+                    <SSText variant="medium" className="text-xs text-slate-500">
+                      Liked
                     </SSText>
                   </View>
-                </TouchableOpacity>
-              ))}
-            </View>
+                  <View className="w-px h-7 bg-slate-200 mx-4" />
+                  <View className="items-center flex-1">
+                    <SSText
+                      variant="bold"
+                      className="text-2xl text-rose-500 mb-1"
+                    >
+                      {swipeStats?.leftSwipes ?? 0}
+                    </SSText>
+                    <SSText variant="medium" className="text-xs text-slate-500">
+                      Skipped
+                    </SSText>
+                  </View>
+                  <View className="w-px h-7 bg-slate-200 mx-4" />
+                  <View className="items-center flex-1">
+                    <SSText
+                      variant="bold"
+                      className="text-2xl text-amber-500 mb-1"
+                    >
+                      {swipeStats?.rightSwipeRate
+                        ? `${swipeStats.rightSwipeRate.toFixed(0)}%`
+                        : '0%'}
+                    </SSText>
+                    <SSText variant="medium" className="text-xs text-slate-500">
+                      Match Rate
+                    </SSText>
+                  </View>
+                </View>
+              </>
+            ) : (
+              <SSText variant="bold" className="text-lg text-slate-500">
+                Failed to load profile
+              </SSText>
+            )}
+          </View>
 
-            {/* App Info */}
-            <View className="items-center py-10 px-5">
-              <SSText variant="medium" className="text-sm text-slate-500 mb-1">
-                SweetSpots v1.0.0
-              </SSText>
-              <SSText className="text-xs text-slate-400 text-center">
-                Discover amazing places around you
-              </SSText>
-            </View>
-          </ScrollView>
-        </SafeAreaView>
-      </SSLinearBackground>
+          {/* Menu Items */}
+          <View className="px-4 pt-5">
+            {menuItems.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                className="flex-row items-center bg-white px-5 py-4 rounded-xl mb-3 shadow-sm"
+                onPress={item.onPress}
+              >
+                <View
+                  className="w-12 h-12 rounded-xl justify-center items-center mr-4"
+                  style={{ backgroundColor: `${item.color}15` }}
+                >
+                  <item.icon size={24} color={item.color} />
+                </View>
+                <View className="flex-1">
+                  <SSText
+                    variant="semibold"
+                    className="text-base text-gray-800 mb-0.5"
+                  >
+                    {item.title}
+                  </SSText>
+                  <SSText className="text-sm text-slate-500">
+                    {item.subtitle}
+                  </SSText>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* App Info */}
+          <View className="items-center py-10 px-5">
+            <SSText variant="medium" className="text-sm text-slate-500 mb-1">
+              SweetSpots v1.0.0
+            </SSText>
+            <SSText className="text-xs text-slate-400 text-center">
+              Discover amazing places around you
+            </SSText>
+          </View>
+        </ScrollView>
+      </SSContainer>
     </>
   );
 }

@@ -8,6 +8,7 @@ import SearchInput from '@/components/ui/SearchInput';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
 import { getRecommendations } from '@/api/recommendations/endpoints';
 import useLocation from '@/hooks/useLocation';
+import SSContainer from '@/components/SSContainer';
 
 export default function SearchTab() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,20 +32,18 @@ export default function SearchTab() {
     }
   };
 
-    useEffect(() => {
-      fetchRecommendations();
-    }, [searchQuery]);
+  useEffect(() => {
+    fetchRecommendations();
+  }, [searchQuery]);
 
   return (
     <>
-      <SSLinearBackground>
-        <SafeAreaView className="flex-1 container mx-auto mt-4">
-          <ScrollView showsVerticalScrollIndicator className='px-4'>
-            <SearchInput value={searchQuery} onTextChange={setSearchQuery} />
-            {/* <SSText>Search</SSText> */}
-          </ScrollView>
-        </SafeAreaView>
-      </SSLinearBackground>
+      <SSContainer>
+        <ScrollView showsVerticalScrollIndicator className="px-4">
+          <SearchInput value={searchQuery} onTextChange={setSearchQuery} />
+          {/* <SSText>Search</SSText> */}
+        </ScrollView>
+      </SSContainer>
     </>
   );
 }

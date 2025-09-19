@@ -6,11 +6,8 @@ import {
   Image,
   Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  ArrowLeft,
   Calendar,
-  Users,
   MapPin,
   Clock,
   DollarSign,
@@ -19,14 +16,13 @@ import {
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
-import SSLinearGradient from '@/components/ui/SSLinearGradient';
 import { getMyItineraries } from '@/api/itineraries/endpoints';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import { formatCurrency } from '@/utils/formatter';
 import SSSpinner from '@/components/ui/SSSpinner';
-import { goBack } from '@/utils/goBack';
 import { Button } from '@/components/ui/button';
 import { CreateItineraryModal } from '@/components/itineraries/CreateItineraryModal';
+import SSContainer from '@/components/SSContainer';
 
 export default function ItinerariesScreen() {
   const [itineraries, setItineraries] = useState<IItinerary[]>([]);
@@ -180,7 +176,6 @@ export default function ItinerariesScreen() {
 
   return (
     <>
-      <SSLinearGradient />
       <CreateItineraryModal
         visible={showCreateModal}
         onClose={() => setShowCreateModal(false)}
@@ -189,7 +184,7 @@ export default function ItinerariesScreen() {
         //   selectedPlaceIds.includes(p.id)
         // )}
       />
-      <SafeAreaView className="flex-1 container mx-auto mb-16 md:mb-0">
+      <SSContainer>
         <Button
           className="absolute bottom-24 right-5 shadow-lg z-10 w-fit"
           onPress={handleCreateItinerary}
@@ -198,7 +193,7 @@ export default function ItinerariesScreen() {
           <SSText variant="semibold">Create Itinerary</SSText>
         </Button>
         {/* Header */}
-        <View className="flex-row justify-between items-center px-5 pt-2.5 pb-5">
+        <View className="flex-row justify-between items-center px-5 pt-2.5">
           {/* <TouchableOpacity
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
             onPress={() => goBack('/profile')}
@@ -228,7 +223,6 @@ export default function ItinerariesScreen() {
             data={itineraries}
             renderItem={renderItinerary}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={
               <View className="flex-1 justify-center items-center pt-25 px-10">
@@ -246,7 +240,7 @@ export default function ItinerariesScreen() {
             }
           />
         )}
-      </SafeAreaView>
+      </SSContainer>
     </>
   );
 }

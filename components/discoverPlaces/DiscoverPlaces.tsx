@@ -99,7 +99,6 @@ export default function DiscoverPlaces({
           data={filteredPlaces}
           renderItem={renderPlaceCard}
           keyExtractor={(_, i) => i.toString()}
-          contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
           refreshing={isLoading}
           contentContainerClassName="gap-3 grid grid-cols-2"

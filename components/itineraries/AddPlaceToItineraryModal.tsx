@@ -1,12 +1,12 @@
 import { Modal, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Plus, X } from 'lucide-react-native';
 import { useSavedPlaces } from '@/hooks/useSavedPlaces';
 import { IPlace } from '@/dto/places/place.dto';
 import SavedPlaces from '../SavedPlaces';
 import { SSText } from '../ui/SSText';
 import { Button } from '../ui/button';
+import SSContainer from '../SSContainer';
 
 interface AddPlaceToItineraryModalProps {
   visible: boolean;
@@ -51,7 +51,7 @@ export default function AddPlaceToItineraryModal({
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <SafeAreaView className="flex-1">
+      <SSContainer disableBottomPadding>
         <View className="flex-row justify-between items-start px-5 pt-5 pb-4 border-b border-slate-100">
           <View className="flex-1">
             <SSText variant="bold" className="text-2xl text-gray-800 mb-1">
@@ -82,7 +82,7 @@ export default function AddPlaceToItineraryModal({
             </SSText>
           </Button>
         )}
-      </SafeAreaView>
+      </SSContainer>
     </Modal>
   );
 }

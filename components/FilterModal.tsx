@@ -7,10 +7,11 @@ import {
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { X, Star } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { SSText } from './ui/SSText';
 import SSLinearGradient from './ui/SSLinearGradient';
 import ModalHeader from './ui/ModalHeader';
+import SSContainer from './SSContainer';
+import { Button } from './ui/button';
 
 interface FilterModalProps {
   visible: boolean;
@@ -92,9 +93,7 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
       animationType="slide"
       presentationStyle="pageSheet"
       onRequestClose={onClose}>
-      <View className="flex-1">
-        <SSLinearGradient />
-
+      <SSContainer disableBottomPadding>
         <ModalHeader
           title="Filters"
           onClose={onClose}
@@ -211,19 +210,19 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
 
         {/* Footer */}
         <View className="flex-row px-5 pb-10 pt-5 gap-3 bg-white border-t border-slate-100">
-          <TouchableOpacity className="bg-slate-100 py-4 px-8 rounded-xl items-center" onPress={clearAll}>
-            <SSText variant="semibold" className="text-base text-slate-500">
+          <Button variant="outline" onPress={clearAll}>
+            <SSText>
               Clear All
             </SSText>
-          </TouchableOpacity>
+          </Button>
 
-          <TouchableOpacity className="flex-1 bg-orange-600 py-4 rounded-xl items-center" onPress={handleApply}>
-            <SSText variant="semibold" className="text-base text-white">
+          <Button className='flex-1' onPress={handleApply}>
+            <SSText>
               Apply {getTotalFilters() > 0 && `(${getTotalFilters()})`}
             </SSText>
-          </TouchableOpacity>
+          </Button>
         </View>
-      </View>
+      </SSContainer>
     </Modal>
   );
 }
