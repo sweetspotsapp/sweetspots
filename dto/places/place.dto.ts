@@ -9,6 +9,8 @@ export interface IPlace {
   distance?: string | null;
   duration?: string | null;
   priceRange: string;
+  minPrice?: number | null;
+  maxPrice?: number | null;
   vibes: string[];
   latitude: string;
   longitude: string;

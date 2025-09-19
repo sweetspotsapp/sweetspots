@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import {
-  MapPin,
-  Clock,
-  DollarSign,
-} from 'lucide-react-native';
+import { View, ActivityIndicator, Image } from 'react-native';
+import { MapPin, Clock, DollarSign, Banknote } from 'lucide-react-native';
 import { ReviewCarousel } from './ReviewCarousel';
 import { AllReviewsModal } from '../AllReviewsModal';
 import { SSText } from '../ui/SSText';
@@ -13,7 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
 import { calculateTimeAndDistance } from '@/api/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
-import { formatDistance, formatDuration } from '@/utils/formatter';
+import {
+  formatCurrency,
+  formatDistance,
+  formatDuration,
+} from '@/utils/formatter';
 import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
 import { cn } from '@/lib/utils';
 
@@ -25,12 +25,14 @@ interface PlaceDetailsProps {
 
 export function PlaceDetails({
   place,
-  // onGoNow,
-  // onFindSimilar,
-}: PlaceDetailsProps) {
+}: // onGoNow,
+// onFindSimilar,
+PlaceDetailsProps) {
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [distance, setDistance] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
+
+  const images = Array.isArray(place.images) ? place.images.slice(1, 4) : [];
 
   const { location } = useLocationStore();
 
@@ -63,41 +65,72 @@ export function PlaceDetails({
     fetchDistanceAndDuration();
   }, [place]);
 
-  console.log(place.openingHours);
-
   const openingHours = place.openingHours;
   return (
-    <View className='pb-40'>
+    <View className="pb-40">
       {/* Location & Time */}
-      <Card className="p-4 flex-row justify-between mb-5">
-        <View className="flex-row items-center gap-1.5">
-          <MapPin size={18} color="#64748b" />
-          <SSText variant="medium" className="text-sm text-slate-500">
-            {distance ? (
-              formatDistance(distance)
-            ) : (
-              <ActivityIndicator className="ml-4" size={4} />
-            )}
+      {location && distance && (
+        <Card className="p-4 flex-row justify-between mb-5">
+          <View className="flex-row items-center gap-1.5">
+            <MapPin size={18} color="#64748b" />
+            <SSText variant="medium" className="text-sm text-slate-500">
+              {distance ? (
+                formatDistance(distance)
+              ) : (
+                <ActivityIndicator className="ml-4" size={4} />
+              )}
+            </SSText>
+          </View>
+          <View className="flex-row items-center gap-1.5">
+            <Clock size={18} color="#64748b" />
+            <SSText variant="medium" className="text-sm text-slate-500">
+              {duration ? (
+                formatDuration({
+                  seconds: duration,
+                })
+              ) : (
+                <ActivityIndicator className="ml-4" size={4} />
+              )}
+            </SSText>
+          </View>
+          <View className="flex-row items-center gap-1.5">
+            <DollarSign size={18} color="#64748b" />
+            <SSText variant="medium" className="text-sm text-slate-500">
+              {place.priceRange}
+            </SSText>
+          </View>
+        </Card>
+      )}
+      {images && images.length > 0 && (
+        <View className="grid grid-cols-2 gap-2 mb-5">
+          {images.map((imgUrl, index) => (
+            <View
+              key={index}
+              className={cn("w-full h-40 bg-slate-200 rounded-xl overflow-hidden", index === 0 && "row-span-2 h-[328px]")}
+            >
+              <Image
+                onLoadEnd={() => console.log('Image loaded')}
+                onError={(err) => console.log('Image failed to load', err)}
+                source={{ uri: imgUrl }}
+                className="w-full h-full"
+                resizeMode="cover"
+              />
+            </View>
+          ))}
+        </View>
+      )}
+
+      <Card className="p-4 mb-5">
+        <View className="flex-row items-center mb-3 gap-2">
+          <Banknote size={20} />
+          <SSText variant="semibold" className="text-xl">
+            Price
           </SSText>
         </View>
-        <View className="flex-row items-center gap-1.5">
-          <Clock size={18} color="#64748b" />
-          <SSText variant="medium" className="text-sm text-slate-500">
-            {duration ? (
-              formatDuration({
-                seconds: duration,
-              })
-            ) : (
-              <ActivityIndicator className="ml-4" size={4} />
-            )}
-          </SSText>
-        </View>
-        <View className="flex-row items-center gap-1.5">
-          <DollarSign size={18} color="#64748b" />
-          <SSText variant="medium" className="text-sm text-slate-500">
-            {place.priceRange}
-          </SSText>
-        </View>
+        <SSText>
+          {place.minPrice ? formatCurrency(place.minPrice) : 'Free'} -{' '}
+          {formatCurrency(place.maxPrice)}
+        </SSText>
       </Card>
 
       <Card className="mb-5">
@@ -107,37 +140,43 @@ export function PlaceDetails({
           </CardTitle>
         </CardHeader> */}
         <CardContent>
-          <SSText className='text-justify'>
-            {place.description}
-          </SSText>
+          <SSText className="text-justify">{place.description}</SSText>
         </CardContent>
       </Card>
 
       <Card className="mb-5">
         <CardContent>
-          <SSText variant="semibold" className="text-xl text-gray-800 mb-2">
-            Opening Hours
-          </SSText>
-          <SSText className='text-justify'>
+          <View className="flex-row items-center mb-3 gap-2">
+            <Clock size={20} />
+            <SSText variant="semibold" className="text-xl">
+              Opening Hours
+            </SSText>
+          </View>
+          <SSText className="text-justify">
             {openingHours?.map((openHour, index) => {
               const openHoursArr = openHour.split(': ');
               const day = openHoursArr[0];
               const time = openHoursArr[1];
-              const isToday = day === new Date().toLocaleDateString('en-US', { weekday: 'long' });
-              return(
-              <View key={index} className="flex-row justify-between w-full mb-1">
-                <SSText className={cn('capitalize', isToday && 'font-bold text-orange-500')}>{day}</SSText>
-                <SSText>
-                  {time ? (
-                    <>
-                      {time}
-                    </>
-                  ) : (
-                    'Closed'
-                  ) }
-                </SSText>
-              </View>
-            )})}
+              const isToday =
+                day ===
+                new Date().toLocaleDateString('en-US', { weekday: 'long' });
+              return (
+                <View
+                  key={index}
+                  className="flex-row justify-between w-full mb-1"
+                >
+                  <SSText
+                    className={cn(
+                      'capitalize',
+                      isToday && 'font-bold text-orange-500'
+                    )}
+                  >
+                    {day}
+                  </SSText>
+                  <SSText>{time ? <>{time}</> : 'Closed'}</SSText>
+                </View>
+              );
+            })}
             {/* {place.} */}
           </SSText>
         </CardContent>

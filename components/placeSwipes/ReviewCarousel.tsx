@@ -4,7 +4,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import { Star, ChevronLeft, ChevronRight, Eye } from 'lucide-react-native';
+import { Star, ChevronLeft, ChevronRight, Eye, ThumbsUp } from 'lucide-react-native';
 import { ReviewCard } from './ReviewCard';
 import { IReview } from '@/dto/reviews/review.dto';
 import { SSText } from '../ui/SSText';
@@ -44,8 +44,9 @@ export function ReviewCarousel({ reviews, onSeeAll }: ReviewCarouselProps) {
 
   return (
     <Card className="p-4 mb-6">
-      <View className="flex-row justify-between items-center mb-4">
-        <SSText variant="semibold" className="text-xl text-gray-800">
+      <View className="flex-row justify-between items-center mb-4 gap-2">
+        <ThumbsUp size={20}/>
+        <SSText variant="semibold" className="text-xl text-gray-800 mr-auto">
           Reviews
         </SSText>
         

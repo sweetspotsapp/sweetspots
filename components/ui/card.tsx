@@ -53,7 +53,7 @@ function Card({
   return (
     <View
       className={cn(
-        'rounded-lg border border-foreground/10 bg-card shadow-lg shadow-foreground/10',
+        'rounded-2xl border border-foreground/10 bg-card shadow-lg shadow-foreground/10',
         className
       )}
       style={[getShadowStyle(elevation), style]}

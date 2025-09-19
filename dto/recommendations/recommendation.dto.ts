@@ -9,6 +9,8 @@ export interface IRecommendedPlace {
   distance: string;
   duration: string;
   priceRange: string;
+  minPrice: number;
+  maxPrice: number;
   vibes: string[];
   images: string[];
   latitude: number;

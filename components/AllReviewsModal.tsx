@@ -7,15 +7,13 @@ import {
   Image,
 } from 'react-native';
 import { X, Star, Search } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { SSText } from './ui/SSText';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { getReviews } from '@/api/reviews/endpoints';
 import { IReview } from '@/dto/reviews/review.dto';
 import { ReviewCard } from './placeSwipes/ReviewCard';
-import SSLinearGradient from './ui/SSLinearGradient';
+import SSContainer from './SSContainer';
 
 interface AllReviewsModalProps {
   visible: boolean;
@@ -112,9 +110,7 @@ export function AllReviewsModal({
       animationType="slide"
       presentationStyle="pageSheet"
       onRequestClose={onClose}>
-      <SafeAreaView className="flex-1">
-        <SSLinearGradient/>
-
+      <SSContainer disableBottomPadding>
         {/* Header */}
         <View className="flex-row justify-between items-start  pt-5 pb-4 border-b border-slate-100">
           <View className="flex-1">
@@ -131,7 +127,7 @@ export function AllReviewsModal({
         </View>
 
         {/* Rating Summary */}
-        <View className="flex-row bg-white mx-5 mt-4 p-5 rounded-2xl shadow-sm">
+        <View className="flex-row bg-white mt-4 p-5 rounded-2xl shadow-sm">
           <View className="items-center mr-6">
             <SSText variant="bold" className="text-3xl text-gray-800 mb-2">
               {averageRating.toFixed(1)}
@@ -234,7 +230,7 @@ export function AllReviewsModal({
 
           <View className="h-10" />
         </ScrollView>
-      </SafeAreaView>
+      </SSContainer>
     </Modal>
   );
 }
