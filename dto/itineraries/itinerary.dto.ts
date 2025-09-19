@@ -10,6 +10,8 @@ export interface IItinerary {
   startDate?: string | null; // ISO format
   endDate?: string | null;
   totalEstimatedCost?: string | null; // from numeric
+  maxEstimatedCost?: number;
+  minEstimatedCost?: number;
   totalDuration?: number | null;
   coverImage?: string | null;
   createdAt: string;

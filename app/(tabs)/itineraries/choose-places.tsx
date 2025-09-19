@@ -52,7 +52,7 @@ export default function ChoosePlaces() {
     createAutoItinerary({
       placeIds: selectedPlaceIds,
       startDate: draft.startDateISO,
-      // endDate: draft.endDateISO,
+      endDate: draft.endDateISO,
       userId: user?.uid,
     }).then((res) => {
       const itineraryId = res.data?.id;

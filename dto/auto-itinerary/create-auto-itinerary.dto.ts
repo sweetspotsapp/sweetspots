@@ -4,6 +4,8 @@ export interface CreateAutoItineraryDto {
   targetCount?: number;
   startDate?: string | null;
   startTime?: string | null;
+  endDate?: string | null;
+  endTime?: string | null;
   nameHint?: string;
   description?: string;
   radiusKm?: number;

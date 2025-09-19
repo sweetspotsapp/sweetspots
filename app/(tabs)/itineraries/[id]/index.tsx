@@ -229,7 +229,8 @@ export default function ItineraryDetailsScreen() {
                         variant="bold"
                         className="text-xl text-gray-800 mt-2 mb-1"
                       >
-                        {formatCurrency(itinerary.totalEstimatedCost)}
+                        {formatCurrency(itinerary.minEstimatedCost)} -{' '}
+                        {formatCurrency(itinerary.maxEstimatedCost)}
                       </SSText>
                       <SSText
                         variant="medium"
@@ -279,7 +280,11 @@ export default function ItineraryDetailsScreen() {
                         className="text-xl text-gray-800 mt-2 mb-1"
                       >
                         {formatCurrency(
-                          Number(itinerary.totalEstimatedCost) / tripDays
+                          Number(itinerary.minEstimatedCost) / tripDays
+                        )}{' '}
+                        -{' '}
+                        {formatCurrency(
+                          Number(itinerary.maxEstimatedCost) / tripDays
                         )}
                       </SSText>
                       <SSText
