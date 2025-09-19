@@ -141,7 +141,7 @@ export default function ItineraryDetailsScreen() {
       />
       <SSContainer>
         {/* Header */}
-        <View className="flex-row justify-between items-center px-5 pt-2.5 pb-4">
+        <View className="flex-row justify-between items-center  pt-2.5 pb-4">
           <TouchableOpacity
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
             onPress={() => goBack('/itineraries')}
@@ -182,7 +182,7 @@ export default function ItineraryDetailsScreen() {
           )} */}
 
           {/* Itinerary Info */}
-          <View className="px-5">
+          <View className="">
             <SSText variant="bold" className="text-3xl text-gray-800 mb-3">
               {itinerary.name}
             </SSText>

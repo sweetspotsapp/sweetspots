@@ -167,7 +167,7 @@ export default function ShareItineraryModal({
       />
       <ModalHeader title="Share Itinerary" onClose={onClose} />
       <ScrollView
-        className="flex-1 px-5 pt-5"
+        className="flex-1  pt-5"
         showsVerticalScrollIndicator={false}
       >
         <SSText className="mb-2">Collaborators</SSText>

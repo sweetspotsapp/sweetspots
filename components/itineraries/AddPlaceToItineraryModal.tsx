@@ -52,7 +52,7 @@ export default function AddPlaceToItineraryModal({
       onRequestClose={onClose}
     >
       <SSContainer disableBottomPadding>
-        <View className="flex-row justify-between items-start px-5 pt-5 pb-4 border-b border-slate-100">
+        <View className="flex-row justify-between items-start  pt-5 pb-4 border-b border-slate-100">
           <View className="flex-1">
             <SSText variant="bold" className="text-2xl text-gray-800 mb-1">
               Add to {itineraryName || 'Itinerary'}

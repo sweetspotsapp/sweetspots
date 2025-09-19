@@ -100,7 +100,7 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
         />
 
         {/* Content */}
-        <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
+        <ScrollView className="flex-1 " showsVerticalScrollIndicator={false}>
           {/* Rating Filter */}
           <View className="mb-8 mt-4">
             <SSText variant="semibold" className="text-lg text-gray-800 mb-4">
@@ -163,7 +163,7 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
               {priceRanges.map((range) => (
                 <TouchableOpacity
                   key={range}
-                  className={`border-2 px-5 py-3 rounded-full min-w-15 items-center ${selectedPriceRanges.includes(range)
+                  className={`border-2  py-3 rounded-full min-w-15 items-center ${selectedPriceRanges.includes(range)
                       ? 'bg-orange-600 border-orange-600'
                       : 'bg-white border-slate-200'
                     }`}
@@ -209,7 +209,7 @@ export function FilterModal({ visible, onClose, onApply, currentFilters }: Filte
         </ScrollView>
 
         {/* Footer */}
-        <View className="flex-row px-5 pb-10 pt-5 gap-3 bg-white border-t border-slate-100">
+        <View className="flex-row  pb-10 pt-5 gap-3 bg-white border-t border-slate-100">
           <Button variant="outline" onPress={clearAll}>
             <SSText>
               Clear All

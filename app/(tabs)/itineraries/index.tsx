@@ -23,6 +23,7 @@ import SSSpinner from '@/components/ui/SSSpinner';
 import { Button } from '@/components/ui/button';
 import { CreateItineraryModal } from '@/components/itineraries/CreateItineraryModal';
 import SSContainer from '@/components/SSContainer';
+import { Card } from '@/components/ui/card';
 
 export default function ItinerariesScreen() {
   const [itineraries, setItineraries] = useState<IItinerary[]>([]);
@@ -74,84 +75,85 @@ export default function ItinerariesScreen() {
   };
 
   const renderItinerary = ({ item }: { item: IItinerary }) => (
-    <TouchableOpacity
-      className="bg-white rounded-2xl mb-4 overflow-hidden shadow-sm"
-      onPress={() => router.push(`/itineraries/${item.id}`)}
-    >
-      {item.coverImage && (
-        <Image
-          source={{ uri: item.coverImage }}
-          className="w-full h-40"
-          style={{ resizeMode: 'cover' }}
-        />
-      )}
+    <TouchableOpacity onPress={() => router.push(`/itineraries/${item.id}`)}>
+      <Card>
+        {item.coverImage && (
+          <Image
+            source={{ uri: item.coverImage }}
+            className="w-full h-40"
+            style={{ resizeMode: 'cover' }}
+          />
+        )}
 
-      <View className="p-5">
-        <SSText variant="semibold" className="text-xl text-gray-800 mb-2">
-          {item.name}
-        </SSText>
-        {item.description && (
-          <SSText
-            className="text-sm text-slate-500 leading-5 mb-4"
-            numberOfLines={2}
-          >
-            {item.description}
+        <View className="p-5">
+          <SSText variant="semibold" className="text-xl text-gray-800 mb-2">
+            {item.name}
           </SSText>
-        )}
-
-        {/* Trip Dates */}
-        {item.startDate && item.endDate && (
-          <View className="flex-row items-center bg-orange-50 px-3 py-2 rounded-xl mb-4 gap-2">
-            <Calendar size={14} className="text-orange-500" />
-            <SSText variant="medium" className="text-sm text-orange-600 flex-1">
-              {formatDate(item.startDate)} - {formatDate(item.endDate)}
-            </SSText>
+          {item.description && (
             <SSText
-              variant="semibold"
-              className="text-xs text-orange-600 bg-white px-2 py-1 rounded-lg"
+              className="text-sm text-slate-500 leading-5 mb-4"
+              numberOfLines={2}
             >
-              {getDurationInDays(item.startDate, item.endDate)} days
+              {item.description}
             </SSText>
-          </View>
-        )}
+          )}
 
-        {/* Trip Summary */}
-        <View className="flex-row gap-4 mb-4 pb-4 border-b border-slate-100">
-          <View className="flex-row items-center gap-1.5">
-            <MapPin size={14} color="#64748b" />
-            <SSText variant="semibold" className="text-sm text-gray-800">
-              {/* {item.places.length} places */}
-            </SSText>
-          </View>
-
-          {item.totalDuration && (
-            <View className="flex-row items-center gap-1.5">
-              <Clock size={14} color="#64748b" />
-              <SSText variant="semibold" className="text-sm text-gray-800">
-                {formatDuration(item.totalDuration)}
+          {/* Trip Dates */}
+          {item.startDate && item.endDate && (
+            <View className="flex-row items-center bg-orange-50 px-3 py-2 rounded-xl mb-4 gap-2">
+              <Calendar size={14} className="text-orange-500" />
+              <SSText
+                variant="medium"
+                className="text-sm text-orange-600 flex-1"
+              >
+                {formatDate(item.startDate)} - {formatDate(item.endDate)}
+              </SSText>
+              <SSText
+                variant="semibold"
+                className="text-xs text-orange-600 bg-white px-2 py-1 rounded-lg"
+              >
+                {getDurationInDays(item.startDate, item.endDate)} days
               </SSText>
             </View>
           )}
 
-          {item.totalEstimatedCost && (
+          {/* Trip Summary */}
+          <View className="flex-row gap-4 mb-4 pb-4 border-b border-slate-100">
             <View className="flex-row items-center gap-1.5">
-              <DollarSign size={14} color="#64748b" />
+              <MapPin size={14} color="#64748b" />
               <SSText variant="semibold" className="text-sm text-gray-800">
-                {formatCurrency(Number(item.totalEstimatedCost))}
+                {/* {item.places.length} places */}
               </SSText>
             </View>
-          )}
-        </View>
 
-        <View className="flex-row flex-wrap gap-4">
-          <View className="flex-row items-center gap-1.5">
-            <Calendar size={16} color="#64748b" />
-            <SSText variant="medium" className="text-xs text-slate-500">
-              Created {formatDate(item.createdAt)}
-            </SSText>
+            {item.totalDuration && (
+              <View className="flex-row items-center gap-1.5">
+                <Clock size={14} color="#64748b" />
+                <SSText variant="semibold" className="text-sm text-gray-800">
+                  {formatDuration(item.totalDuration)}
+                </SSText>
+              </View>
+            )}
+
+            {item.totalEstimatedCost && (
+              <View className="flex-row items-center gap-1.5">
+                <DollarSign size={14} color="#64748b" />
+                <SSText variant="semibold" className="text-sm text-gray-800">
+                  {formatCurrency(Number(item.totalEstimatedCost))}
+                </SSText>
+              </View>
+            )}
           </View>
 
-          {/* {item.collaborators.length > 0 && (
+          <View className="flex-row flex-wrap gap-4">
+            <View className="flex-row items-center gap-1.5">
+              <Calendar size={16} color="#64748b" />
+              <SSText variant="medium" className="text-xs text-slate-500">
+                Created {formatDate(item.createdAt)}
+              </SSText>
+            </View>
+
+            {/* {item.collaborators.length > 0 && (
             <View className="flex-row items-center gap-1.5">
               <Users size={16} color="#64748b" />
               <SSText variant="medium" className="text-xs text-slate-500">
@@ -159,8 +161,9 @@ export default function ItinerariesScreen() {
               </SSText>
             </View>
           )} */}
+          </View>
         </View>
-      </View>
+      </Card>
     </TouchableOpacity>
   );
 
@@ -193,7 +196,7 @@ export default function ItinerariesScreen() {
           <SSText variant="semibold">Create Itinerary</SSText>
         </Button>
         {/* Header */}
-        <View className="flex-row justify-between items-center px-5 pt-2.5">
+        <View className="flex-row justify-between items-center pb-4 pt-2.5">
           {/* <TouchableOpacity
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
             onPress={() => goBack('/profile')}
@@ -224,6 +227,7 @@ export default function ItinerariesScreen() {
             renderItem={renderItinerary}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
+            contentContainerClassName='gap-4'
             ListEmptyComponent={
               <View className="flex-1 justify-center items-center pt-25 px-10">
                 <SSText

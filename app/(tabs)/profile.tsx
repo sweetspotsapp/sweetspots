@@ -182,7 +182,7 @@ export default function ProfileTab() {
             {menuItems.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                className="flex-row items-center bg-white px-5 py-4 rounded-xl mb-3 shadow-sm"
+                className="flex-row items-center bg-white  py-4 rounded-xl mb-3 shadow-sm"
                 onPress={item.onPress}
               >
                 <View
@@ -207,7 +207,7 @@ export default function ProfileTab() {
           </View>
 
           {/* App Info */}
-          <View className="items-center py-10 px-5">
+          <View className="items-center py-10 ">
             <SSText variant="medium" className="text-sm text-slate-500 mb-1">
               SweetSpots v1.0.0
             </SSText>

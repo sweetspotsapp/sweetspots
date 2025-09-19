@@ -442,7 +442,7 @@ export function ItineraryForm({
   return (
     <PickerProvider>
       <View className="flex-1">
-        {/* <View className="flex-row justify-between items-center px-5 pt-5 pb-4 border-b border-slate-100">
+        {/* <View className="flex-row justify-between items-center  pt-5 pb-4 border-b border-slate-100">
           <SSText variant="bold" className="text-2xl text-gray-800">
             {editMode ? 'Edit' : 'Create'} Itinerary
           </SSText>
@@ -457,7 +457,7 @@ export function ItineraryForm({
         </View> */}
 
         <ScrollView
-          className="flex-1 px-5"
+          className="flex-1 "
           showsVerticalScrollIndicator={false}
         >
           <View className="mb-8 mt-4">
@@ -644,7 +644,7 @@ export function ItineraryForm({
           }
         </ScrollView>
 
-        <View className="flex-row px-5 pb-10 pt-5 gap-3 bg-white border-t border-slate-100">
+        <View className="flex-row  pb-10 pt-5 gap-3 bg-white border-t border-slate-100">
           <Button variant="outline" onPress={onCancel}>
             <SSText>Cancel</SSText>
           </Button>

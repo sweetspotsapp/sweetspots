@@ -116,7 +116,7 @@ export function AllReviewsModal({
         <SSLinearGradient/>
 
         {/* Header */}
-        <View className="flex-row justify-between items-start px-5 pt-5 pb-4 border-b border-slate-100">
+        <View className="flex-row justify-between items-start  pt-5 pb-4 border-b border-slate-100">
           <View className="flex-1">
             <SSText variant="bold" className="text-2xl text-gray-800 mb-1">
               All Reviews
@@ -172,7 +172,7 @@ export function AllReviewsModal({
         </View>
 
         {/* Search and Filters */}
-        <View className="px-5 py-4">
+        <View className=" py-4">
           <View className="flex-row items-center gap-2 mb-4">
             <Search size={20} color="#64748b" />
             <Input
@@ -212,7 +212,7 @@ export function AllReviewsModal({
         </View>
 
         {/* Reviews List */}
-        <ScrollView className="flex-1 px-5" contentContainerClassName='gap-3' showsVerticalScrollIndicator={false}>
+        <ScrollView className="flex-1 " contentContainerClassName='gap-3' showsVerticalScrollIndicator={false}>
           {isLoading ? (
             <View className="items-center py-20">
               <SSText className="text-base text-slate-500">Loading reviews...</SSText>

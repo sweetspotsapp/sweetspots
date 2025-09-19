@@ -11,7 +11,7 @@ export default function ModalHeader({
   onClose: () => void;
 }) {
   return (
-    <View className="flex-row justify-between items-center px-5 pt-5 pb-4 border-b border-slate-100">
+    <View className="flex-row justify-between items-center  pt-5 pb-4 border-b border-slate-100">
       <SSText variant="bold" className="text-2xl text-gray-800">
         {title}
       </SSText>

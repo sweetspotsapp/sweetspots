@@ -419,7 +419,7 @@ export default function DiscoverTab() {
   return (
     <>
       <SSContainer>
-        <View className="flex-row justify-between items-center px-5 pt-2.5">
+        <View className="flex-row justify-between items-center pt-2.5">
           <SSText variant="bold" className="text-3xl text-orange-600">
             SweetSpots
           </SSText>
@@ -444,16 +444,16 @@ export default function DiscoverTab() {
 
         <ScrollView className="flex-1">
           {isLoading ? (
-            <View className="flex-1 items-center justify-center px-5">
+            <View className="flex-1 items-center justify-center">
               <SSSpinner />
               <SSText className="text-lg text-slate-500">
                 Loading places...
               </SSText>
             </View>
           ) : (
-            <View className="flex-1 grid md:grid-cols-2 gap-6 container mx-auto justify-center px-5 pb-30">
+            <View className="flex-1 grid md:grid-cols-2 gap-6 container mx-auto justify-center pb-30">
               <View
-                className="sticky top-0 h-full w-full"
+                className="md:sticky top-0 h-full w-full"
                 style={{ height: screenHeight * 0.8 }}
               >
                 <View className="relative h-full w-full">
@@ -541,7 +541,7 @@ export default function DiscoverTab() {
                           <>
                             {/* Swipe Indicators */}
                             <Animated.View
-                              className="absolute top-12 left-5 bg-orange-600 px-5 py-2.5 rounded-lg z-10"
+                              className="absolute top-12 left-5 bg-orange-600 py-2.5 rounded-lg z-10"
                               style={[
                                 { opacity: likeOpacity },
                                 { transform: [{ rotate: '-12deg' }] },
@@ -555,7 +555,7 @@ export default function DiscoverTab() {
                               </SSText>
                             </Animated.View>
                             <Animated.View
-                              className="absolute top-12 right-5 bg-rose-500 px-5 py-2.5 rounded-lg z-10"
+                              className="absolute top-12 right-5 bg-rose-500 py-2.5 rounded-lg z-10"
                               style={[
                                 { opacity: passOpacity },
                                 { transform: [{ rotate: '12deg' }] },
