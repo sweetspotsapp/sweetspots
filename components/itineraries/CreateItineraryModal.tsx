@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, TouchableOpacity, View } from 'react-native';
+import { Modal, Pressable, TouchableOpacity, View } from 'react-native';
 import { IPlace } from '@/dto/places/place.dto';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -16,12 +16,10 @@ import {
   getPlaceCoordinates,
 } from '@/api/google-maps/endpoints';
 import SSSpinner from '../ui/SSSpinner';
-import {
-  Dialog,
-  DialogContent,
-} from '../ui/dialog';
+import { Dialog, DialogContent } from '../ui/dialog';
 import { router } from 'expo-router';
 import { useItineraryDraft } from '@/store/useItineraryDraft';
+import { Minus, Plus } from 'lucide-react-native';
 
 interface CreateItineraryModalProps {
   visible: boolean;
@@ -53,6 +51,10 @@ const initItinerarySchema = yup.object().shape({
     ),
 
   budget: yup.number().required('Budget is required').min(0),
+  targetCount: yup
+    .number()
+    .required('Please input how many places you want to go')
+    .min(0),
 
   collaborator: yup
     .string()
@@ -196,18 +198,24 @@ CreateItineraryModalProps) {
       endDateISO: getValues('endDate').toISOString(),
       budget: getValues('budget'),
       collaborators: getValues('collaborators') || [],
+      targetCount: getValues('targetCount'),
       lat: coords?.lat || null,
       lon: coords?.lon || null,
-    })
+    });
     onClose?.();
     router.push({
       pathname: '/(tabs)/itineraries/choose-places',
     });
-    // Logic to select user's own spots
   }
 
   function onSelectSuggestedSpot() {
     // Logic to select a suggested spot
+  }
+
+  const targetCount = watch('targetCount') || 0;
+
+  function handleChangeTargetCount(isIncrement: boolean) {
+    setValue('targetCount', isIncrement ? targetCount + 1 : targetCount - 1);
   }
 
   return (
@@ -234,7 +242,11 @@ CreateItineraryModalProps) {
               <Label className="text-xl font-bold" htmlFor="trip-name">
                 Where do you want to go?
               </Label>
-              <SSControlledInput readOnly={isLoadingCoords} control={control} name="query" />
+              <SSControlledInput
+                readOnly={isLoadingCoords}
+                control={control}
+                name="query"
+              />
             </View>
 
             {loadingCities ? (
@@ -260,6 +272,20 @@ CreateItineraryModalProps) {
                 </View>
               )
             )}
+            <View className="flex-row items-center justify-between mt-4">
+              <Label className="text-xl">
+                How many spots do you want to go to?
+              </Label>
+              <View className="flex-row items-center gap-4">
+                <Pressable className="rounded-full w-8 h-8 items-center justify-center bg-amber-500" onPress={() => handleChangeTargetCount(false)} disabled={targetCount <= 0}>
+                  <Minus className="text-white" />
+                </Pressable>
+                <SSText className='font-bold h-fit'>{targetCount}</SSText>
+                <Pressable className="rounded-full w-8 h-8 items-center justify-center bg-amber-500" onPress={() => handleChangeTargetCount(true)}>
+                  <Plus className="text-white" />
+                </Pressable>
+              </View>
+            </View>
           </Card>
 
           {/* Dates */}

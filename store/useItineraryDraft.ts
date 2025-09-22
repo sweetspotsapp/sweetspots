@@ -11,6 +11,7 @@ export type ItineraryDraft = {
   endDateISO: string | null;
 
   budget: number;
+  targetCount: number;
   collaborator: string;
   collaborators: string[];
 
@@ -32,6 +33,7 @@ const initialDraft: ItineraryDraft = {
   startDateISO: null,
   endDateISO: null,
   budget: 0,
+  targetCount: 0,
   collaborator: "",
   collaborators: [],
   lat: null,

@@ -9,4 +9,5 @@ export interface CreateAutoItineraryDto {
   nameHint?: string;
   description?: string;
   radiusKm?: number;
+  maxBudget?: number;
 }

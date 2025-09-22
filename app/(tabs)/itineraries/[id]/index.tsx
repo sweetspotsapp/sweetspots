@@ -348,7 +348,7 @@ export default function ItineraryDetailsScreen() {
                     <View className="flex-row items-start mb-3">
                       <View className="w-8 h-8 rounded-full bg-orange-600 justify-center items-center mr-3 mt-1">
                         <SSText variant="bold" className="text-sm text-white">
-                          {place.orderIndex || index + 1}
+                          {index + 1}
                         </SSText>
                       </View>
                       {place.imageUrl && (

@@ -53,6 +53,8 @@ export default function ChoosePlaces() {
       placeIds: selectedPlaceIds,
       startDate: draft.startDateISO,
       endDate: draft.endDateISO,
+      targetCount: draft.targetCount,
+      maxBudget: draft.budget,
       userId: user?.uid,
     }).then((res) => {
       const itineraryId = res.data?.id;
