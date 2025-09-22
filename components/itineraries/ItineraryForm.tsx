@@ -50,18 +50,30 @@ export function ItineraryForm({
   const [nameInput, setNameInput] = useState('');
   const [nameSuggestions, setNameSuggestions] = useState<Suggestion[]>([]);
 
+  const [ownerUserId, setOwnerUserId] = useState<string | null>(null);
+
   const [description, setDescription] = useState('');
   const [descriptionInput, setDescriptionInput] = useState('');
-  const [descriptionSuggestions, setDescriptionSuggestions] = useState<Suggestion[]>([]);
+  const [descriptionSuggestions, setDescriptionSuggestions] = useState<
+    Suggestion[]
+  >([]);
 
   const [collaborators, setCollaborators] = useState<string[]>([]);
   const [newCollaborator, setNewCollaborator] = useState('');
 
   const [isPublic, setIsPublic] = useState(false);
-  const [allItineraryPlaces, setItineraryPlaces] = useState<IItineraryPlace[]>([]);
+  const [allItineraryPlaces, setItineraryPlaces] = useState<IItineraryPlace[]>(
+    []
+  );
 
-  const itineraryPlaces = allItineraryPlaces.filter((p) => p.suggestionStatus === 'accepted')
-  const suggestedPlaces = allItineraryPlaces.filter((p) => p.suggestionStatus === 'pending');
+  console.log('allItineraryPlaces', allItineraryPlaces);
+
+  const itineraryPlaces = allItineraryPlaces.filter(
+    (p) => p.suggestionStatus === 'accepted'
+  );
+  const suggestedPlaces = allItineraryPlaces.filter(
+    (p) => p.suggestionStatus === 'pending'
+  );
 
   const [tripSummary, setTripSummary] = useState<TripSummary>({
     totalCost: 0,
@@ -77,6 +89,7 @@ export function ItineraryForm({
   >([]);
 
   const { user } = useAuth();
+  const isOwner = user?.uid === ownerUserId;
 
   const { startEditing, stopEditing, suggestChange, logChange } =
     useItinerarySocket({
@@ -122,11 +135,14 @@ export function ItineraryForm({
       },
     });
 
-  const handleAcceptRejectPlaceSuggestion = (id: string, status: 'accepted' | 'rejected') => {
-    const selectedPlace = allItineraryPlaces.find((p) => p.id === id);
+  const handleAcceptRejectPlaceSuggestion = (
+    suggestionId: string,
+    status: 'accepted' | 'rejected'
+  ) => {
+    const selectedPlace = allItineraryPlaces.find((p) => p.id === suggestionId);
     if (!selectedPlace || selectedPlace.suggestionStatus !== 'pending') return;
-    updateSuggestionStatus(id, status)
-  }
+    updateSuggestionStatus(suggestionId, status);
+  };
 
   useEffect(() => {
     if (itineraryId) {
@@ -140,6 +156,7 @@ export function ItineraryForm({
             if (data.description) setDescription(data.description);
             // if (data.startDate) setStartDate(data.startDate);
             // if (data.endDate) setEndDate(data.endDate);
+            setOwnerUserId(data.userId || null);
             setCollaborators(data.collaborators || []);
             setIsPublic(data.isPublic || false);
             setItineraryPlaces(data.itineraryPlaces || []);
@@ -277,17 +294,17 @@ export function ItineraryForm({
 
   const calculateTripSummary = async () => {
     const totalCost = itineraryPlaces.reduce(
-      (sum, place) => sum + (place.place ? (place.place?.maxPrice || 0) : 0),
+      (sum, place) => sum + (place.place ? place.place?.maxPrice || 0 : 0),
       0
     );
 
     const minEstimatedCost = itineraryPlaces.reduce(
-      (sum, place) => sum + (place.place ? (place.place?.minPrice || 0) : 0),
+      (sum, place) => sum + (place.place ? place.place?.minPrice || 0 : 0),
       0
     );
 
     const maxEstimatedCost = itineraryPlaces.reduce(
-      (sum, place) => sum + (place.place ? (place.place?.maxPrice || 0) : 0),
+      (sum, place) => sum + (place.place ? place.place?.maxPrice || 0 : 0),
       0
     );
 
@@ -295,8 +312,6 @@ export function ItineraryForm({
       (sum, place) => sum + (Number(place.visitDuration) || 0),
       0
     );
-
-    console.log('totalVisitDuration', totalVisitDuration)
 
     let totalTravelDuration =
       travelSegments.reduce(
@@ -410,7 +425,6 @@ export function ItineraryForm({
       setNewCollaborator('');
       setIsPublic(false);
       setItineraryPlaces([]);
-
     } catch (error) {
       console.error('Failed to create itinerary', error);
       Alert.alert('Error', 'Failed to create itinerary. Please try again.');
@@ -473,10 +487,7 @@ export function ItineraryForm({
           )}
         </View> */}
 
-        <ScrollView
-          className="flex-1 "
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView className="flex-1 " showsVerticalScrollIndicator={false}>
           <View className="mb-8 mt-4">
             <SSText variant="semibold" className="text-xl text-gray-800 mb-2">
               Trip Details
@@ -568,7 +579,7 @@ export function ItineraryForm({
                   Press each place to configure when and how long you'll visit
                 </SSText>
               </View>
-              <Button onPress={() => setIsAddingPlace(true)} className='mt-2'>
+              <Button onPress={() => setIsAddingPlace(true)} className="mt-2">
                 <Plus size={16} color="white" />
                 <SSText>Add Place</SSText>
               </Button>
@@ -593,6 +604,36 @@ export function ItineraryForm({
                 lockedFields={lockedFields}
               />
             ))}
+            {suggestedPlaces.length > 0 && (
+              <>
+                <SSText
+                  variant="semibold"
+                  className="text-xl text-gray-800 mb-2 mt-6"
+                >
+                  Suggested Places ({suggestedPlaces.length} places)
+                </SSText>
+                <SSText className="text-sm text-slate-500 mb-6">
+                  Press each place to configure when and how long you'll visit
+                </SSText>
+                {suggestedPlaces.map((place, index) => (
+                  <PlaceScheduleCard
+                    key={place.id}
+                    itineraryPlace={place}
+                    onUpdate={(updates) => updatePlace(place.id, updates)}
+                    // toNextSegment={travelSegments[index]}
+                    onFieldFocus={handleFieldFocus}
+                    onFieldBlur={handleFieldBlur}
+                    lockedFields={lockedFields}
+                    onAcceptSuggestion={() =>
+                      handleAcceptRejectPlaceSuggestion(place.id, 'accepted')
+                    }
+                    onRejectSuggestion={() =>
+                      handleAcceptRejectPlaceSuggestion(place.id, 'rejected')
+                    }
+                  />
+                ))}
+              </>
+            )}
           </View>
 
           <View className="mb-8">
@@ -628,37 +669,35 @@ export function ItineraryForm({
             )}
           </View>
 
-          {
-            !editMode && (
-              <View className="mb-8">
-                <TouchableOpacity
-                  className="flex-row items-start gap-3"
-                  onPress={() => setIsPublic(!isPublic)}
+          {!editMode && (
+            <View className="mb-8">
+              <TouchableOpacity
+                className="flex-row items-start gap-3"
+                onPress={() => setIsPublic(!isPublic)}
+              >
+                <View
+                  className={`w-5 h-5 rounded-full border-2 justify-center items-center mt-0.5 ${
+                    isPublic ? 'border-orange-600' : 'border-slate-200'
+                  }`}
                 >
-                  <View
-                    className={`w-5 h-5 rounded-full border-2 justify-center items-center mt-0.5 ${
-                      isPublic ? 'border-orange-600' : 'border-slate-200'
-                    }`}
+                  {isPublic && (
+                    <View className="w-2.5 h-2.5 rounded-full bg-orange-600" />
+                  )}
+                </View>
+                <View className="flex-1">
+                  <SSText
+                    variant="medium"
+                    className="text-base text-gray-800 mb-1"
                   >
-                    {isPublic && (
-                      <View className="w-2.5 h-2.5 rounded-full bg-orange-600" />
-                    )}
-                  </View>
-                  <View className="flex-1">
-                    <SSText
-                      variant="medium"
-                      className="text-base text-gray-800 mb-1"
-                    >
-                      Make this itinerary public
-                    </SSText>
-                    <SSText className="text-sm text-slate-500">
-                      Others can discover and view your itinerary
-                    </SSText>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            ) 
-          }
+                    Make this itinerary public
+                  </SSText>
+                  <SSText className="text-sm text-slate-500">
+                    Others can discover and view your itinerary
+                  </SSText>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
         </ScrollView>
 
         <View className="flex-row  pb-10 pt-5 gap-3 bg-white border-t border-slate-100">
@@ -672,7 +711,9 @@ export function ItineraryForm({
       </View>
 
       <AddPlaceToItineraryModal
-        itineraryPlaceIds={itineraryPlaces.map((p) => p.placeId).filter(Boolean) as string[]}
+        itineraryPlaceIds={
+          itineraryPlaces.map((p) => p.placeId).filter(Boolean) as string[]
+        }
         visible={isAddingPlace}
         onClose={() => setIsAddingPlace(false)}
         onAdded={(places) => {
@@ -688,7 +729,6 @@ export function ItineraryForm({
             notes: '',
             orderIndex: itineraryPlaces.length + index + 1,
           }));
-          console.log('Adding new places:', places, newPlaces);
           setItineraryPlaces((prev) => [...prev, ...newPlaces]);
           setIsAddingPlace(false);
         }}
