@@ -33,6 +33,8 @@ interface PlaceScheduleCardProps {
   lockedFields?: Record<string, string>;
   onFieldFocus?: (field: string) => void;
   onFieldBlur?: (field: string, prevValue: any, newValue: any) => void;
+  onAcceptSuggestion?: () => void;
+  onRejectSuggestion?: () => void;
 }
 
 export function PlaceScheduleCard({
@@ -44,6 +46,8 @@ export function PlaceScheduleCard({
   lockedFields = {},
   onFieldFocus = () => {},
   onFieldBlur = () => {},
+  onAcceptSuggestion,
+  onRejectSuggestion,
 }: PlaceScheduleCardProps) {
   const { user } = useAuth();
   const userLockedFields = Object.keys(lockedFields).filter(
@@ -119,7 +123,7 @@ export function PlaceScheduleCard({
               )}
               <View className="w-8 h-8 rounded-full bg-orange-600 justify-center items-center mr-3">
                 <SSText variant="bold" className="text-sm text-white">
-                  {itineraryPlace.orderIndex}
+                  {itineraryPlace.orderIndex + 1}
                 </SSText>
               </View>
               {onMoveDown && (
@@ -137,7 +141,7 @@ export function PlaceScheduleCard({
                   <Image
                     source={{ uri: itineraryPlace.imageUrl }}
                     className="rounded-xl mr-3"
-                    style={{ resizeMode: 'cover', width: 60, height: 60 }}
+                    style={{ resizeMode: 'cover', width: 112, height: 112 }}
                   />
                 ) : null}
                 <View className="flex-1">
@@ -189,6 +193,34 @@ export function PlaceScheduleCard({
                     </View>
                   </View>
                 </View>
+                {
+                  onAcceptSuggestion && onRejectSuggestion && (
+                  <View className="flex-row justify-between items-center gap-2">
+                    <TouchableOpacity
+                      className="px-4 py-1 rounded-full bg-green-100"
+                      onPress={onAcceptSuggestion}
+                    >
+                      <SSText
+                        variant="medium"
+                        className="text-green-800"
+                      >
+                        Accept
+                      </SSText>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      className="px-4 py-1 rounded-full bg-red-100"
+                      onPress={onRejectSuggestion}
+                    >
+                      <SSText
+                        variant="medium"
+                        className="text-red-800"
+                      >
+                        Reject
+                      </SSText>
+                    </TouchableOpacity>
+                  </View>
+                  )
+                }
               </>
             )}
           </View>
@@ -209,9 +241,9 @@ export function PlaceScheduleCard({
                 <ChevronDown size={16} color="#64748b" />
               </TouchableOpacity>
             )} */}
-            <TouchableOpacity className="w-8 h-8 rounded-full bg-orange-50 justify-center items-center">
+            {/* <TouchableOpacity className="w-8 h-8 rounded-full bg-orange-50 justify-center items-center">
               <EditIcon size={16} className="text-orange-500" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </TouchableOpacity>
 
@@ -301,7 +333,7 @@ export function PlaceScheduleCard({
                 }
                 onValueChange={(value) => onUpdate({ visitDuration: value })}
                 step={0.5}
-                minimumTrackTintColor="#10b981"
+                minimumTrackTintColor="#f97316"
                 maximumTrackTintColor="#e2e8f0"
               />
               <View className="flex-row justify-between mt-1">
@@ -341,7 +373,7 @@ export function PlaceScheduleCard({
                 }
                 onValueChange={(value) => onUpdate({ estimatedCost: value })}
                 step={5}
-                minimumTrackTintColor="#10b981"
+                minimumTrackTintColor="#f97316"
                 maximumTrackTintColor="#e2e8f0"
               />
               <View className="flex-row justify-between mt-1">
