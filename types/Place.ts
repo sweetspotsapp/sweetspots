@@ -16,7 +16,7 @@
 //   reviews?: Review[];
 // }
 
-import { IPlace } from "@/api/places/dto/place.dto";
+import { IPlace } from "@/dto/places/place.dto";
 
 export interface Review {
   id: string;
@@ -64,4 +64,6 @@ export interface TripSummary {
   totalDays: number;
   averageCostPerDay: number;
   placesPerDay: number;
+  minEstimatedCost?: number;
+  maxEstimatedCost?: number;
 }

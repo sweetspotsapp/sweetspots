@@ -31,7 +31,8 @@ export function TripSummaryCard({ summary }: TripSummaryCardProps) {
             <DollarSign size={20} className="text-orange-500" />
           </View>
           <SSText variant="bold" className="text-xl text-gray-800 mb-1">
-            {formatCurrency(summary.totalCost)}
+            {formatCurrency(summary.minEstimatedCost)} -{' '}
+            {formatCurrency(summary.maxEstimatedCost)}
           </SSText>
           <SSText
             variant="medium"

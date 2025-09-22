@@ -69,6 +69,8 @@ export function ItineraryForm({
     totalDays: 0,
     averageCostPerDay: 0,
     placesPerDay: 0,
+    minEstimatedCost: 0,
+    maxEstimatedCost: 0,
   });
   const [travelSegments, setTravelSegments] = useState<
     { fromIndex: number; toIndex: number; distance: number; duration: number }[]
@@ -173,7 +175,7 @@ export function ItineraryForm({
       await calculateTripSummary();
     };
     run();
-  }, [itineraryPlaces]);
+  }, [itineraryPlaces.map((p) => p.id).join('-'), travelSegments]);
 
   const getDefaultDuration = (category: string): number => {
     const durations: { [key: string]: number } = {
@@ -275,13 +277,26 @@ export function ItineraryForm({
 
   const calculateTripSummary = async () => {
     const totalCost = itineraryPlaces.reduce(
-      (sum, place) => sum + (place.estimatedCost || 0),
+      (sum, place) => sum + (place.place ? (place.place?.maxPrice || 0) : 0),
       0
     );
+
+    const minEstimatedCost = itineraryPlaces.reduce(
+      (sum, place) => sum + (place.place ? (place.place?.minPrice || 0) : 0),
+      0
+    );
+
+    const maxEstimatedCost = itineraryPlaces.reduce(
+      (sum, place) => sum + (place.place ? (place.place?.maxPrice || 0) : 0),
+      0
+    );
+
     const totalVisitDuration = itineraryPlaces.reduce(
-      (sum, place) => sum + (place.visitDuration || 0),
+      (sum, place) => sum + (Number(place.visitDuration) || 0),
       0
     );
+
+    console.log('totalVisitDuration', totalVisitDuration)
 
     let totalTravelDuration =
       travelSegments.reduce(
@@ -309,6 +324,8 @@ export function ItineraryForm({
       totalDays,
       averageCostPerDay,
       placesPerDay,
+      minEstimatedCost,
+      maxEstimatedCost,
     });
   };
 
