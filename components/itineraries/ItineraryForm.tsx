@@ -14,7 +14,6 @@ import { useItinerarySocket } from '@/hooks/useItinerarySocket';
 import { useAuth } from '@/hooks/useAuth';
 import moment from 'moment';
 import AddPlaceToItineraryModal from './AddPlaceToItineraryModal';
-import { IItineraryPlace } from '@/dto/itineraries/itinerary.dto';
 import { IPlace } from '@/dto/places/place.dto';
 import { PlaceScheduleCard } from '../PlaceScheduleCard';
 import { TripSummaryCard } from '../TripSummaryCard';
@@ -26,6 +25,7 @@ import { Button } from '../ui/button';
 import CollaboratorPill from './CollaboratorPill';
 import { updateSuggestionStatus } from '@/api/collab-itinerary/endpoints';
 import SuggestionCardList, { Suggestion } from './SuggestionCardList';
+import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
 
 interface ItineraryFormProps {
   onCreated?: () => void;
