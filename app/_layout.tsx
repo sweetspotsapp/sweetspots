@@ -15,20 +15,11 @@ import '../global.css';
 import React from 'react';
 import ToastManager from 'toastify-react-native';
 import { PortalHost } from '@rn-primitives/portal';
-import { useOnboardingStore } from '@/store/useOnboardingStore';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   useFrameworkReady();
-  const { ui } = useOnboardingStore();
-
-  useEffect(() => {
-    if (!ui.completed && !ui.dismissed) {
-      // User hasn't done onboarding yet
-      router.replace('/onboarding');
-    }
-  }, [ui.completed, ui.dismissed]);
 
   const [fontsLoaded, fontError] = useFonts({
     'Poppins-Regular': Poppins_400Regular,

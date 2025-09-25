@@ -1,9 +1,17 @@
-import React from 'react';
-import { Tabs } from 'expo-router';
+import React, { useEffect } from 'react';
+import { router, Tabs } from 'expo-router';
 import { Heart, User, Compass, Search, Briefcase } from 'lucide-react-native';
 import { Platform } from 'react-native';
+import { useOnboardingStore } from '@/store/useOnboardingStore';
 
 export default function TabLayout() {
+    const { ui } = useOnboardingStore();
+    useEffect(() => {
+      if (!ui.completed && !ui.dismissed) {
+        // User hasn't done onboarding yet
+        router.replace('/onboarding');
+      }
+    }, [ui.completed, ui.dismissed]);
   return (
     <Tabs
       screenOptions={{
