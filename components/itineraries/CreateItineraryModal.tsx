@@ -20,6 +20,8 @@ import { Dialog, DialogContent } from '../ui/dialog';
 import { router } from 'expo-router';
 import { useItineraryDraft } from '@/store/useItineraryDraft';
 import { Minus, Plus } from 'lucide-react-native';
+import { createAutoItinerary } from '@/api/auto-itinerary/endpoints';
+import { useAuth } from '@/hooks/useAuth';
 
 interface CreateItineraryModalProps {
   visible: boolean;
@@ -56,14 +58,14 @@ const initItinerarySchema = yup.object().shape({
     .required('Please input how many places you want to go')
     .min(0),
 
-  collaborator: yup
-    .string()
-    .required('Collaborator is required')
-    .min(3, 'Collaborator must be at least 3 characters'),
+  // collaborator: yup
+  //   .string()
+  //   .required('Collaborator is required')
+  //   .min(3, 'Collaborator must be at least 3 characters'),
 
-  collaborators: yup
-    .array()
-    .of(yup.string().required('Collaborator is required')),
+  // collaborators: yup
+  //   .array()
+  //   .of(yup.string().required('Collaborator is required')),
 });
 
 type FormData = yup.InferType<typeof initItinerarySchema>;
@@ -85,22 +87,22 @@ CreateItineraryModalProps) {
     resolver: yupResolver(initItinerarySchema),
   });
 
-  const handleAddCollaborator = (collaborator: string) => {
-    setValue('collaborators', [
-      ...(getValues('collaborators') || []),
-      collaborator,
-    ]);
-  };
+  // const handleAddCollaborator = (collaborator: string) => {
+  //   setValue('collaborators', [
+  //     ...(getValues('collaborators') || []),
+  //     collaborator,
+  //   ]);
+  // };
 
-  const handleRemoveCollaborator = (collaborator: string) => {
-    const currentCollaborators = getValues('collaborators') || [];
-    const updatedCollaborators = currentCollaborators.filter(
-      (c: string) => c !== collaborator
-    );
-    setValue('collaborators', updatedCollaborators);
-  };
+  // const handleRemoveCollaborator = (collaborator: string) => {
+  //   const currentCollaborators = getValues('collaborators') || [];
+  //   const updatedCollaborators = currentCollaborators.filter(
+  //     (c: string) => c !== collaborator
+  //   );
+  //   setValue('collaborators', updatedCollaborators);
+  // };
 
-  const collaborators = watch('collaborators') || [];
+  // const collaborators = watch('collaborators') || [];
   const query = watch('query');
 
   const [loadingCities, setLoadingCities] = React.useState(false);
@@ -197,7 +199,7 @@ CreateItineraryModalProps) {
       startDateISO: getValues('startDate').toISOString(),
       endDateISO: getValues('endDate').toISOString(),
       budget: getValues('budget'),
-      collaborators: getValues('collaborators') || [],
+      // collaborators: getValues('collaborators') || [],
       targetCount: getValues('targetCount'),
       lat: coords?.lat || null,
       lon: coords?.lon || null,
@@ -208,8 +210,29 @@ CreateItineraryModalProps) {
     });
   }
 
+  const [isCreatingAutoItinerary, setIsCreatingAutoItinerary] = React.useState(false);
+  const user = useAuth().user
+
   function onSelectSuggestedSpot() {
-    // Logic to select a suggested spot
+    setIsCreatingAutoItinerary(true);
+    createAutoItinerary({
+      startDate: getValues('startDate').toISOString(),
+      endDate: getValues('endDate').toISOString(),
+      targetCount: getValues('targetCount'),
+      maxBudget: getValues('budget'),
+      latitude: coords?.lat || undefined,
+      longitude: coords?.lon || undefined,
+      userId: user?.uid,
+      placeIds: []
+    }).then((res) => {
+      const itineraryId = res.data?.id;
+      if (itineraryId) {
+        router.replace(`/itineraries/${itineraryId}`);
+      }
+    }).finally(() => {
+      setIsCreatingAutoItinerary(false);
+      onClose?.();
+    })
   }
 
   const targetCount = watch('targetCount') || 0;
@@ -333,7 +356,7 @@ CreateItineraryModalProps) {
                 />
               </View>
             </View>
-
+          {/* 
             <View>
               <Label className="text-xl font-bold" htmlFor="trip-collaborator">
                 Who is going with you?
@@ -356,7 +379,7 @@ CreateItineraryModalProps) {
                   />
                 ))}
               </View>
-            </View>
+            </View> */}
           </Card>
           <Button onPress={handleSubmit(onSubmit)} className="self-end">
             <SSText>Let&apos;s Go!</SSText>
@@ -375,6 +398,17 @@ CreateItineraryModalProps) {
           <Button variant="outline" onPress={onSelectOwnSpots}>
             <SSText>No, let me choose my own</SSText>
           </Button>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isCreatingAutoItinerary} onOpenChange={() => {}}>
+        <DialogContent>
+          <SSText className="text-center">
+            Creating your itinerary...
+          </SSText>
+          <SSText className="text-center text-sm text-gray-500 mt-2">
+            This may take a while depending on how many spots you want to go to.
+          </SSText>
+          <SSSpinner className="mt-4" />
         </DialogContent>
       </Dialog>
     </>
