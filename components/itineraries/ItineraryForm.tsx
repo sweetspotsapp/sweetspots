@@ -66,8 +66,6 @@ export function ItineraryForm({
     []
   );
 
-  console.log('allItineraryPlaces', allItineraryPlaces);
-
   const itineraryPlaces = allItineraryPlaces.filter(
     (p) => p.suggestionStatus === 'accepted'
   );
@@ -394,7 +392,7 @@ export function ItineraryForm({
       const payload = {
         name: (nameInput || name).trim(),
         description: (descriptionInput || description).trim(),
-        places: itineraryPlaces.map((place) => ({
+        itineraryPlaces: itineraryPlaces.map((place) => ({
           placeId: place.placeId || place.id,
           visitDate: place.visitDate ?? undefined,
           visitTime: place.visitTime ?? undefined,

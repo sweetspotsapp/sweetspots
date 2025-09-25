@@ -22,5 +22,5 @@ export interface CreateItineraryDto {
   startDate?: string;
   endDate?: string;
   coverImage?: string;
-  places: CreateItineraryPlaceDto[];
+  itineraryPlaces: CreateItineraryPlaceDto[];
 }
