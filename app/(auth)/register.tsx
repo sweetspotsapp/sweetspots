@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Alert } from 'react-native';
+import { View } from 'react-native';
 import { set, useForm } from 'react-hook-form';
 import { useRouter } from 'expo-router';
 import { register as registerWithEmail } from '@/lib/auth';
@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { SSText } from '@/components/ui/SSText';
 import { SSControlledInput } from '@/components/ui/SSControlledInput';
 import SSLinearBackground from '@/components/ui/SSLinearBackground';
+import { Toast } from 'toastify-react-native';
+import { firebaseErrorMessage } from '@/lib/utils';
 
 type RegisterFormData = {
   // name: string;
@@ -55,10 +57,15 @@ export default function RegisterScreen() {
         data.lastName,
         data.username || data.email.split('@')[0]
       ); // Assuming username is optional
-      Alert.alert('Success', 'Account created. Please log in.');
+      Toast.success('Account created. Please log in.');
       router.replace('/(auth)/login');
     } catch (err) {
-      Alert.alert('Registration failed', 'Something went wrong. Try again.');
+      console.log(firebaseErrorMessage((err as any).code));
+      Toast.error(firebaseErrorMessage((err as any).code));
+      if ((err as any).code === 'auth/email-already-in-use') {
+        router.replace('/(auth)/login');
+        return;
+      }
     }
   };
 
