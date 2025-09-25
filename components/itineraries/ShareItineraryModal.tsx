@@ -16,7 +16,14 @@ import SSSpinner from '../ui/SSSpinner';
 import { Toast } from 'toastify-react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { Separator } from '../ui/separator';
-import { Copy, EllipsisVertical, FacebookIcon, Mail, TwitterIcon } from 'lucide-react-native';
+import {
+  Copy,
+  EllipsisVertical,
+  FacebookIcon,
+  Mail,
+  TwitterIcon,
+} from 'lucide-react-native';
+import SSContainer from '../SSContainer';
 
 interface ShareItineraryModalProps {
   visible: boolean;
@@ -149,7 +156,7 @@ export default function ShareItineraryModal({
       message: text,
       url: url,
       title: itinerary.name + ' - Sweetspots Itinerary',
-    })
+    });
   }
   return (
     <Modal
@@ -165,74 +172,74 @@ export default function ShareItineraryModal({
         onCancel={() => setIsRemoveDialogOpen(false)}
         onConfirm={handleConfirmRemove}
       />
-      <ModalHeader title="Share Itinerary" onClose={onClose} />
-      <ScrollView
-        className="flex-1  pt-5"
-        showsVerticalScrollIndicator={false}
-      >
-        <SSText className="mb-2">Collaborators</SSText>
-        <View className="flex-row flex-wrap gap-2 mb-4">
-          {collaborators.map((collaborator, index) => (
-            <CollaboratorPill
-              key={index}
-              collaborator={collaborator}
-              onRemove={() => handleRemoveToggle(collaborator)}
-            />
-          ))}
-
-          {isAdding && <SSSpinner size="small" />}
-        </View>
-        <SSText className="mb-2">Invite More</SSText>
-        <Input
-          placeholder="Enter email or username"
-          className="flex-1"
-          value={newCollaborator}
-          onChangeText={setNewCollaborator}
-          onFocus={() => setErrorMessage(null)}
-          keyboardType="email-address"
-        />
-        {errorMessage && (
-          <SSText className="text-red-500 mt-2">{errorMessage}</SSText>
-        )}
-        <Button
-          className="mt-4 w-full"
-          onPress={handleAddCollaborator}
-          disabled={isAdding}
+      <SSContainer>
+        <ModalHeader title="Share Itinerary" onClose={onClose} />
+        <ScrollView
+          className="flex-1 pt-5"
+          showsVerticalScrollIndicator={false}
         >
-          <SSText>Add Collaborator</SSText>
-        </Button>
-        <View className="flex-row items-center justify-between w-full gap-3 my-4">
-          <Separator className="flex-1" />
-          <SSText className="text-sm text-muted-foreground">
-            or share via
-          </SSText>
-          <Separator className="flex-1" />
-        </View>
-        <View className="flex-row items-center justify-center gap-4 mb-4">
-          <TouchableOpacity onPress={handleShareTwitter}>
-            <TwitterIcon size={24} className="text-orange-500"/>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleShareFacebook}>
-            <FacebookIcon size={24} className="text-orange-500"/>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleShareEmail}>
-            <Mail size={24} className="text-orange-500"/>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleShareCopyLink}>
-            <Copy size={24} className="text-orange-500"/>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleShareOther}>
-            <EllipsisVertical size={24} className="text-orange-500"/>
-          </TouchableOpacity>
-        </View>
-        {
-          copyLinkMessage && (
+          <SSText className="mb-2">Collaborators</SSText>
+          <View className="flex-row flex-wrap gap-2 mb-4">
+            {collaborators.map((collaborator, index) => (
+              <CollaboratorPill
+                key={index}
+                collaborator={collaborator}
+                onRemove={() => handleRemoveToggle(collaborator)}
+              />
+            ))}
+
+            {isAdding && <SSSpinner size="small" />}
+          </View>
+          <SSText className="mb-2">Invite More</SSText>
+          <Input
+            placeholder="Enter email or username"
+            className="flex-1"
+            value={newCollaborator}
+            onChangeText={setNewCollaborator}
+            onFocus={() => setErrorMessage(null)}
+            keyboardType="email-address"
+          />
+          {errorMessage && (
+            <SSText className="text-red-500 mt-2">{errorMessage}</SSText>
+          )}
+          <Button
+            className="mt-4 w-full"
+            onPress={handleAddCollaborator}
+            disabled={isAdding}
+          >
+            <SSText>Add Collaborator</SSText>
+          </Button>
+          <View className="flex-row items-center justify-between w-full gap-3 my-4">
+            <Separator className="flex-1" />
+            <SSText className="text-sm text-muted-foreground">
+              or share via
+            </SSText>
+            <Separator className="flex-1" />
+          </View>
+          <View className="flex-row items-center justify-center gap-4 mb-4">
+            <TouchableOpacity onPress={handleShareTwitter}>
+              <TwitterIcon size={24} className="text-orange-500" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleShareFacebook}>
+              <FacebookIcon size={24} className="text-orange-500" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleShareEmail}>
+              <Mail size={24} className="text-orange-500" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleShareCopyLink}>
+              <Copy size={24} className="text-orange-500" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleShareOther}>
+              <EllipsisVertical size={24} className="text-orange-500" />
+            </TouchableOpacity>
+          </View>
+          {copyLinkMessage && (
             <SSText className="text-center text-green-500 text-xs mb-4">
               {copyLinkMessage}
             </SSText>
-          )
-        }
-      </ScrollView>
+          )}
+        </ScrollView>
+      </SSContainer>
     </Modal>
   );
 }

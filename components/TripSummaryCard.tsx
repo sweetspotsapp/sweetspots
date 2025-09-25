@@ -10,6 +10,7 @@ import {
 import { TripSummary } from '@/types/Place';
 import { SSText } from './ui/SSText';
 import { formatCurrency, formatDuration } from '@/utils/formatter';
+import { Card } from './ui/card';
 
 interface TripSummaryCardProps {
   summary: TripSummary;
@@ -17,7 +18,7 @@ interface TripSummaryCardProps {
 
 export function TripSummaryCard({ summary }: TripSummaryCardProps) {
   return (
-    <View className="bg-white rounded-2xl p-5 mb-6 shadow-sm">
+    <Card className='p-4'>
       <SSText
         variant="semibold"
         className="text-lg text-gray-800 mb-4 text-center"
@@ -25,8 +26,8 @@ export function TripSummaryCard({ summary }: TripSummaryCardProps) {
         Trip Summary
       </SSText>
 
-      <View className="flex-row flex-wrap gap-4 mb-4">
-        <View className="flex-1 min-w-[45%] items-center bg-slate-50 p-4 rounded-xl">
+      <View className="grid grid-cols-2 gap-4 mb-4">
+        <Card className='p-4 justify-center items-center'>
           <View className="w-10 h-10 rounded-full bg-white justify-center items-center mb-2 shadow-sm">
             <DollarSign size={20} className="text-orange-500" />
           </View>
@@ -40,9 +41,9 @@ export function TripSummaryCard({ summary }: TripSummaryCardProps) {
           >
             Total Cost
           </SSText>
-        </View>
+        </Card>
 
-        <View className="flex-1 min-w-[45%] items-center bg-slate-50 p-4 rounded-xl">
+        <Card className='p-4 justify-center items-center'>
           <View className="w-10 h-10 rounded-full bg-white justify-center items-center mb-2 shadow-sm">
             <Clock size={20} color="#0ea5e9" />
           </View>
@@ -55,9 +56,9 @@ export function TripSummaryCard({ summary }: TripSummaryCardProps) {
           >
             Total Time
           </SSText>
-        </View>
+        </Card>
 
-        <View className="flex-1 min-w-[45%] items-center bg-slate-50 p-4 rounded-xl">
+        <Card className='p-4 justify-center items-center'>
           <View className="w-10 h-10 rounded-full bg-white justify-center items-center mb-2 shadow-sm">
             <Calendar size={20} color="#f59e0b" />
           </View>
@@ -70,9 +71,9 @@ export function TripSummaryCard({ summary }: TripSummaryCardProps) {
           >
             Days
           </SSText>
-        </View>
+        </Card>
 
-        <View className="flex-1 min-w-[45%] items-center bg-slate-50 p-4 rounded-xl">
+        <Card className='p-4 justify-center items-center'>
           <View className="w-10 h-10 rounded-full bg-white justify-center items-center mb-2 shadow-sm">
             <TrendingUp size={20} color="#8b5cf6" />
           </View>
@@ -85,7 +86,7 @@ export function TripSummaryCard({ summary }: TripSummaryCardProps) {
           >
             Per Day
           </SSText>
-        </View>
+        </Card>
       </View>
 
       {summary.totalDays > 0 && (
@@ -108,6 +109,6 @@ export function TripSummaryCard({ summary }: TripSummaryCardProps) {
           </View>
         </View>
       )}
-    </View>
+    </Card>
   );
 }

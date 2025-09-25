@@ -566,7 +566,7 @@ export function ItineraryForm({
 
           <TripSummaryCard summary={tripSummary} />
 
-          <View className="mb-8">
+          <View className="my-8">
             <View className="md:flex-row md:items-end justify-between mb-4">
               <View>
                 <SSText
@@ -636,7 +636,7 @@ export function ItineraryForm({
             )}
           </View>
 
-          <View className="mb-8">
+          {/* <View className="mb-8">
             <SSText variant="semibold" className="text-xl text-gray-800 mb-4">
               Invite Collaborators
             </SSText>
@@ -667,7 +667,7 @@ export function ItineraryForm({
                 ))}
               </View>
             )}
-          </View>
+          </View> */}
 
           {!editMode && (
             <View className="mb-8">

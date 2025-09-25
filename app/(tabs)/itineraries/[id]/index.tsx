@@ -221,9 +221,9 @@ export default function ItineraryDetailsScreen() {
                 >
                   Trip Summary
                 </SSText>
-                <View className="flex-row flex-wrap gap-4">
+                <View className="grid grid-cols-2 gap-4">
                   {itinerary.totalEstimatedCost && (
-                    <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
+                    <Card className='p-4 justify-center items-center'>
                       <DollarSign size={20} className="text-orange-500" />
                       <SSText
                         variant="bold"
@@ -238,11 +238,11 @@ export default function ItineraryDetailsScreen() {
                       >
                         Total Cost
                       </SSText>
-                    </View>
+                    </Card>
                   )}
 
                   {itinerary.totalDuration && (
-                    <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
+                    <Card className='p-4 justify-center items-center'>
                       <Clock size={20} color="#0ea5e9" />
                       <SSText
                         variant="bold"
@@ -256,10 +256,10 @@ export default function ItineraryDetailsScreen() {
                       >
                         Total Time
                       </SSText>
-                    </View>
+                    </Card>
                   )}
 
-                  <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
+                  <Card className='p-4 justify-center items-center'>
                     <MapPin size={20} color="#f59e0b" />
                     <SSText
                       variant="bold"
@@ -270,10 +270,10 @@ export default function ItineraryDetailsScreen() {
                     <SSText variant="medium" className="text-xs text-slate-500">
                       Places
                     </SSText>
-                  </View>
+                  </Card>
 
                   {tripDays > 0 && itinerary.totalEstimatedCost && (
-                    <View className="flex-1 min-w-[45%] items-center bg-white p-4 rounded-xl shadow-sm">
+                    <Card className='p-4 justify-center items-center'>
                       <Calendar size={20} color="#8b5cf6" />
                       <SSText
                         variant="bold"
@@ -293,7 +293,7 @@ export default function ItineraryDetailsScreen() {
                       >
                         Per Day
                       </SSText>
-                    </View>
+                    </Card>
                   )}
                 </View>
               </View>
