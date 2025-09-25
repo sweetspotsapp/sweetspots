@@ -9,6 +9,7 @@ import {
 import { auth } from './firebase';
 import { api } from '@/api/client';
 import { deleteToken } from '@/utils/token';
+import { syncOnboardingAfterAuth } from './onboardingSync';
 
 export const register = async (
   email: string,
@@ -23,24 +24,37 @@ export const register = async (
     password
   );
   const idToken = await firebaseUser.user.getIdToken();
+  api.defaults.headers.common.Authorization = `Bearer ${idToken}`;
 
   await api.post('/auth/sync-profile', {
     idToken,
     firstName,
     lastName,
-    username
+    username,
   });
+
+  await syncOnboardingAfterAuth();
 };
 
-export const login = (email: string, password: string) =>
-  signInWithEmailAndPassword(auth, email, password);
+export const login = async (email: string, password: string) => {
+  const cred = await signInWithEmailAndPassword(auth, email, password);
+  const idToken = await cred.user.getIdToken();
+  api.defaults.headers.common.Authorization = `Bearer ${idToken}`;
+  await syncOnboardingAfterAuth();
+  return cred;
+};
 
 export const logout = () => {
-  deleteToken()
-  signOut(auth)
+  deleteToken();
+  signOut(auth);
 };
 
-export const loginWithGoogleCredential = (idToken: string) => {
+export const loginWithGoogleCredential = async (idToken: string) => {
   const credential = GoogleAuthProvider.credential(idToken);
-  return signInWithCredential(auth, credential);
+  const cred = await signInWithCredential(auth, credential);
+  const fresh = await cred.user.getIdToken();
+  api.defaults.headers.common.Authorization = `Bearer ${fresh}`;
+
+  await syncOnboardingAfterAuth();
+  return cred;
 };
