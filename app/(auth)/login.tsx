@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { View, Alert } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { saveToken } from '@/utils/token';
@@ -7,10 +7,10 @@ import { SSText } from '@/components/ui/SSText';
 import { login } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import SSLinearBackground from '@/components/ui/SSLinearBackground';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { Separator } from '@/components/ui/separator';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { SSControlledInput } from '@/components/ui/SSControlledInput';
+import { Home } from 'lucide-react-native';
 
 type LoginFormData = {
   email: string;
@@ -111,6 +111,14 @@ export default function LoginScreen() {
             </SSText>
           </SSText>
         </View>
+        <Link href="/" asChild>
+          <Button variant='outline' className='mt-6'>
+            <Home size={16} />
+            <SSText>
+              Back to Home
+            </SSText>
+          </Button>
+        </Link>
       </View>
     </SSLinearBackground>
   );

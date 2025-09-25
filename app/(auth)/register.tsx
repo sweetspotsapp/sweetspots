@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { set, useForm } from 'react-hook-form';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { register as registerWithEmail } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { SSText } from '@/components/ui/SSText';
@@ -9,6 +9,7 @@ import { SSControlledInput } from '@/components/ui/SSControlledInput';
 import SSLinearBackground from '@/components/ui/SSLinearBackground';
 import { Toast } from 'toastify-react-native';
 import { firebaseErrorMessage } from '@/lib/utils';
+import { Home } from 'lucide-react-native';
 
 type RegisterFormData = {
   // name: string;
@@ -138,6 +139,23 @@ export default function RegisterScreen() {
         <Button onPress={handleSubmit(onSubmit)}>
           <SSText>Register</SSText>
         </Button>
+        <View>
+          <SSText className="text-sm text-muted-foreground mt-4">
+            Already have an account?{' '}
+            <SSText
+              className="text-blue-500"
+              onPress={() => router.push('/(auth)/login')}
+            >
+              Login here
+            </SSText>
+          </SSText>
+        </View>
+        <Link href="/" asChild>
+          <Button variant="outline" className="mt-6">
+            <Home size={16} />
+            <SSText>Back to Home</SSText>
+          </Button>
+        </Link>
       </View>
     </SSLinearBackground>
   );
