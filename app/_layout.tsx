@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useFonts } from 'expo-font';
@@ -15,11 +15,20 @@ import '../global.css';
 import React from 'react';
 import ToastManager from 'toastify-react-native';
 import { PortalHost } from '@rn-primitives/portal';
+import { useOnboardingStore } from '@/store/useOnboardingStore';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   useFrameworkReady();
+  const { ui } = useOnboardingStore();
+
+  useEffect(() => {
+    if (!ui.completed && !ui.dismissed) {
+      // User hasn't done onboarding yet
+      router.replace('/onboarding');
+    }
+  }, [ui.completed, ui.dismissed]);
 
   const [fontsLoaded, fontError] = useFonts({
     'Poppins-Regular': Poppins_400Regular,
@@ -46,6 +55,7 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="onboarding" />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />
