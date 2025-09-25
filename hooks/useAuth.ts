@@ -9,7 +9,6 @@ export const useAuth = () => {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
-      console.log('Auth state changed. Current user:', user?.email);
       if (user) {
         setUser(user);
       } else {

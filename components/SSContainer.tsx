@@ -5,13 +5,15 @@ import SSLinearGradient from './ui/SSLinearGradient';
 export default function SSContainer({
   children,
   disableBottomPadding = false,
+  disableGradient = false,
 }: {
   children: React.ReactNode;
   disableBottomPadding?: boolean;
+  disableGradient?: boolean;
 }) {
   return (
     <>
-      <SSLinearGradient />
+      {!disableGradient && <SSLinearGradient />}
       <SafeAreaView className={`flex-1 container mx-auto !px-4 pt-2.5 ${disableBottomPadding ? 'pb-0' : 'pb-20'}`}>
         {children}
       </SafeAreaView>
