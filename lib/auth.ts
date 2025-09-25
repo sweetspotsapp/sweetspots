@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth';
 import { auth } from './firebase';
 import { api } from '@/api/client';
+import { deleteToken } from '@/utils/token';
 
 export const register = async (
   email: string,
@@ -34,7 +35,10 @@ export const register = async (
 export const login = (email: string, password: string) =>
   signInWithEmailAndPassword(auth, email, password);
 
-export const logout = () => signOut(auth);
+export const logout = () => {
+  deleteToken()
+  signOut(auth)
+};
 
 export const loginWithGoogleCredential = (idToken: string) => {
   const credential = GoogleAuthProvider.credential(idToken);

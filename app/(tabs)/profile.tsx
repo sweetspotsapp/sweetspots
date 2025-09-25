@@ -8,6 +8,7 @@ import {
   User,
   Calendar,
   Share2,
+  LogOut,
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 
@@ -17,6 +18,9 @@ import { getSwipeStats } from '@/api/swipes/endpoints';
 import { IUserProfile } from '@/dto/users/user-profile.dto';
 import SSSpinner from '@/components/ui/SSSpinner';
 import SSContainer from '@/components/SSContainer';
+import { Card } from '@/components/ui/card';
+import { useAuth } from '@/hooks/useAuth';
+import { logout } from '@/lib/auth';
 
 export default function ProfileTab() {
   const [profile, setProfile] = useState<IUserProfile | null>(null);
@@ -92,11 +96,14 @@ export default function ProfileTab() {
       color: '#64748b',
     },
     {
-      icon: Settings,
-      title: 'Login',
-      subtitle: 'Sign in to your account',
-      onPress: () => router.push('/(auth)/login'),
-      color: '#64748b',
+      icon: LogOut,
+      title: 'Log Out',
+      subtitle: 'Sign out of your account',
+      onPress: () => {
+        logout()
+        router.replace('/(auth)/login')
+      },
+      color: '#f97316',
     },
   ];
 
@@ -130,7 +137,7 @@ export default function ProfileTab() {
                 </SSText>
 
                 {/* Stats */}
-                <View className="flex-row items-center bg-white px-8 py-5 rounded-2xl shadow-sm">
+                {/* <View className="flex-row items-center bg-white px-8 py-5 rounded-2xl shadow-sm">
                   <View className="items-center flex-1">
                     <SSText
                       variant="bold"
@@ -168,7 +175,7 @@ export default function ProfileTab() {
                       Match Rate
                     </SSText>
                   </View>
-                </View>
+                </View> */}
               </>
             ) : (
               <SSText variant="bold" className="text-lg text-slate-500">
@@ -178,30 +185,31 @@ export default function ProfileTab() {
           </View>
 
           {/* Menu Items */}
-          <View className="px-4 pt-5">
+          <View className="px-4 pt-5 gap-4">
             {menuItems.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                className="flex-row items-center bg-white  py-4 rounded-xl mb-3 shadow-sm"
                 onPress={item.onPress}
               >
-                <View
-                  className="w-12 h-12 rounded-xl justify-center items-center mr-4"
-                  style={{ backgroundColor: `${item.color}15` }}
-                >
-                  <item.icon size={24} color={item.color} />
-                </View>
-                <View className="flex-1">
-                  <SSText
-                    variant="semibold"
-                    className="text-base text-gray-800 mb-0.5"
+                <Card className='p-4 flex-1 flex-row items-center'>
+                  <View
+                    className="w-12 h-12 rounded-xl justify-center items-center mr-4"
+                    style={{ backgroundColor: `${item.color}15` }}
                   >
-                    {item.title}
-                  </SSText>
-                  <SSText className="text-sm text-slate-500">
-                    {item.subtitle}
-                  </SSText>
-                </View>
+                    <item.icon size={24} color={item.color} />
+                  </View>
+                  <View className="flex-1">
+                    <SSText
+                      variant="semibold"
+                      className="text-base text-gray-800 mb-0.5"
+                    >
+                      {item.title}
+                    </SSText>
+                    <SSText className="text-sm text-slate-500">
+                      {item.subtitle}
+                    </SSText>
+                  </View>
+                </Card>
               </TouchableOpacity>
             ))}
           </View>
