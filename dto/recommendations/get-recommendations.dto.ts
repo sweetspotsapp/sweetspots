@@ -7,4 +7,5 @@ export class GetRecommendationsDto {
   priceRange?: string[];
   latitude?: number;
   longitude?: number;
+  seed?: string;
 }
