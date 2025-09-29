@@ -24,7 +24,7 @@ export default function SearchTab() {
         latitude: location?.latitude || -37.8136,
         longitude: location?.longitude || 144.9631,
       });
-      setPlaces(res.data || []);
+      setPlaces(Array.isArray(res.data?.data) ? res.data.data : []);
     } catch (err) {
       console.error('Failed to load recommendations:', err);
     } finally {
