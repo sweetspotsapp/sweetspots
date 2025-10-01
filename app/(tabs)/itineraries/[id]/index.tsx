@@ -143,7 +143,7 @@ export default function ItineraryDetailsScreen() {
       <SSContainer>
         {/* Header */}
         <View className="flex-row justify-between items-center  pt-2.5 pb-4">
-          <BackArrowButton fallbackUrl="/itineraries" forceFallback/>
+          <BackArrowButton fallbackUrl="/itineraries" forceFallback />
 
           <View className="flex-row gap-3">
             {/* <TouchableOpacity
@@ -219,7 +219,7 @@ export default function ItineraryDetailsScreen() {
                 </SSText>
                 <View className="grid grid-cols-2 gap-4">
                   {itinerary.totalEstimatedCost && (
-                    <Card className='p-4 justify-center items-center'>
+                    <Card className="p-4 justify-center items-center">
                       <DollarSign size={20} className="text-orange-500" />
                       <SSText
                         variant="bold"
@@ -238,7 +238,7 @@ export default function ItineraryDetailsScreen() {
                   )}
 
                   {itinerary.totalDuration && (
-                    <Card className='p-4 justify-center items-center'>
+                    <Card className="p-4 justify-center items-center">
                       <Clock size={20} color="#0ea5e9" />
                       <SSText
                         variant="bold"
@@ -255,7 +255,7 @@ export default function ItineraryDetailsScreen() {
                     </Card>
                   )}
 
-                  <Card className='p-4 justify-center items-center'>
+                  <Card className="p-4 justify-center items-center">
                     <MapPin size={20} color="#f59e0b" />
                     <SSText
                       variant="bold"
@@ -269,7 +269,7 @@ export default function ItineraryDetailsScreen() {
                   </Card>
 
                   {tripDays > 0 && itinerary.totalEstimatedCost && (
-                    <Card className='p-4 justify-center items-center'>
+                    <Card className="p-4 justify-center items-center">
                       <Calendar size={20} color="#8b5cf6" />
                       <SSText
                         variant="bold"
@@ -339,147 +339,157 @@ export default function ItineraryDetailsScreen() {
               </SSText>
 
               {itinerary.itineraryPlaces?.map((place, index) => (
-                <Card key={place.id}>
-                  <CardContent>
-                    <View className="flex-row items-start mb-3">
-                      <View className="w-8 h-8 rounded-full bg-orange-600 justify-center items-center mr-3 mt-1">
-                        <SSText variant="bold" className="text-sm text-white">
-                          {index + 1}
-                        </SSText>
-                      </View>
-                      {place.imageUrl && (
-                        <Image
-                          source={{ uri: place.imageUrl }}
-                          className="w-20 h-20 rounded-xl mr-3"
-                          style={{ resizeMode: 'cover' }}
-                        />
-                      )}
-
-                      <View className="flex-1">
-                        <SSText
-                          variant="semibold"
-                          className="text-lg text-gray-800 mb-1"
-                        >
-                          {place.place?.name}
-                        </SSText>
-                        <SSText
-                          className="text-sm text-slate-500 leading-5"
-                          numberOfLines={2}
-                        >
-                          {place.place?.description}
-                        </SSText>
-                      </View>
-
-                      {/* <TouchableOpacity
-                        className="w-10 h-10 rounded-full bg-orange-50 border border-orange-600 justify-center items-center ml-2 mt-1"
-                        onPress={() => handleNavigateToPlace(place)}
-                      >
-                        <Navigation size={20} className="text-orange-500" />
-                      </TouchableOpacity> */}
-                    </View>
-
-                    {/* Schedule Info */}
-                    {(place.visitDate ||
-                      place.visitTime ||
-                      place.visitDuration ||
-                      place.estimatedCost) && (
-                      <View className="flex-row flex-wrap gap-3 mb-3 px-3 py-2 bg-slate-50 rounded-lg">
-                        {place.visitDate && (
-                          <View className="flex-row items-center gap-1">
-                            <Calendar size={14} color="#64748b" />
-                            <SSText className="text-xs text-slate-500">
-                              {place.visitDate}
-                            </SSText>
-                          </View>
-                        )}
-                        {place.visitTime && (
-                          <View className="flex-row items-center gap-1">
-                            <Clock size={14} color="#64748b" />
-                            <SSText className="text-xs text-slate-500">
-                              {place.visitTime}
-                            </SSText>
-                          </View>
-                        )}
-                        {place.visitDuration && (
-                          <View className="flex-row items-center gap-1">
-                            <Clock size={14} color="#64748b" />
-                            <SSText className="text-xs text-slate-500">
-                              {formatDuration({ hours: place.visitDuration })}
-                            </SSText>
-                          </View>
-                        )}
-                        {place.estimatedCost && (
-                          <View className="flex-row items-center gap-1">
-                            <DollarSign size={14} color="#64748b" />
-                            <SSText className="text-xs text-slate-500">
-                              {formatCurrency(place.estimatedCost)}
-                            </SSText>
-                          </View>
-                        )}
-                      </View>
-                    )}
-
-                    <View className="flex-row gap-3 mb-3">
-                      <View className="flex-row items-center gap-1">
-                        <Star size={14} color="#fbbf24" fill="#fbbf24" />
-                        <SSText
-                          variant="medium"
-                          className="text-xs text-slate-500"
-                        >
-                          {place?.place?.rating}
-                        </SSText>
-                      </View>
-                      <View className="flex-row items-center gap-1">
-                        <MapPin size={14} color="#64748b" />
-                        <SSText
-                          variant="medium"
-                          className="text-xs text-slate-500"
-                        >
-                          {place.place?.distance}
-                        </SSText>
-                      </View>
-                      <View className="flex-row items-center gap-1">
-                        <DollarSign size={14} color="#64748b" />
-                        <SSText
-                          variant="medium"
-                          className="text-xs text-slate-500"
-                        >
-                          {place.place?.priceRange}
-                        </SSText>
-                      </View>
-                    </View>
-
-                    {/* VIBES */}
-                    {/* <View className="flex-row flex-wrap gap-1.5 items-center mb-2">
-                      {place.vibes.slice(0, 3).map((vibe, vibeIndex) => (
-                        <View key={vibeIndex} className="bg-orange-50 border border-orange-600 px-2 py-1 rounded-xl">
-                          <SSText variant="medium" className="text-xs text-orange-600">
-                            {vibe}
+                <TouchableOpacity
+                  key={place.id}
+                  onPress={() => {
+                    router.push({
+                      pathname: `/places/${place.place?.id}` as any,
+                      params: { from: `itineraries/${id}` },
+                    });
+                  }}
+                >
+                  <Card>
+                    <CardContent>
+                      <View className="flex-row items-start mb-3">
+                        <View className="w-8 h-8 rounded-full bg-orange-600 justify-center items-center mr-3 mt-1">
+                          <SSText variant="bold" className="text-sm text-white">
+                            {index + 1}
                           </SSText>
                         </View>
-                      ))}
-                      {place.vibes.length > 3 && (
-                        <SSText variant="medium" className="text-xs text-slate-500">
-                          +{place.vibes.length - 3}
-                        </SSText>
-                      )}
-                    </View> */}
+                        {place.imageUrl && (
+                          <Image
+                            source={{ uri: place.imageUrl }}
+                            className="w-20 h-20 rounded-xl mr-3"
+                            style={{ resizeMode: 'cover' }}
+                          />
+                        )}
 
-                    {place.notes && (
-                      <View className="bg-amber-50 p-3 rounded-lg mt-2">
-                        <SSText
-                          variant="semibold"
-                          className="text-xs text-amber-800 mb-1"
+                        <View className="flex-1">
+                          <SSText
+                            variant="semibold"
+                            className="text-lg text-gray-800 mb-1"
+                          >
+                            {place.place?.name}
+                          </SSText>
+                          <SSText
+                            className="text-sm text-slate-500 leading-5"
+                            numberOfLines={2}
+                          >
+                            {place.place?.description}
+                          </SSText>
+                        </View>
+
+                        {/* <TouchableOpacity
+                          className="w-10 h-10 rounded-full bg-orange-50 border border-orange-600 justify-center items-center ml-2 mt-1"
+                          onPress={() => handleNavigateToPlace(place)}
                         >
-                          Notes:
-                        </SSText>
-                        <SSText className="text-sm text-amber-800 leading-5">
-                          {place.notes}
-                        </SSText>
+                          <Navigation size={20} className="text-orange-500" />
+                        </TouchableOpacity> */}
                       </View>
-                    )}
-                  </CardContent>
-                </Card>
+
+                      {/* Schedule Info */}
+                      {(place.visitDate ||
+                        place.visitTime ||
+                        place.visitDuration ||
+                        place.estimatedCost) && (
+                        <View className="flex-row flex-wrap gap-3 mb-3 px-3 py-2 bg-slate-50 rounded-lg">
+                          {place.visitDate && (
+                            <View className="flex-row items-center gap-1">
+                              <Calendar size={14} color="#64748b" />
+                              <SSText className="text-xs text-slate-500">
+                                {place.visitDate}
+                              </SSText>
+                            </View>
+                          )}
+                          {place.visitTime && (
+                            <View className="flex-row items-center gap-1">
+                              <Clock size={14} color="#64748b" />
+                              <SSText className="text-xs text-slate-500">
+                                {place.visitTime}
+                              </SSText>
+                            </View>
+                          )}
+                          {place.visitDuration && (
+                            <View className="flex-row items-center gap-1">
+                              <Clock size={14} color="#64748b" />
+                              <SSText className="text-xs text-slate-500">
+                                {formatDuration({ hours: place.visitDuration })}
+                              </SSText>
+                            </View>
+                          )}
+                          {place.estimatedCost && (
+                            <View className="flex-row items-center gap-1">
+                              <DollarSign size={14} color="#64748b" />
+                              <SSText className="text-xs text-slate-500">
+                                {formatCurrency(place.estimatedCost)}
+                              </SSText>
+                            </View>
+                          )}
+                        </View>
+                      )}
+
+                      <View className="flex-row gap-3 mb-3">
+                        <View className="flex-row items-center gap-1">
+                          <Star size={14} color="#fbbf24" fill="#fbbf24" />
+                          <SSText
+                            variant="medium"
+                            className="text-xs text-slate-500"
+                          >
+                            {place?.place?.rating}
+                          </SSText>
+                        </View>
+                        <View className="flex-row items-center gap-1">
+                          <MapPin size={14} color="#64748b" />
+                          <SSText
+                            variant="medium"
+                            className="text-xs text-slate-500"
+                          >
+                            {place.place?.distance}
+                          </SSText>
+                        </View>
+                        <View className="flex-row items-center gap-1">
+                          <DollarSign size={14} color="#64748b" />
+                          <SSText
+                            variant="medium"
+                            className="text-xs text-slate-500"
+                          >
+                            {place.place?.priceRange}
+                          </SSText>
+                        </View>
+                      </View>
+
+                      {/* VIBES */}
+                      {/* <View className="flex-row flex-wrap gap-1.5 items-center mb-2">
+                        {place.vibes.slice(0, 3).map((vibe, vibeIndex) => (
+                          <View key={vibeIndex} className="bg-orange-50 border border-orange-600 px-2 py-1 rounded-xl">
+                            <SSText variant="medium" className="text-xs text-orange-600">
+                              {vibe}
+                            </SSText>
+                          </View>
+                        ))}
+                        {place.vibes.length > 3 && (
+                          <SSText variant="medium" className="text-xs text-slate-500">
+                            +{place.vibes.length - 3}
+                          </SSText>
+                        )}
+                      </View> */}
+
+                      {place.notes && (
+                        <View className="bg-amber-50 p-3 rounded-lg mt-2">
+                          <SSText
+                            variant="semibold"
+                            className="text-xs text-amber-800 mb-1"
+                          >
+                            Notes:
+                          </SSText>
+                          <SSText className="text-sm text-amber-800 leading-5">
+                            {place.notes}
+                          </SSText>
+                        </View>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TouchableOpacity>
               ))}
             </View>
           </View>

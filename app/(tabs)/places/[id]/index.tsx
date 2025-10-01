@@ -11,7 +11,8 @@ import { BackArrowButton } from '@/components/BackArrowButton';
 import { SSText } from '@/components/ui/SSText';
 
 export default function PlaceDetailsScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, from } = useLocalSearchParams<{ id: string, from?: string }>();
+  console.log(from)
 
   const [place, setPlace] = React.useState<IPlace | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -38,7 +39,7 @@ export default function PlaceDetailsScreen() {
     <SSContainer>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="flex-row justify-between items-center  pt-2.5 pb-4">
-          <BackArrowButton fallbackUrl="/saved" forceFallback />
+          <BackArrowButton fallbackUrl={from as any || "/saved"} forceFallback/>
         </View>
         {loading ? (
           <SSSpinner />
