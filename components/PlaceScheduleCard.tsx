@@ -37,6 +37,7 @@ interface PlaceScheduleCardProps {
   onAcceptSuggestion?: () => void;
   onRejectSuggestion?: () => void;
   index?: number;
+  conflict?: boolean;
 }
 
 export function PlaceScheduleCard({
@@ -51,6 +52,7 @@ export function PlaceScheduleCard({
   onAcceptSuggestion,
   onRejectSuggestion,
   index,
+  conflict = false,
 }: PlaceScheduleCardProps) {
   const { user } = useAuth();
   const userLockedFields = Object.keys(lockedFields).filter(
@@ -109,7 +111,7 @@ export function PlaceScheduleCard({
           </View>
         </View>
       )}
-      <Card className="rounded-2xl mb-4">
+      <Card className="rounded-2xl mb-4 overflow-hidden">
         <TouchableOpacity
           className="flex-row items-end gap-4 p-4"
           onPress={() => setIsExpanded(!isExpanded)}
@@ -201,23 +203,23 @@ export function PlaceScheduleCard({
                         className="text-xs text-slate-500"
                       >
                         {itineraryPlace.visitDate
-                          ? `${moment(itineraryPlace.visitDate).format('LL')}${itineraryPlace.visitTime ? ` - ${itineraryPlace.visitTime}` : ''}`
+                          ? `${moment(itineraryPlace.visitDate).format('LL')}${
+                              itineraryPlace.visitTime
+                                ? ` - ${itineraryPlace.visitTime}`
+                                : ''
+                            }`
                           : 'No date'}
                       </SSText>
                     </View>
                   </View>
                 </View>
-                {
-                  onAcceptSuggestion && onRejectSuggestion && (
+                {onAcceptSuggestion && onRejectSuggestion && (
                   <View className="flex-row justify-between items-center gap-2">
                     <TouchableOpacity
                       className="px-4 py-1 rounded-full bg-green-100"
                       onPress={onAcceptSuggestion}
                     >
-                      <SSText
-                        variant="medium"
-                        className="text-green-800"
-                      >
+                      <SSText variant="medium" className="text-green-800">
                         Accept
                       </SSText>
                     </TouchableOpacity>
@@ -225,16 +227,12 @@ export function PlaceScheduleCard({
                       className="px-4 py-1 rounded-full bg-red-100"
                       onPress={onRejectSuggestion}
                     >
-                      <SSText
-                        variant="medium"
-                        className="text-red-800"
-                      >
+                      <SSText variant="medium" className="text-red-800">
                         Reject
                       </SSText>
                     </TouchableOpacity>
                   </View>
-                  )
-                }
+                )}
               </>
             )}
           </View>
@@ -427,6 +425,14 @@ export function PlaceScheduleCard({
                 }}
               />
             </View>
+          </View>
+        )}
+        {conflict && (
+          <View className="px-4 py-2 bg-red-50 border-t border-red-200">
+            <SSText className="text-sm text-red-700">
+              This place starts at the same time as another one. Adjust the
+              date/time.
+            </SSText>
           </View>
         )}
       </Card>
