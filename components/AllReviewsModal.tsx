@@ -198,7 +198,7 @@ export function AllReviewsModal({
             </ScrollView>
 
             {(searchQuery || selectedRating !== null || sortBy !== 'newest') && (
-              <Badge asChild variant='destructive'>
+              <Badge asChild variant='outline' className='border-neutral-500'>
                 <TouchableOpacity onPress={clearFilters}>
                   <SSText>Clear</SSText>
                 </TouchableOpacity>

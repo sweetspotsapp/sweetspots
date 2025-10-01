@@ -144,7 +144,7 @@ export default function ItineraryDetailsScreen() {
         <View className="flex-row justify-between items-center  pt-2.5 pb-4">
           <TouchableOpacity
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-            onPress={() => goBack('/itineraries')}
+            onPress={() => goBack('/itineraries', true)}
           >
             <ArrowLeft size={24} className="text-orange-500" />
           </TouchableOpacity>
@@ -246,13 +246,13 @@ export default function ItineraryDetailsScreen() {
                       <Clock size={20} color="#0ea5e9" />
                       <SSText
                         variant="bold"
-                        className="text-xl text-gray-800 mt-2 mb-1"
+                        className="text-xl text-gray-800 mt-2 mb-1 text-center"
                       >
                         {formatDuration({ hours: itinerary.totalDuration })}
                       </SSText>
                       <SSText
                         variant="medium"
-                        className="text-xs text-slate-500"
+                        className="text-xs text-slate-500 text-center"
                       >
                         Total Time
                       </SSText>
@@ -374,12 +374,12 @@ export default function ItineraryDetailsScreen() {
                         </SSText>
                       </View>
 
-                      <TouchableOpacity
+                      {/* <TouchableOpacity
                         className="w-10 h-10 rounded-full bg-orange-50 border border-orange-600 justify-center items-center ml-2 mt-1"
                         onPress={() => handleNavigateToPlace(place)}
                       >
                         <Navigation size={20} className="text-orange-500" />
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
                     </View>
 
                     {/* Schedule Info */}

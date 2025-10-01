@@ -295,10 +295,8 @@ CreateItineraryModalProps) {
                 </View>
               )
             )}
-            <View className="flex-row items-center justify-between mt-4">
-              <Label className="text-xl">
-                How many spots do you want to go to?
-              </Label>
+            <View className="flex-row items-center justify-between mt-4 flex-1">
+                <Label className="text-xl flex-1">How many spots?</Label>
               <View className="flex-row items-center gap-4">
                 <Pressable className="rounded-full w-8 h-8 items-center justify-center bg-amber-500" onPress={() => handleChangeTargetCount(false)} disabled={targetCount <= 0}>
                   <Minus className="text-white" />
