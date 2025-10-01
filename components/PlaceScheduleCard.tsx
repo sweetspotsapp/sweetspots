@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, TextInput, Image } from 'react-native';
+import { View, TouchableOpacity, Image } from 'react-native';
 import {
   Clock,
   DollarSign,
@@ -7,7 +7,6 @@ import {
   ChevronDown,
   MapPin,
   Star,
-  EditIcon,
 } from 'lucide-react-native';
 import Slider from '@react-native-community/slider';
 import { ItineraryPlace } from '@/types/Place';

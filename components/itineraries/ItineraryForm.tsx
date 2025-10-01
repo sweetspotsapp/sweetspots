@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { View, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { Plus } from 'lucide-react-native';
 import moment from 'moment';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -28,9 +28,7 @@ import { PickerProvider } from '../ui/SSDateTimePicker';
 import { SSText } from '../ui/SSText';
 import { Button } from '../ui/button';
 import { SSControlledInput } from '../ui/SSControlledInput';
-import { SSControlledPicker } from '../ui/SSControlledDateTimePicker';
 
-import CollaboratorPill from './CollaboratorPill';
 import { updateSuggestionStatus } from '@/api/collab-itinerary/endpoints';
 import SuggestionCardList, { Suggestion } from './SuggestionCardList';
 import { CreateItineraryDto } from '@/dto/itineraries/create-itinerary.dto';
@@ -302,12 +300,6 @@ export function ItineraryForm({
       itineraryPlaces: [],
     },
     mode: 'onBlur',
-  });
-
-  const { fields, append, replace, update, move } = useFieldArray({
-    control,
-    name: 'itineraryPlaces',
-    keyName: 'key', // avoid RHF default 'id' clash with our place.id
   });
 
   const itineraryPlaces = watch('itineraryPlaces') as IItineraryPlace[];
@@ -711,8 +703,6 @@ export function ItineraryForm({
     }
 
     // 3) Auto-reposition the edited item if its start crosses neighbors
-    const gapBeforeReorder = computeGapAfterMap(next); // capture gaps BEFORE we move anything
-
     const edited = next[idx];
     const editedStart = getStartOrNow(edited);
 
