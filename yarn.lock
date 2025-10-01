@@ -3568,6 +3568,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4":
+  version: 4.17.20
+  resolution: "@types/lodash@npm:4.17.20"
+  checksum: 10c0/98cdd0faae22cbb8079a01a3bb65aa8f8c41143367486c1cbf5adc83f16c9272a2a5d2c1f541f61d0d73da543c16ee1d21cf2ef86cb93cd0cc0ac3bced6dd88f
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*, @types/node@npm:>=12.12.47, @types/node@npm:>=13.7.0":
   version: 24.4.0
   resolution: "@types/node@npm:24.4.0"
@@ -6829,6 +6836,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash@npm:^4.17.21":
+  version: 4.17.21
+  resolution: "lodash@npm:4.17.21"
+  checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
+  languageName: node
+  linkType: hard
+
 "log-symbols@npm:^2.2.0":
   version: 2.2.0
   resolution: "log-symbols@npm:2.2.0"
@@ -9392,6 +9406,7 @@ __metadata:
     "@rn-primitives/separator": "npm:^1.2.0"
     "@rn-primitives/slot": "npm:^1.2.0"
     "@rn-primitives/tabs": "npm:^1.2.0"
+    "@types/lodash": "npm:^4"
     "@types/react": "npm:~19.0.10"
     axios: "npm:^1.10.0"
     class-variance-authority: "npm:^0.7.1"
@@ -9417,6 +9432,7 @@ __metadata:
     expo-system-ui: "npm:~5.0.10"
     expo-web-browser: "npm:~14.2.0"
     firebase: "npm:^11.9.1"
+    lodash: "npm:^4.17.21"
     lucide-react-native: "npm:^0.475.0"
     moment: "npm:^2.30.1"
     nativewind: "npm:^4.1.23"
