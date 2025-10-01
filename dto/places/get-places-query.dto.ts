@@ -4,6 +4,7 @@ export class GetPlacesQueryDto {
   category?: string;
   priceRange?: string[];
   vibes?: string[];
+  query?: string;
   rating?: number;
   distance?: number;
   latitude?: number;

@@ -22,43 +22,46 @@ export default function SavedPlaces({
   hiddenPlaceIds = [],
   coords,
 }: SavedPlacesProps) {
-  const { savedPlaces, loadSavedPlaces, refreshing } = useSavedPlaces(coords ? {
-    latitude: coords?.lat,
-    longitude: coords?.lon,
+  const [searchQuery, setSearchQuery] = useState('');
+  const { savedPlaces, loadSavedPlaces, refreshing } = useSavedPlaces({
+    ...coords ? {
+      latitude: coords?.lat,
+      longitude: coords?.lon,
+    }: {},
     page: 1,
     limit: 999999,
-  } : undefined);
-  const [filteredPlaces, setFilteredPlaces] = useState<ISavedPlace[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+    query: searchQuery
+  });
+  // const [filteredPlaces, setFilteredPlaces] = useState<ISavedPlace[]>([]);
 
   useEffect(() => {
     loadSavedPlaces();
   }, []);
 
-  useEffect(() => {
-    filterPlaces();
-  }, [savedPlaces, searchQuery]);
+  // useEffect(() => {
+  //   filterPlaces();
+  // }, [savedPlaces, searchQuery]);
 
-  const filterPlaces = () => {
-    if (!searchQuery.trim()) {
-      setFilteredPlaces(
-        savedPlaces.filter((place) => hiddenPlaceIds.indexOf(place.id) === -1)
-      );
-      return;
-    }
+  // const filterPlaces = () => {
+  //   if (!searchQuery.trim()) {
+  //     setFilteredPlaces(
+  //       savedPlaces.filter((place) => hiddenPlaceIds.indexOf(place.id) === -1)
+  //     );
+  //     return;
+  //   }
 
-    const lowerQuery = searchQuery.toLowerCase();
-    const filtered = savedPlaces.filter(
-      (place) =>
-        place.name.toLowerCase().includes(lowerQuery) ||
-        place.vibes.some((vibe: string) =>
-          vibe.toLowerCase().includes(lowerQuery)
-        )
-    );
-    setFilteredPlaces(
-      filtered.filter((place) => hiddenPlaceIds.indexOf(place.id) === -1)
-    );
-  };
+  //   const lowerQuery = searchQuery.toLowerCase();
+  //   const filtered = savedPlaces.filter(
+  //     (place) =>
+  //       place.name.toLowerCase().includes(lowerQuery) ||
+  //       place.vibes.some((vibe: string) =>
+  //         vibe.toLowerCase().includes(lowerQuery)
+  //       )
+  //   );
+  //   setFilteredPlaces(
+  //     filtered.filter((place) => hiddenPlaceIds.indexOf(place.id) === -1)
+  //   );
+  // };
 
   const renderPlaceCard = ({ item }: { item: IPlace }) => (
     <SavedPlaceCard
@@ -79,7 +82,7 @@ export default function SavedPlaces({
 
       {refreshing ? <SSSpinner className='mb-4'/> : (
         <FlatList
-          data={filteredPlaces}
+          data={savedPlaces}
           renderItem={renderPlaceCard}
           keyExtractor={(_, i) => i.toString()}
           showsVerticalScrollIndicator={false}

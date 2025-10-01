@@ -2,13 +2,12 @@ import { getSavedPlaces } from '@/api/places/endpoints';
 import { GetPlacesQueryDto } from '@/dto/places/get-places-query.dto';
 import { ISavedPlace } from '@/dto/places/place.dto';
 import { useSavedPlacesStore } from '@/store/useSavedPlacesStore';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 export const useSavedPlaces = (query?: GetPlacesQueryDto) => {
     const { savedPlaces, setSavedPlaces, setRefreshing, refreshing } = useSavedPlacesStore();
 
     const loadSavedPlaces = useCallback(async () => {
-        console.log('Loading saved places...');
         setRefreshing(true);
         try {
             const res = await getSavedPlaces(query);
@@ -23,7 +22,11 @@ export const useSavedPlaces = (query?: GetPlacesQueryDto) => {
         } finally {
             setRefreshing(false);
         }
-    }, []);
+    }, [...Object.values(query || {}), setRefreshing, setSavedPlaces]);
+
+    useEffect(() => {
+        loadSavedPlaces();
+    }, [...Object.values(query || {})]);
 
     return {
         savedPlaces,
