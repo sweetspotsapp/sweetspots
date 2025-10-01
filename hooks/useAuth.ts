@@ -20,9 +20,5 @@ export const useAuth = () => {
     return () => unsub();
   }, []);
 
-  const logOut = async () => {
-    await logout();
-  };
-
-  return { user, loading, logOut };
+  return { user, loading };
 };

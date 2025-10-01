@@ -6,7 +6,7 @@ import { UpdatePreferencesDto } from '../../dto/recommendations/update-preferenc
 
 export const getRecommendations = async (
   params?: GetRecommendationsDto
-): Promise<ApiResponse<ApiPluralResponse<IRecommendedPlace>>> => {
+): Promise<ApiPluralResponse<IRecommendedPlace>> => {
   const res = await api.get('/recommendations', { params });
   return res.data;
 };

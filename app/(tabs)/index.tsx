@@ -159,10 +159,10 @@ export default function DiscoverTab() {
         seed: seedRef.current,
       });
 
-      const payload: any = res?.data ?? {};
-      const incoming: IRecommendedPlace[] = Array.isArray(payload.items)
-        ? payload.items
-        : Array.isArray(payload.data)
+      const payload = res?.data;
+      const incoming: IRecommendedPlace[] = Array.isArray(payload?.data)
+        ? payload.data
+        : Array.isArray(payload?.data)
         ? payload.data
         : [];
 
@@ -171,10 +171,7 @@ export default function DiscoverTab() {
         replace ? uniqueIncoming : dedupeById([...prev, ...uniqueIncoming])
       );
 
-      const nextFlag =
-        typeof payload.hasNext === 'boolean'
-          ? payload.hasNext
-          : incoming.length >= PAGE_SIZE;
+      const nextFlag = true
       setHasNext(nextFlag);
       pageRef.current = page;
     } catch (e) {
