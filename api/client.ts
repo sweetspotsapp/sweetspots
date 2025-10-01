@@ -2,6 +2,7 @@ import axios from 'axios';
 import { getToken } from '@/utils/token';
 import { router } from 'expo-router'; // or useRouter() inside component scope
 import { Toast } from 'toastify-react-native';
+import { logout } from '@/lib/auth';
 // import { Platform } from 'react-native';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -46,6 +47,7 @@ api.interceptors.response.use(
       });
 
       if (status === 401) {
+        logout();
         Toast.error('Session expired. Please log in again.');
         router.replace('/login');
       } else if (status === 403) {
