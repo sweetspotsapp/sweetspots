@@ -5,7 +5,7 @@ import SSSpinner from '../ui/SSSpinner';
 import SearchInput from '../ui/SearchInput';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
 import { DiscoverPlaceCard } from './DiscoverPlaceCard';
-import { getRecommendations } from '@/api/recommendations/endpoints';
+import { getRecommendations } from '@/endpoints/recommendations/endpoints';
 
 type DiscoverPlacesProps = {
   isSelectionMode?: boolean;

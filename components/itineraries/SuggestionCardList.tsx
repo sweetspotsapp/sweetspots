@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { SSText } from '../ui/SSText';
 import { Button } from '../ui/button';
 import { IUserProfile } from '@/dto/users/user-profile.dto';
-import { getUserProfileById } from '@/api/users/endpoints';
+import { getUserProfileById } from '@/endpoints/users/endpoints';
 
 export type Suggestion = {
     id: string;

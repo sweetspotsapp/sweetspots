@@ -1,4 +1,4 @@
-import { getSavedPlaces } from '@/api/places/endpoints';
+import { getSavedPlaces } from '@/endpoints/places/endpoints';
 import { GetPlacesQueryDto } from '@/dto/places/get-places-query.dto';
 import { ISavedPlace } from '@/dto/places/place.dto';
 import { useSavedPlacesStore } from '@/store/useSavedPlacesStore';

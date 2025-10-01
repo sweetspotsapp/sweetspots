@@ -11,7 +11,7 @@ import { AlertDialog } from '../ui/AlertDialog';
 import {
   addCollaborator,
   removeCollaborator,
-} from '@/api/collab-itinerary/endpoints';
+} from '@/endpoints/collab-itinerary/endpoints';
 import SSSpinner from '../ui/SSSpinner';
 import { Toast } from 'toastify-react-native';
 import Clipboard from '@react-native-clipboard/clipboard';

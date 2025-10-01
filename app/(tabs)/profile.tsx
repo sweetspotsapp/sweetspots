@@ -13,8 +13,8 @@ import {
 import { router } from 'expo-router';
 
 import { SSText } from '@/components/ui/SSText';
-import { getCurrentUserProfile } from '@/api/users/endpoints';
-import { getSwipeStats } from '@/api/swipes/endpoints';
+import { getCurrentUserProfile } from '@/endpoints/users/endpoints';
+import { getSwipeStats } from '@/endpoints/swipes/endpoints';
 import { IUserProfile } from '@/dto/users/user-profile.dto';
 import SSSpinner from '@/components/ui/SSSpinner';
 import SSContainer from '@/components/SSContainer';

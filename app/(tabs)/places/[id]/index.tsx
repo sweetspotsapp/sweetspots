@@ -2,7 +2,7 @@ import { View, Text } from 'react-native';
 import React, { useCallback } from 'react';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { IPlace } from '@/dto/places/place.dto';
-import { getPlaceById } from '@/api/places/endpoints';
+import { getPlaceById } from '@/endpoints/places/endpoints';
 import SSContainer from '@/components/SSContainer';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import SSSpinner from '@/components/ui/SSSpinner';

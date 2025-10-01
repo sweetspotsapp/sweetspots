@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import SearchInput from '@/components/ui/SearchInput';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
-import { getRecommendations } from '@/api/recommendations/endpoints';
+import { getRecommendations } from '@/endpoints/recommendations/endpoints';
 import useLocation from '@/hooks/useLocation';
 import SSContainer from '@/components/SSContainer';
 

@@ -7,7 +7,7 @@ import { SSText } from '../ui/SSText';
 // import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
-import { calculateTimeAndDistance } from '@/api/places/endpoints';
+import { calculateTimeAndDistance } from '@/endpoints/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
 import {
   formatCurrency,

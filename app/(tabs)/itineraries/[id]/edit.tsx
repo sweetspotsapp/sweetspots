@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
-import { getItineraryById } from '@/api/itineraries/endpoints';
+import { getItineraryById } from '@/endpoints/itineraries/endpoints';
 import SSSpinner from '@/components/ui/SSSpinner';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import { ItineraryForm } from '@/components/itineraries/ItineraryForm';

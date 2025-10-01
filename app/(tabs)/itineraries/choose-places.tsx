@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useItineraryDraft } from '@/store/useItineraryDraft';
 import DiscoverPlaces from '@/components/discoverPlaces/DiscoverPlaces';
 import { ScrollView } from 'react-native-gesture-handler';
-import { createAutoItinerary } from '@/api/auto-itinerary/endpoints';
+import { createAutoItinerary } from '@/endpoints/auto-itinerary/endpoints';
 import { useAuth } from '@/hooks/useAuth';
 import { router } from 'expo-router';
 import CreatingItineraryLoadingDialog from '@/components/itineraries/CreatingItineraryLoadingDialog';

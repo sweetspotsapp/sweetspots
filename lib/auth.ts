@@ -7,7 +7,7 @@ import {
   signInWithCredential,
 } from 'firebase/auth';
 import { auth } from './firebase';
-import { api } from '@/api/client';
+import { api } from '@/endpoints/client';
 import { deleteToken } from '@/utils/token';
 import { syncOnboardingAfterAuth } from './onboardingSync';
 

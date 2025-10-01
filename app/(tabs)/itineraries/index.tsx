@@ -16,7 +16,7 @@ import {
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
-import { getMyItineraries } from '@/api/itineraries/endpoints';
+import { getMyItineraries } from '@/endpoints/itineraries/endpoints';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import { formatCurrency } from '@/utils/formatter';
 import SSSpinner from '@/components/ui/SSSpinner';

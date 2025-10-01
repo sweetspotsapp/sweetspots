@@ -1,4 +1,4 @@
-import { getMyOnboarding, upsertMyOnboarding } from '@/api/users-onboarding/endpoints';
+import { getMyOnboarding, upsertMyOnboarding } from '@/endpoints/users-onboarding/endpoints';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
 
 const pickPayload = () => {

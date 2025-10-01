@@ -14,13 +14,13 @@ import { Button } from '../ui/button';
 import {
   getAutocompleteCities,
   getPlaceCoordinates,
-} from '@/api/google-maps/endpoints';
+} from '@/endpoints/google-maps/endpoints';
 import SSSpinner from '../ui/SSSpinner';
 import { Dialog, DialogContent } from '../ui/dialog';
 import { router } from 'expo-router';
 import { useItineraryDraft } from '@/store/useItineraryDraft';
 import { Minus, Plus } from 'lucide-react-native';
-import { createAutoItinerary } from '@/api/auto-itinerary/endpoints';
+import { createAutoItinerary } from '@/endpoints/auto-itinerary/endpoints';
 import { useAuth } from '@/hooks/useAuth';
 
 interface CreateItineraryModalProps {

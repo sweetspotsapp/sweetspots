@@ -11,8 +11,8 @@ import {
   createItinerary,
   getItineraryById,
   updateItinerary,
-} from '@/api/itineraries/endpoints';
-import { calculateTimeAndDistance } from '@/api/places/endpoints';
+} from '@/endpoints/itineraries/endpoints';
+import { calculateTimeAndDistance } from '@/endpoints/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
 import { useItinerarySocket } from '@/hooks/useItinerarySocket';
 import { useAuth } from '@/hooks/useAuth';
@@ -29,7 +29,7 @@ import { SSText } from '../ui/SSText';
 import { Button } from '../ui/button';
 import { SSControlledInput } from '../ui/SSControlledInput';
 
-import { updateSuggestionStatus } from '@/api/collab-itinerary/endpoints';
+import { updateSuggestionStatus } from '@/endpoints/collab-itinerary/endpoints';
 import SuggestionCardList, { Suggestion } from './SuggestionCardList';
 import { CreateItineraryDto } from '@/dto/itineraries/create-itinerary.dto';
 

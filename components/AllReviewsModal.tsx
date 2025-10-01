@@ -10,7 +10,7 @@ import { X, Star, Search } from 'lucide-react-native';
 import { SSText } from './ui/SSText';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
-import { getReviews } from '@/api/reviews/endpoints';
+import { getReviews } from '@/endpoints/reviews/endpoints';
 import { IReview } from '@/dto/reviews/review.dto';
 import { ReviewCard } from './placeSwipes/ReviewCard';
 import SSContainer from './SSContainer';
