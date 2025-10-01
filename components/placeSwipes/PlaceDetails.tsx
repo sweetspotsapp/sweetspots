@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, Image } from 'react-native';
+import { View, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
 import { MapPin, Clock, DollarSign, Banknote } from 'lucide-react-native';
 import { ReviewCarousel } from './ReviewCarousel';
 import { AllReviewsModal } from '../AllReviewsModal';
@@ -17,15 +17,18 @@ import {
 import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
 import { cn } from '@/lib/utils';
 import { IPlace, IPlaceImage } from '@/dto/places/place.dto';
+import { ImageGalleryModal } from '../ImageGalleryModal';
 
 interface PlaceDetailsProps {
   place: IRecommendedPlace | IPlace;
   onGoNow?: () => void;
   onFindSimilar?: () => void;
+  skipFirstImage?: boolean;
 }
 
 export function PlaceDetails({
   place,
+  skipFirstImage = false,
 }: // onGoNow,
 // onFindSimilar,
 PlaceDetailsProps) {
@@ -33,7 +36,9 @@ PlaceDetailsProps) {
   const [distance, setDistance] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
 
-  const images = Array.isArray(place.images) ? place.images.slice(1, 4) : [];
+  const images = Array.isArray(place.images)
+    ? place.images.slice(skipFirstImage ? 1 : 0, 4)
+    : [];
 
   const { location } = useLocationStore();
 
@@ -66,7 +71,16 @@ PlaceDetailsProps) {
     fetchDistanceAndDuration();
   }, [place]);
 
-  const openingHours = (place as IRecommendedPlace).openingHours || (place as IPlace).googleOpeningHours;
+  const openingHours =
+    (place as IRecommendedPlace).openingHours ||
+    (place as IPlace).googleOpeningHours;
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(-1);
+
+  const handleImageChange = (newIndex: number) => {
+    setCurrentImageIndex(newIndex);
+  };
+
   return (
     <View className="pb-40">
       {/* Location & Time */}
@@ -105,9 +119,15 @@ PlaceDetailsProps) {
       {images && images.length > 0 && (
         <View className="grid grid-cols-2 gap-2 mb-5">
           {images.map((img, index) => (
-            <View
+            <TouchableOpacity
               key={index}
-              className={cn("w-full h-40 bg-slate-200 rounded-xl overflow-hidden", index === 0 && "row-span-2 h-[328px]")}
+              className={cn(
+                'w-full h-40 bg-slate-200 rounded-xl overflow-hidden',
+                index === 0 && 'row-span-2 h-[328px]'
+              )}
+              onPress={() =>
+                setCurrentImageIndex(index + (skipFirstImage ? 1 : 0))
+              }
             >
               <Image
                 onLoadEnd={() => console.log('Image loaded')}
@@ -116,7 +136,7 @@ PlaceDetailsProps) {
                 className="w-full h-full"
                 resizeMode="cover"
               />
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       )}
@@ -219,6 +239,19 @@ PlaceDetailsProps) {
           placeId={place.id}
         />
       )}
+      <ImageGalleryModal
+        visible={currentImageIndex >= 0}
+        images={
+          place.images?.map((img) =>
+            typeof img === 'string' ? img : img.url
+          ) || []
+        }
+        startIndex={currentImageIndex}
+        onClose={() => {
+          setCurrentImageIndex(-1);
+        }}
+        onImageChange={handleImageChange}
+      />
     </View>
   );
 }

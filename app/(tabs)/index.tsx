@@ -538,6 +538,7 @@ export default function DiscoverTab() {
                 place={places[currentIndex]}
                 onGoNow={() => handleGoNow(places[currentIndex])}
                 onFindSimilar={() => handleFindSimilar(places[currentIndex])}
+                skipFirstImage
               />
             </View>
           </View>
