@@ -22,6 +22,7 @@ import {
 } from 'react-native-safe-area-context';
 import { X } from 'lucide-react-native';
 import { cn } from '@/lib/utils';
+import { uniq } from 'lodash';
 
 const { width, height } = Dimensions.get('window');
 const MIN_ZOOM = 1;
@@ -37,11 +38,12 @@ export interface ImageGalleryModalProps {
 
 export function ImageGalleryModal({
   visible,
-  images,
+  images: imagesProp,
   startIndex,
   onClose,
   onImageChange,
 }: ImageGalleryModalProps) {
+  const images = uniq(imagesProp);
   const [currentIndex, setCurrentIndex] = useState(startIndex);
   const scrollRef = useRef<ScrollView>(null);
   const scale = useSharedValue(1);
