@@ -4,10 +4,10 @@ export interface IItineraryPlace {
   id: string;
   itineraryId?: string | null;
   placeId?: string | null;
-  visitDate?: string | null;
-  visitTime?: string | null;
-  visitDuration?: number | null;
-  estimatedCost?: number | null;
+  visitDate: string;
+  visitTime: string;
+  visitDuration: number;
+  estimatedCost: number;
   notes?: string | null;
   orderIndex: number;
   createdAt: string;
