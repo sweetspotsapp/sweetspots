@@ -36,8 +36,8 @@ PlaceDetailsProps) {
   const [distance, setDistance] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
 
-  const images = Array.isArray(place.images)
-    ? place.images.slice(skipFirstImage ? 1 : 0, 4)
+  const images = Array.isArray(place?.images)
+    ? place?.images.slice(skipFirstImage ? 1 : 0, 4)
     : [];
 
   const { location } = useLocationStore();
