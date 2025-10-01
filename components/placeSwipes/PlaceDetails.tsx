@@ -27,7 +27,7 @@ interface PlaceDetailsProps {
 }
 
 export function PlaceDetails({
-  place,
+  place = {} as IRecommendedPlace | IPlace,
   skipFirstImage = false,
 }: // onGoNow,
 // onFindSimilar,
