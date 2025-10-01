@@ -16,9 +16,10 @@ import {
 } from '@/utils/formatter';
 import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
 import { cn } from '@/lib/utils';
+import { IPlace, IPlaceImage } from '@/dto/places/place.dto';
 
 interface PlaceDetailsProps {
-  place: IRecommendedPlace;
+  place: IRecommendedPlace | IPlace;
   onGoNow?: () => void;
   onFindSimilar?: () => void;
 }
@@ -48,8 +49,8 @@ PlaceDetailsProps) {
               // longitude: 145.123,
             },
             destination: {
-              latitude: place.latitude,
-              longitude: place.longitude,
+              latitude: Number(place.latitude),
+              longitude: Number(place.longitude),
             },
           };
           const result = await calculateTimeAndDistance(dto);
@@ -65,7 +66,7 @@ PlaceDetailsProps) {
     fetchDistanceAndDuration();
   }, [place]);
 
-  const openingHours = place.openingHours;
+  const openingHours = (place as IRecommendedPlace).openingHours || (place as IPlace).googleOpeningHours;
   return (
     <View className="pb-40">
       {/* Location & Time */}
@@ -103,7 +104,7 @@ PlaceDetailsProps) {
       )}
       {images && images.length > 0 && (
         <View className="grid grid-cols-2 gap-2 mb-5">
-          {images.map((imgUrl, index) => (
+          {images.map((img, index) => (
             <View
               key={index}
               className={cn("w-full h-40 bg-slate-200 rounded-xl overflow-hidden", index === 0 && "row-span-2 h-[328px]")}
@@ -111,7 +112,7 @@ PlaceDetailsProps) {
               <Image
                 onLoadEnd={() => console.log('Image loaded')}
                 onError={(err) => console.log('Image failed to load', err)}
-                source={{ uri: imgUrl }}
+                source={{ uri: (img as IPlaceImage)?.url || (img as string) }}
                 className="w-full h-full"
                 resizeMode="cover"
               />
@@ -129,7 +130,7 @@ PlaceDetailsProps) {
         </View>
         <SSText>
           {place.minPrice ? formatCurrency(place.minPrice) : 'Free'} -{' '}
-          {formatCurrency(place.maxPrice)}
+          {formatCurrency(place.maxPrice as any)}
         </SSText>
       </Card>
 

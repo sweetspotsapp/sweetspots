@@ -23,6 +23,7 @@ import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import ShareItineraryModal from '@/components/itineraries/ShareItineraryModal';
 import { goBack } from '@/utils/goBack';
 import SSContainer from '@/components/SSContainer';
+import { BackArrowButton } from '@/components/BackArrowButton';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -142,20 +143,15 @@ export default function ItineraryDetailsScreen() {
       <SSContainer>
         {/* Header */}
         <View className="flex-row justify-between items-center  pt-2.5 pb-4">
-          <TouchableOpacity
-            className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-            onPress={() => goBack('/itineraries', true)}
-          >
-            <ArrowLeft size={24} className="text-orange-500" />
-          </TouchableOpacity>
+          <BackArrowButton fallbackUrl="/itineraries" forceFallback/>
 
           <View className="flex-row gap-3">
-            <TouchableOpacity
+            {/* <TouchableOpacity
               className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
               onPress={handleToggleShare}
             >
               <Share2 size={24} className="text-orange-500" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
               onPress={handleEditItinerary}

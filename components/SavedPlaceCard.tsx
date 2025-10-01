@@ -12,6 +12,7 @@ import { Card, CardContent } from './ui/card';
 import { cn } from '@/lib/utils';
 import { IPlace } from '@/dto/places/place.dto';
 import VibePill from './ui/VibePill';
+import { router } from 'expo-router';
 
 interface SavedPlaceCardProps {
   place: IPlace;
@@ -31,7 +32,9 @@ export function SavedPlaceCard({
       // className={`flex-row bg-white rounded-2xl mb-4 overflow-hidden shadow-sm ${
       //   place.selected ? 'border-2 border-orange-700' : ''
       // }`}
-      onPress={isSelectionMode ? onSelect : undefined}
+      onPress={isSelectionMode ? onSelect : () => {
+        router.push(`/places/${place.id}`);
+      }}
       activeOpacity={isSelectionMode ? 0.7 : 1}
     >
       <Card
