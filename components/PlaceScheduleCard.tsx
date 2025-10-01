@@ -22,7 +22,8 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { Input } from './ui/input';
-import { IItineraryPlace } from '@/dto/itineraries/itinerary.dto';
+import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
+import moment from 'moment';
 
 interface PlaceScheduleCardProps {
   itineraryPlace: IItineraryPlace;
@@ -35,6 +36,7 @@ interface PlaceScheduleCardProps {
   onFieldBlur?: (field: string, prevValue: any, newValue: any) => void;
   onAcceptSuggestion?: () => void;
   onRejectSuggestion?: () => void;
+  index?: number;
 }
 
 export function PlaceScheduleCard({
@@ -48,6 +50,7 @@ export function PlaceScheduleCard({
   onFieldBlur = () => {},
   onAcceptSuggestion,
   onRejectSuggestion,
+  index,
 }: PlaceScheduleCardProps) {
   const { user } = useAuth();
   const userLockedFields = Object.keys(lockedFields).filter(
@@ -123,7 +126,7 @@ export function PlaceScheduleCard({
               )}
               <View className="w-8 h-8 rounded-full bg-orange-600 justify-center items-center mr-3">
                 <SSText variant="bold" className="text-sm text-white">
-                  {itineraryPlace.orderIndex + 1}
+                  {(index ?? 0) + 1}
                 </SSText>
               </View>
               {onMoveDown && (
@@ -189,6 +192,17 @@ export function PlaceScheduleCard({
                         className="text-xs text-slate-500"
                       >
                         {formatCurrency(itineraryPlace.estimatedCost || 0)}
+                      </SSText>
+                    </View>
+                    <View className="flex-row items-center gap-1">
+                      <Clock size={12} color="#64748b" />
+                      <SSText
+                        variant="medium"
+                        className="text-xs text-slate-500"
+                      >
+                        {itineraryPlace.visitDate
+                          ? `${moment(itineraryPlace.visitDate).format('LL')}${itineraryPlace.visitTime ? ` - ${itineraryPlace.visitTime}` : ''}`
+                          : 'No date'}
                       </SSText>
                     </View>
                   </View>
