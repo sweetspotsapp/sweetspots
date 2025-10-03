@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { SSControlledInput } from '@/components/ui/SSControlledInput';
 import { Home } from 'lucide-react-native';
+import { Toast } from 'toastify-react-native';
 
 type LoginFormData = {
   email: string;
@@ -39,7 +40,7 @@ export default function LoginScreen() {
       await saveToken(token);
       router.replace('/(tabs)');
     } catch (err) {
-      Alert.alert('Login failed', 'Check your credentials.');
+      Toast.error('Login failed. Check your credentials.');
     } finally {
       setIsLoggingIn(false);
     }
