@@ -404,9 +404,14 @@ export default function DiscoverTab() {
     <>
       <SSContainer>
         <View className="flex-row justify-between items-center pt-2.5">
-          <SSText variant="bold" className="text-3xl text-orange-600">
-            SweetSpots
-          </SSText>
+          <View className='flex-row items-center gap-2'>
+            <SSText variant="bold" className="text-3xl text-orange-600">
+              SweetSpots
+            </SSText>
+            <SSText className="text-2xl text-orange-600">
+              Alpha
+            </SSText>
+          </View>
           <View className="flex-row gap-3">
             <TouchableOpacity
               className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
