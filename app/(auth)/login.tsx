@@ -12,6 +12,7 @@ import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { SSControlledInput } from '@/components/ui/SSControlledInput';
 import { Home } from 'lucide-react-native';
 import { Toast } from 'toastify-react-native';
+import { firebaseErrorMessage } from '@/lib/utils';
 
 type LoginFormData = {
   email: string;
@@ -40,7 +41,8 @@ export default function LoginScreen() {
       await saveToken(token);
       router.replace('/(tabs)');
     } catch (err) {
-      Toast.error('Login failed. Check your credentials.');
+      console.log(err);
+      Toast.error(firebaseErrorMessage((err as any).code));
     } finally {
       setIsLoggingIn(false);
     }
@@ -58,7 +60,10 @@ export default function LoginScreen() {
         router.replace('/(tabs)');
       }
     } catch (err) {
-      Alert.alert('Google login failed', authError?.message || 'Something went wrong');
+      Alert.alert(
+        'Google login failed',
+        authError?.message || 'Something went wrong'
+      );
     }
   };
 
@@ -66,7 +71,9 @@ export default function LoginScreen() {
     <SSLinearBackground>
       <View className="gap-3 justify-center items-center flex-1 container max-w-xl mx-auto px-4">
         <SSText className="text-2xl font-bold">Login</SSText>
-        <SSText className="text-sm text-muted-foreground">Welcome back! Please login to continue.</SSText>
+        <SSText className="text-sm text-muted-foreground">
+          Welcome back! Please login to continue.
+        </SSText>
         <View className="my-4 w-full gap-3">
           <SSControlledInput
             name="email"
@@ -85,12 +92,18 @@ export default function LoginScreen() {
             error={errors.password?.message}
           />
         </View>
-        <Button onPress={handleSubmit(handleLogin)} className="w-full" disabled={isLoggingIn}>
+        <Button
+          onPress={handleSubmit(handleLogin)}
+          className="w-full"
+          disabled={isLoggingIn}
+        >
           <SSText>Login</SSText>
         </Button>
         <View className="flex-row items-center justify-between w-full gap-3 my-4">
           <Separator className="flex-1" />
-          <SSText className="text-sm text-muted-foreground">or continue with</SSText>
+          <SSText className="text-sm text-muted-foreground">
+            or continue with
+          </SSText>
           <Separator className="flex-1" />
         </View>
         {/* <Button
@@ -113,11 +126,9 @@ export default function LoginScreen() {
           </SSText>
         </View>
         <Link href="/" asChild>
-          <Button variant='outline' className='mt-6'>
+          <Button variant="outline" className="mt-6">
             <Home size={16} />
-            <SSText>
-              Back to Home
-            </SSText>
+            <SSText>Back to Home</SSText>
           </Button>
         </Link>
       </View>

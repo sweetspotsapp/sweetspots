@@ -37,6 +37,8 @@ export function firebaseErrorMessage(code: string): string {
             return 'There is no user corresponding to the given email.';
         case 'auth/wrong-password':
             return 'The password is invalid for the given email.';
+        case 'auth/invalid-credential':
+            return 'The credentials provided are invalid.';
         default:
             return 'An unknown error occurred. Please try again.';
     }
