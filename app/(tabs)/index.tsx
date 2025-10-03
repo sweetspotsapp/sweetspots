@@ -412,14 +412,14 @@ export default function DiscoverTab() {
               Alpha
             </SSText>
           </View>
-          <View className="flex-row gap-3">
+          {/* <View className="flex-row gap-3">
             <TouchableOpacity
               className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
               onPress={() => setShowFilterModal(true)}
             >
               <Filter size={24} className="text-orange-300" />
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
 
         <ScrollView className="flex-1">
@@ -556,7 +556,7 @@ export default function DiscoverTab() {
           )}
         </ScrollView>
       </SSContainer>
-
+{/* 
       <FilterModal
         visible={showFilterModal}
         onClose={() => setShowFilterModal(false)}
@@ -573,7 +573,7 @@ export default function DiscoverTab() {
           distance: distanceFilter,
           priceRange: priceFilter,
         }}
-      />
+      /> */}
 
       <ImageGalleryModal
         visible={showGalleryModal}
