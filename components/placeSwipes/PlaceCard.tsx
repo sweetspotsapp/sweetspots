@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Image,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
-import {
-  Star,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react-native';
+import { Star, ChevronLeft, ChevronRight, Car } from 'lucide-react-native';
 import { ImageGalleryModal } from '../ImageGalleryModal';
 import { SSText } from '../ui/SSText';
 import { Card } from '../ui/card';
@@ -19,8 +16,6 @@ import { calculateTimeAndDistance } from '@/endpoints/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
 import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
 import VibePill from '../ui/VibePill';
-
-const { width: screenWidth } = Dimensions.get('window');
 
 interface PlaceCardProps {
   place: IRecommendedPlace;
@@ -31,70 +26,74 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [distance, setDistance] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
+  const [carouselWidth, setCarouselWidth] = useState(0);
 
   const { location } = useLocationStore();
+  const imageScrollRef = useRef<ScrollView>(null);
+
+  // Measure the actual width of the carousel container
+  const onCarouselLayout = (e: any) => {
+    const w = e.nativeEvent.layout.width;
+    if (w !== carouselWidth) setCarouselWidth(w);
+  };
 
   useEffect(() => {
     const fetchDistanceAndDuration = async () => {
-      if (place && location) {
-        try {
-          const dto: CalculateDistanceDto = {
-            origin: {
-              latitude: location.latitude,
-              longitude: location.longitude,
-              // latitude: -37.899,
-              // longitude: 145.123,
-            },
-            destination: {
-              latitude: place.latitude,
-              longitude: place.longitude,
-            },
-          };
-          const result = await calculateTimeAndDistance(dto);
-          if (result?.data) {
-            setDistance(result.data?.distance);
-            setDuration(result.data?.duration);
-          }
-        } catch (error) {
-          // handle error if needed
+      if (!place || !location) return;
+      try {
+        const dto: CalculateDistanceDto = {
+          origin: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          },
+          destination: { latitude: place.latitude, longitude: place.longitude },
+        };
+        const result = await calculateTimeAndDistance(dto);
+        if (result?.data) {
+          setDistance(result.data?.distance);
+          setDuration(result.data?.duration);
         }
-      }
+      } catch {}
     };
     fetchDistanceAndDuration();
-  }, [place]);
+    // include location so it updates when user location changes
+  }, [place, location]);
+
+  // Keep the current slide centered if width changes (e.g., window resized)
+  useEffect(() => {
+    if (!carouselWidth) return;
+    imageScrollRef.current?.scrollTo({
+      x: currentImageIndex * carouselWidth,
+      animated: false,
+    });
+  }, [carouselWidth, currentImageIndex]);
 
   const handleImagePress = (index: number) => {
-    if (onImagePress && place.images !== undefined) {
-      onImagePress(place.images, index);
-    }
+    if (onImagePress && place.images) onImagePress(place.images, index);
   };
 
   const handleImageChange = (newIndex: number) => {
     setCurrentImageIndex(newIndex);
   };
 
-  const handleScroll = (event: any) => {
-    const contentOffset = event.nativeEvent.contentOffset;
-    const imageWidth = screenWidth - 40;
-    const index = Math.round(contentOffset.x / imageWidth);
-    setCurrentImageIndex(index);
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { contentOffset, layoutMeasurement } = event.nativeEvent;
+    const viewWidth = layoutMeasurement?.width || carouselWidth || 1;
+    const index = Math.round(contentOffset.x / viewWidth);
+    if (index !== currentImageIndex) setCurrentImageIndex(index);
   };
 
   const scrollToImage = (index: number) => {
-    const imageWidth = screenWidth - 40;
+    if (!carouselWidth) return;
     imageScrollRef.current?.scrollTo({
-      x: index * imageWidth,
+      x: index * carouselWidth,
       animated: true,
     });
     setCurrentImageIndex(index);
   };
 
-  const imageScrollRef = React.useRef<ScrollView>(null);
-
   const goToPreviousImage = () => {
-    if (currentImageIndex > 0) {
-      scrollToImage(currentImageIndex - 1);
-    }
+    if (currentImageIndex > 0) scrollToImage(currentImageIndex - 1);
   };
 
   const goToNextImage = () => {
@@ -105,10 +104,10 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
 
   return (
     <Card elevation={4} className="flex-1 !rounded-3xl overflow-hidden">
-      {/* Image Carousel */}
-
-      {/* Content */}
-      <View className="h-full relative rounded-3xl overflow-hidden">
+      <View
+        className="h-full relative rounded-3xl overflow-hidden"
+        onLayout={onCarouselLayout}
+      >
         <ScrollView
           ref={imageScrollRef}
           horizontal
@@ -116,15 +115,16 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
           showsHorizontalScrollIndicator={false}
           onScroll={handleScroll}
           scrollEventThrottle={16}
-          className='h-full'
-          nestedScrollEnabled={true}
-          // style={{ flex: 1, height: '100%' }}
-          // contentOffset={{ x: currentImageIndex * (screenWidth - 40), y: 0 }}
+          className="h-full"
+          nestedScrollEnabled
+          style={{ flex: 1, height: '100%' }}
+          // contentOffset only sets initial; actual positioning handled in effects/scrollTo
+          contentOffset={{ x: currentImageIndex * (carouselWidth || 0), y: 0 }}
         >
           {place.images.map((image, index) => (
             <View
               key={index}
-              style={{ width: screenWidth - 40, height: '100%' }}
+              style={{ width: carouselWidth || 0, height: '100%' }}
             >
               <TouchableOpacity
                 onPress={() => handleImagePress(index)}
@@ -151,7 +151,7 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
                 onPress={goToPreviousImage}
                 activeOpacity={0.7}
               >
-                <ChevronLeft size={24} className='text-white' />
+                <ChevronLeft size={24} className="text-white" />
               </TouchableOpacity>
             )}
 
@@ -162,7 +162,7 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
                 onPress={goToNextImage}
                 activeOpacity={0.7}
               >
-                <ChevronRight size={24} className='text-white' />
+                <ChevronRight size={24} className="text-white" />
               </TouchableOpacity>
             )}
           </>
@@ -170,10 +170,7 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
 
         {/* Image Indicators */}
         {place.images.length > 1 && (
-          <View
-            className="absolute bottom-4 left-0 right-0 flex-row justify-center gap-2 z-10"
-            pointerEvents="none"
-          >
+          <View className="absolute bottom-4 left-0 right-0 flex-row justify-center gap-2 z-10">
             {place.images.map((_, index) => (
               <TouchableOpacity
                 key={index}
@@ -182,7 +179,6 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
                   index === currentImageIndex ? 'bg-white' : 'bg-white/50'
                 }`}
                 activeOpacity={0.7}
-                // pointerEvents="auto"
               />
             ))}
           </View>
@@ -202,42 +198,24 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
           </SSText>
         </View>
       </View>
+
       <View className="p-4 absolute bottom-0 left-0 bg-gradient-to-t from-black/60 to-transparent w-full">
+      {
+        distance !== null && duration !== null && (
+          <View
+            className="flex-row items-center w-fit bg-white px-3 py-1.5 rounded-full gap-1 z-10"
+            pointerEvents="none"
+          >
+            <Car size={16} />
+            <SSText variant="semibold" className="text-sm text-gray-800">
+                {`${(distance / 1000).toFixed(1)} km • ${Math.round(duration)} min`}
+            </SSText>
+          </View>
+        )
+      }
         <SSText variant="bold" className="text-3xl text-white mb-2">
           {place.name}
         </SSText>
-
-        {/* Location & Time */}
-        {/* <View className="flex-row justify-between mb-5">
-          <View className="flex-row items-center gap-1.5">
-            <MapPin size={18} color="#64748b" />
-            <SSText variant="medium" className="text-sm text-slate-500">
-              {distance ? (
-                formatDistance(distance)
-              ) : (
-                <ActivityIndicator className="ml-4" size={4} />
-              )}
-            </SSText>
-          </View>
-          <View className="flex-row items-center gap-1.5">
-            <Clock size={18} color="#64748b" />
-            <SSText variant="medium" className="text-sm text-slate-500">
-              {duration ? (
-                formatDuration({
-                  seconds: duration,
-                })
-              ) : (
-                <ActivityIndicator className="ml-4" size={4} />
-              )}
-            </SSText>
-          </View>
-          <View className="flex-row items-center gap-1.5">
-            <DollarSign size={18} color="#64748b" />
-            <SSText variant="medium" className="text-sm text-slate-500">
-              {place.priceRange}
-            </SSText>
-          </View>
-        </View> */}
 
         {/* Vibes Pills */}
         <View className="flex-row flex-wrap gap-2 mb-6">
@@ -247,7 +225,6 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
         </View>
       </View>
 
-      {/* Image Gallery Modal */}
       {onImagePress && (
         <ImageGalleryModal
           visible={false}
