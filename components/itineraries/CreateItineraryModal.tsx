@@ -273,6 +273,7 @@ CreateItineraryModalProps) {
                 readOnly={isLoadingCoords}
                 control={control}
                 name="query"
+                placeholder='Search for a city, e.g. "Sydney"'
               />
             </View>
 
@@ -356,6 +357,7 @@ CreateItineraryModalProps) {
                   className="flex-1"
                   valueAsNumber
                 />
+                <SSText>per person</SSText>
               </View>
             </View>
           {/* 
