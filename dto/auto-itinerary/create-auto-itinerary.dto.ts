@@ -1,4 +1,5 @@
 export interface CreateAutoItineraryDto {
+  query?: string;
   userId?: string;
   placeIds: string[];
   targetCount?: number;

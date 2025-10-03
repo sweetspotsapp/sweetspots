@@ -195,6 +195,7 @@ CreateItineraryModalProps) {
   function onSelectOwnSpots() {
     setIsDoneForm(false);
     saveDraft({
+      query: getValues('query') || undefined,
       location: getValues('location'),
       startDateISO: getValues('startDate').toISOString(),
       endDateISO: getValues('endDate').toISOString(),
@@ -211,11 +212,14 @@ CreateItineraryModalProps) {
   }
 
   const [isCreatingAutoItinerary, setIsCreatingAutoItinerary] = React.useState(false);
-  const user = useAuth().user
+  const user = useAuth().user;
 
   function onSelectSuggestedSpot() {
     setIsCreatingAutoItinerary(true);
+    // console.log(user?.uid);
     createAutoItinerary({
+      description: getValues('query') || getValues('location'),
+      query: getValues('query') || getValues('location'),
       startDate: getValues('startDate').toISOString(),
       endDate: getValues('endDate').toISOString(),
       targetCount: getValues('targetCount'),

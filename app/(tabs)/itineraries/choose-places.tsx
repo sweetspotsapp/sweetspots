@@ -35,7 +35,7 @@ export default function ChoosePlaces() {
       }
       return prev.includes(placeId)
         ? prev.filter((id) => id !== placeId)
-        : [...prev, placeId]
+        : [...prev, placeId];
     });
   };
 
@@ -56,14 +56,16 @@ export default function ChoosePlaces() {
       targetCount: draft.targetCount,
       maxBudget: draft.budget,
       userId: user?.uid,
-    }).then((res) => {
-      const itineraryId = res.data?.id;
-      if (itineraryId) {
-        router.replace(`/itineraries/${itineraryId}`);
-      }
-    }).finally(() => {
-      setIsCreatingItinerary(false);
-    });
+    })
+      .then((res) => {
+        const itineraryId = res.data?.id;
+        if (itineraryId) {
+          router.replace(`/itineraries/${itineraryId}`);
+        }
+      })
+      .finally(() => {
+        setIsCreatingItinerary(false);
+      });
   }
 
   return (
@@ -79,21 +81,36 @@ export default function ChoosePlaces() {
             <SSText variant="bold" className="text-3xl text-orange-600">
               Choose your sweet spots!
             </SSText>
+            {draft.query && (
+              <SSText className="text-xl text-muted">
+                {draft.query ? `for "${draft.query}"` : null}
+              </SSText>
+            )}
           </View>
           <ScrollView className="flex-1">
             <Tabs value={tab} onValueChange={setTab} className="mb-4">
               <TabsList>
                 <TabsTrigger value="saved">
-                  <SSText>Saved Places{placeCounts.saved ? (' (' + placeCounts.saved + ')') : null}</SSText>
+                  <SSText>
+                    Saved Places
+                    {placeCounts.saved ? ' (' + placeCounts.saved + ')' : null}
+                  </SSText>
                 </TabsTrigger>
                 <TabsTrigger value="discover">
-                  <SSText>Discover{placeCounts.discover ? (' (' + placeCounts.discover + ')') : null}</SSText>
+                  <SSText>
+                    Discover
+                    {placeCounts.discover
+                      ? ' (' + placeCounts.discover + ')'
+                      : null}
+                  </SSText>
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="saved">
                 <SavedPlaces
                   isSelectionMode
-                  onSelectPlace={(placeId) => handleSelectPlace(placeId, 'saved')}
+                  onSelectPlace={(placeId) =>
+                    handleSelectPlace(placeId, 'saved')
+                  }
                   selectedPlaceIds={selectedPlaceIds}
                   coords={
                     draft.lat && draft.lon
@@ -108,7 +125,9 @@ export default function ChoosePlaces() {
               <TabsContent value="discover">
                 <DiscoverPlaces
                   isSelectionMode
-                  onSelectPlace={(placeId) => handleSelectPlace(placeId, 'discover')}
+                  onSelectPlace={(placeId) =>
+                    handleSelectPlace(placeId, 'discover')
+                  }
                   selectedPlaceIds={selectedPlaceIds}
                   coords={
                     draft.lat && draft.lon
