@@ -10,4 +10,5 @@ export interface IUserProfile {
   travelPreferences: Record<string, any>;
   createdAt: string;
   updatedAt: string;
+  summary?: string;
 }

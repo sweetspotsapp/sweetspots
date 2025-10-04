@@ -19,11 +19,22 @@ import { IUserProfile } from '@/dto/users/user-profile.dto';
 import SSSpinner from '@/components/ui/SSSpinner';
 import SSContainer from '@/components/SSContainer';
 import { Card } from '@/components/ui/card';
-import { useAuth } from '@/hooks/useAuth';
 import { logout } from '@/lib/auth';
+import { OnboardingAnswers } from '@/store/useOnboardingStore';
+import { getMyOnboarding } from '@/endpoints/users-onboarding/endpoints';
+import { capitalCase } from 'change-case';
+import { Badge } from '@/components/ui/badge';
+
+const budgetLabel: Record<NonNullable<OnboardingAnswers['budget']>, string> = {
+  budget: 'Less than $50',
+  mid: 'Less than $190',
+  comfortable: '$190-$400',
+  premium: '$400+',
+};
 
 export default function ProfileTab() {
   const [profile, setProfile] = useState<IUserProfile | null>(null);
+  const [onboarding, setOnboarding] = useState<OnboardingAnswers | null>(null);
   const [swipeStats, setSwipeStats] = useState<{
     totalSwipes: number;
     rightSwipes: number;
@@ -38,13 +49,15 @@ export default function ProfileTab() {
 
   const loadUserData = async () => {
     try {
-      const [profileRes, statsRes] = await Promise.all([
+      const [profileRes, statsRes, onboardingRes] = await Promise.all([
         getCurrentUserProfile(),
         getSwipeStats(),
+        getMyOnboarding(),
       ]);
 
       setProfile(profileRes.data ?? null);
       setSwipeStats(statsRes.data ?? null);
+      setOnboarding(onboardingRes.data ?? null);
     } catch (err) {
       console.error('Failed to load user profile or swipe stats', err);
     } finally {
@@ -100,8 +113,8 @@ export default function ProfileTab() {
       title: 'Log Out',
       subtitle: 'Sign out of your account',
       onPress: () => {
-        logout()
-        router.replace('/(auth)/login')
+        logout();
+        router.replace('/(auth)/login');
       },
       color: '#f97316',
     },
@@ -135,6 +148,104 @@ export default function ProfileTab() {
                 <SSText className="text-base text-slate-500 mb-6">
                   {profile.bio || 'Traveler'}
                 </SSText>
+
+                {profile.summary && (
+                  <View className="border border-orange-400 rounded-xl p-4">
+                    <SSText className="text-sm text-gray-800">
+                      {profile.summary}
+                    </SSText>
+
+                    {/* chips + meta */}
+                    <View className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mt-6">
+                      {/* YOUR VIBES */}
+                      {(onboarding?.vibes?.length ?? 0) > 0 && (
+                        <View className="mb-5">
+                          <SSText className="text-xs text-gray-500 font-semibold tracking-wide mb-2">
+                            YOUR VIBES
+                          </SSText>
+                          <View className="flex-row flex-wrap gap-2">
+                            {onboarding!.vibes!.map((v) => (
+                              <Badge key={v} className="rounded-full px-3 py-1">
+                                <SSText>{capitalCase(v)}</SSText>
+                              </Badge>
+                            ))}
+                          </View>
+                        </View>
+                      )}
+
+                      {/* BUDGET */}
+                      {onboarding?.budget && (
+                        <View className="mb-5">
+                          <SSText className="text-xs text-gray-500 font-semibold tracking-wide mb-2">
+                            BUDGET
+                          </SSText>
+                          <View className="flex-row flex-wrap gap-2">
+                            <Badge className="rounded-full px-3 py-1 bg-orange-100 text-orange-800 border-0">
+                              <SSText>{budgetLabel[onboarding.budget]}</SSText>
+                            </Badge>
+                          </View>
+                        </View>
+                      )}
+
+                      {/* TRAVELER TYPE */}
+                      {onboarding?.travelerType && (
+                        <View className="mb-5">
+                          <SSText className="text-xs text-gray-500 font-semibold tracking-wide mb-2">
+                            TRAVELER TYPE
+                          </SSText>
+                          <View className="flex-row flex-wrap gap-2">
+                            <Badge className="rounded-full px-3 py-1">
+                              <SSText>
+                                {capitalCase(onboarding.travelerType)}
+                              </SSText>
+                            </Badge>
+                          </View>
+                        </View>
+                      )}
+
+                      {/* COMPANION */}
+                      {onboarding?.companion && (
+                        <View className="mb-5">
+                          <SSText className="text-xs text-gray-500 font-semibold tracking-wide mb-2">
+                            COMPANION
+                          </SSText>
+                          <View className="flex-row flex-wrap gap-2">
+                            <Badge className="rounded-full px-3 py-1">
+                              <SSText>
+                                {onboarding.companion === 'budgetBackpacker'
+                                  ? 'Budget Backpacker'
+                                  : onboarding.companion === 'comfortSeeker'
+                                  ? 'Comfort Seeker'
+                                  : capitalCase(onboarding.companion)}
+                              </SSText>
+                            </Badge>
+                          </View>
+                        </View>
+                      )}
+
+                      {/* REQUIREMENTS */}
+                      {(onboarding?.requirements?.length ?? 0) > 0 && (
+                        <View className="mb-5">
+                          <SSText className="text-xs text-gray-500 font-semibold tracking-wide mb-2">
+                            REQUIREMENTS
+                          </SSText>
+                          <View className="flex-row flex-wrap gap-2">
+                            {onboarding!
+                              .requirements!.filter((r) => r !== 'none')
+                              .map((req) => (
+                                <Badge
+                                  key={req}
+                                  className="rounded-full px-3 py-1"
+                                >
+                                  <SSText>{capitalCase(req)}</SSText>
+                                </Badge>
+                              ))}
+                          </View>
+                        </View>
+                      )}
+                    </View>
+                  </View>
+                )}
 
                 {/* Stats */}
                 {/* <View className="flex-row items-center bg-white px-8 py-5 rounded-2xl shadow-sm">
@@ -185,13 +296,10 @@ export default function ProfileTab() {
           </View>
 
           {/* Menu Items */}
-          <View className="px-4 pt-5 gap-4">
+          <View className="pt-2 gap-4">
             {menuItems.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={item.onPress}
-              >
-                <Card className='p-4 flex-1 flex-row items-center'>
+              <TouchableOpacity key={index} onPress={item.onPress}>
+                <Card className="p-4 flex-1 flex-row items-center">
                   <View
                     className="w-12 h-12 rounded-xl justify-center items-center mr-4"
                     style={{ backgroundColor: `${item.color}15` }}
