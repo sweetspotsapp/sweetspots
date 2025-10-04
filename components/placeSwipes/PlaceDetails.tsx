@@ -82,7 +82,7 @@ PlaceDetailsProps) {
   };
 
   return (
-    <View className="pb-40">
+    <View className="pb-6">
       {/* Location & Time */}
       {location && distance && (
         <Card className="p-4 flex-row justify-between mb-5">
