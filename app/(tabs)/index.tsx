@@ -403,7 +403,7 @@ export default function DiscoverTab() {
   return (
     <>
       <SSContainer>
-        <View className="flex-row justify-between items-center pt-2.5">
+        <View className="flex-row justify-between items-center py-3">
           <View className='flex-row items-center gap-2'>
             <SSText variant="bold" className="text-3xl text-orange-600">
               SweetSpots
