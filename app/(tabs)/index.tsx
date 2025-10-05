@@ -8,6 +8,7 @@ import {
   Linking,
   Platform,
   TouchableOpacity,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Heart, X, Filter } from 'lucide-react-native';
@@ -25,8 +26,6 @@ import SSSpinner from '@/components/ui/SSSpinner';
 import { ScrollView } from 'react-native-gesture-handler';
 import { PlaceDetails } from '@/components/placeSwipes/PlaceDetails';
 import SSContainer from '@/components/SSContainer';
-
-const { height: screenHeight, width: screenWidth } = Dimensions.get('window');
 
 interface CardStackItem {
   id: string;
@@ -47,6 +46,7 @@ const CARD_OPACITIES = [1, 1, 0, 0];
 const CARD_Y_OFFSETS = [0, 0, 0, 0];
 
 export default function DiscoverTab() {
+  const { height: screenHeight, width: screenWidth } = useWindowDimensions()
   const { setLocation, location } = useLocationStore();
   useEffect(() => {
     (async () => {

@@ -29,8 +29,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { getRecContext } from '@/endpoints/recommendations/endpoints';
 import { useRecContextCache } from '@/store/useRecContextCache';
 import SSSpinner from '../ui/SSSpinner';
+import { cn } from '@/lib/utils';
 
-const TWO_DAYS_MS = 1000 * 60 * 60 * 24 * 2;
+export const TWO_DAYS_MS = 1000 * 60 * 60 * 24 * 2;
 
 interface PlaceCardProps {
   place: IRecommendedPlace;
@@ -237,7 +238,7 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
           <>
             {currentImageIndex > 0 && (
               <TouchableOpacity
-                className="absolute top-1/2 left-4 w-10 h-10 rounded-full bg-black/50 justify-center items-center z-20"
+                className={cn("absolute transition-all left-4 w-10 h-10 rounded-full bg-black/50 justify-center items-center z-20", isCollapsed ? "top-1/2" : "top-1/4")}
                 style={{ marginTop: -20 }}
                 onPress={goToPreviousImage}
                 activeOpacity={0.7}
@@ -248,7 +249,7 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
 
             {currentImageIndex < place.images.length - 1 && (
               <TouchableOpacity
-                className="absolute top-1/2 right-4 w-10 h-10 rounded-full bg-black/50 justify-center items-center z-10"
+                className={cn("absolute transition-all right-4 w-10 h-10 rounded-full bg-black/50 justify-center items-center z-20", isCollapsed ? "top-1/2" : "top-1/4")}
                 style={{ marginTop: -20 }}
                 onPress={goToNextImage}
                 activeOpacity={0.7}
