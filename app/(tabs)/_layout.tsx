@@ -4,6 +4,7 @@ import { Heart, User, Compass, Search, Briefcase } from 'lucide-react-native';
 import { Platform } from 'react-native';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
 import { useAuth } from '@/hooks/useAuth';
+import SavedTabIconWithHint from '@/components/SavedTabIconWithHint';
 
 export default function TabLayout() {
   const { ui } = useOnboardingStore();
@@ -81,7 +82,7 @@ export default function TabLayout() {
         name="saved"
         options={{
           title: 'Saved',
-          tabBarIcon: ({ size, color }) => <Heart size={size} color={color} />,
+          tabBarIcon: ({ size, color }) => <SavedTabIconWithHint size={size} color={color} />,
         }}
       />
       <Tabs.Screen

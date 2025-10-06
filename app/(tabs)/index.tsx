@@ -26,6 +26,7 @@ import SSSpinner from '@/components/ui/SSSpinner';
 import { ScrollView } from 'react-native-gesture-handler';
 import { PlaceDetails } from '@/components/placeSwipes/PlaceDetails';
 import SSContainer from '@/components/SSContainer';
+import { useHintsStore } from '@/store/useHintsStore';
 
 interface CardStackItem {
   id: string;
@@ -302,7 +303,10 @@ export default function DiscoverTab() {
       }),
     ]).start((finished) => {
       if (!finished) return;
-      if (direction === 'right') savePlaceToStorage(topCard.place);
+      if (direction === 'right') {
+        savePlaceToStorage(topCard.place)
+        useHintsStore.getState().triggerSavedHint();
+      };
       recordSwipe({ placeId: topCard.place.id, direction });
       animateStackMovement();
     });
