@@ -295,7 +295,7 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
       <View className="p-4 absolute bottom-0 left-0 bg-gradient-to-t from-black/60 to-transparent w-full">
         {distance !== null && duration !== null && (
           <View
-            className="flex-row items-center w-fit bg-white px-3 py-1.5 rounded-full gap-1 z-10"
+            className="flex-row items-center w-fit bg-white px-3 py-1.5 rounded-full gap-1 z-10 mb-4"
             pointerEvents="none"
           >
             <Car size={16} />
