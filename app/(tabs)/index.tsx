@@ -78,10 +78,6 @@ export default function DiscoverTab() {
   const stackAnimationRef = useRef<Animated.CompositeAnimation | null>(null);
   const isAnimatingRef = useRef(false);
 
-  // const position = useRef(new Animated.ValueXY()).current;
-  // const rotate = useRef(new Animated.Value(0)).current;
-  // const opacity = useRef(new Animated.Value(1)).current;
-
   const pageRef = useRef(1);
   const seedRef = useRef<string>('');
   const inFlightPageRef = useRef<number | null>(null);
@@ -331,16 +327,6 @@ export default function DiscoverTab() {
     setShowGalleryModal(true);
   };
 
-  const handleImageChange = (newIndex: number) => {
-    const currentPlace = places[currentIndex];
-    if (currentPlace) {
-      setLastViewedImageIndex((prev) => ({
-        ...prev,
-        [currentPlace.id]: newIndex,
-      }));
-    }
-  };
-
   const resetCardStack = () => {
     if (stackAnimationRef.current) stackAnimationRef.current.stop();
     isAnimatingRef.current = false;
@@ -584,7 +570,6 @@ export default function DiscoverTab() {
         images={galleryImages}
         startIndex={galleryStartIndex}
         onClose={() => setShowGalleryModal(false)}
-        onImageChange={handleImageChange}
       />
     </>
   );
