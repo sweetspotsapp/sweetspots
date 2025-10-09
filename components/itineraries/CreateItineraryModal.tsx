@@ -22,6 +22,7 @@ import { useItineraryDraft } from '@/store/useItineraryDraft';
 import { Minus, Plus } from 'lucide-react-native';
 import { createAutoItinerary } from '@/endpoints/auto-itinerary/endpoints';
 import { useAuth } from '@/hooks/useAuth';
+import { useFeedbackNudgeStore } from '@/store/useFeedbackNudgeStore';
 
 interface CreateItineraryModalProps {
   visible: boolean;
@@ -214,6 +215,7 @@ CreateItineraryModalProps) {
   const [isCreatingAutoItinerary, setIsCreatingAutoItinerary] = React.useState(false);
   const user = useAuth().user;
 
+  const recordItineraryCreated = useFeedbackNudgeStore((s) => s.recordItineraryCreated);
   function onSelectSuggestedSpot() {
     setIsCreatingAutoItinerary(true);
     // console.log(user?.uid);
@@ -229,6 +231,7 @@ CreateItineraryModalProps) {
       userId: user?.uid,
       placeIds: []
     }).then((res) => {
+      recordItineraryCreated();
       const itineraryId = res.data?.id;
       if (itineraryId) {
         router.replace(`/itineraries/${itineraryId}`);

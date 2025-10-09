@@ -27,6 +27,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { PlaceDetails } from '@/components/placeSwipes/PlaceDetails';
 import SSContainer from '@/components/SSContainer';
 import { useHintsStore } from '@/store/useHintsStore';
+import { useFeedbackNudgeStore } from '@/store/useFeedbackNudgeStore';
 
 interface CardStackItem {
   id: string;
@@ -269,6 +270,7 @@ export default function DiscoverTab() {
     });
   };
 
+  const recordSwipeStore = useFeedbackNudgeStore((s) => s.recordSwipe);
   const handleSwipe = (direction: 'left' | 'right') => {
     if (isAnimatingRef.current) return;
     if (currentIndex >= places.length - 1) {
@@ -304,6 +306,7 @@ export default function DiscoverTab() {
         useHintsStore.getState().triggerSavedHint();
       };
       recordSwipe({ placeId: topCard.place.id, direction });
+      recordSwipeStore();
       animateStackMovement();
     });
   };
