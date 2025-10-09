@@ -84,6 +84,31 @@ PlaceDetailsProps) {
   return (
     <View className="pb-6">
       {/* Location & Time */}
+      {images && images.length > 0 && (
+        <View className="grid grid-cols-2 gap-2 mb-5">
+          {images.map((img, index) => (
+            <TouchableOpacity
+              key={index}
+              className={cn(
+                'w-full h-40 bg-slate-200 rounded-xl overflow-hidden',
+                index === 0 && 'row-span-2 h-[328px]'
+              )}
+              onPress={() =>
+                setCurrentImageIndex(index + (skipFirstImage ? 1 : 0))
+              }
+            >
+              <Image
+                onLoadEnd={() => console.log('Image loaded')}
+                onError={(err) => console.log('Image failed to load', err)}
+                source={{ uri: (img as IPlaceImage)?.url || (img as string) }}
+                className="w-full h-full"
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
       {location && distance && (
         <Card className="p-4 flex-row justify-between mb-5">
           <View className="flex-row items-center gap-1.5">
@@ -115,30 +140,6 @@ PlaceDetailsProps) {
             </SSText>
           </View>
         </Card>
-      )}
-      {images && images.length > 0 && (
-        <View className="grid grid-cols-2 gap-2 mb-5">
-          {images.map((img, index) => (
-            <TouchableOpacity
-              key={index}
-              className={cn(
-                'w-full h-40 bg-slate-200 rounded-xl overflow-hidden',
-                index === 0 && 'row-span-2 h-[328px]'
-              )}
-              onPress={() =>
-                setCurrentImageIndex(index + (skipFirstImage ? 1 : 0))
-              }
-            >
-              <Image
-                onLoadEnd={() => console.log('Image loaded')}
-                onError={(err) => console.log('Image failed to load', err)}
-                source={{ uri: (img as IPlaceImage)?.url || (img as string) }}
-                className="w-full h-full"
-                resizeMode="cover"
-              />
-            </TouchableOpacity>
-          ))}
-        </View>
       )}
 
       <Card className="p-4 mb-5">
