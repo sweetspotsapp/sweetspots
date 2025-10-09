@@ -375,20 +375,20 @@ export default function DiscoverTab() {
     );
   }
 
-  if (currentIndex >= places.length) {
-    return (
-      <SafeAreaView className="flex-1">
-        <View className="flex-1 justify-center items-center px-10">
-          <SSText
-            variant="bold"
-            className="text-3xl text-orange-600 text-center mb-3"
-          >
-            No more places!
-          </SSText>
-        </View>
-      </SafeAreaView>
-    );
-  }
+  // if (currentIndex >= places.length) {
+  //   return (
+  //     <SafeAreaView className="flex-1">
+  //       <View className="flex-1 justify-center items-center px-10">
+  //         <SSText
+  //           variant="bold"
+  //           className="text-3xl text-orange-600 text-center mb-3"
+  //         >
+  //           No more places!
+  //         </SSText>
+  //       </View>
+  //     </SafeAreaView>
+  //   );
+  // }
 
   return (
     <>
