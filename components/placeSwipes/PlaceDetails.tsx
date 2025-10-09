@@ -166,43 +166,45 @@ PlaceDetailsProps) {
         </CardContent>
       </Card>
 
-      <Card className="mb-5">
-        <CardContent>
-          <View className="flex-row items-center mb-3 gap-2">
-            <Clock size={20} />
-            <SSText variant="semibold" className="text-xl">
-              Opening Hours
-            </SSText>
-          </View>
-          <SSText className="text-justify">
-            {openingHours?.map((openHour, index) => {
-              const openHoursArr = openHour.split(': ');
-              const day = openHoursArr[0];
-              const time = openHoursArr[1];
-              const isToday =
-                day ===
-                new Date().toLocaleDateString('en-US', { weekday: 'long' });
-              return (
-                <View
-                  key={index}
-                  className="flex-row justify-between w-full mb-1"
-                >
-                  <SSText
-                    className={cn(
-                      'capitalize',
-                      isToday && 'font-bold text-orange-500'
-                    )}
+      {openingHours && openingHours.length > 0 && (
+        <Card className="mb-5">
+          <CardContent>
+            <View className="flex-row items-center mb-3 gap-2">
+              <Clock size={20} />
+              <SSText variant="semibold" className="text-xl">
+                Opening Hours
+              </SSText>
+            </View>
+            <SSText className="text-justify">
+              {openingHours?.map((openHour, index) => {
+                const openHoursArr = openHour.split(': ');
+                const day = openHoursArr[0];
+                const time = openHoursArr[1];
+                const isToday =
+                  day ===
+                  new Date().toLocaleDateString('en-US', { weekday: 'long' });
+                return (
+                  <View
+                    key={index}
+                    className="flex-row justify-between w-full mb-1"
                   >
-                    {day}
-                  </SSText>
-                  <SSText>{time ? <>{time}</> : 'Closed'}</SSText>
-                </View>
-              );
-            })}
-            {/* {place.} */}
-          </SSText>
-        </CardContent>
-      </Card>
+                    <SSText
+                      className={cn(
+                        'capitalize',
+                        isToday && 'font-bold text-orange-500'
+                      )}
+                    >
+                      {day}
+                    </SSText>
+                    <SSText>{time ? <>{time}</> : 'Closed'}</SSText>
+                  </View>
+                );
+              })}
+              {/* {place.} */}
+            </SSText>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Reviews Carousel */}
       {place.reviews && place.reviews.length > 0 && (
@@ -232,7 +234,7 @@ PlaceDetailsProps) {
         </Button>
       </View> */}
       {/* All Reviews Modal */}
-      {place.reviews && (
+      {place.reviews && place.reviews.length > 0 && (
         <AllReviewsModal
           visible={showAllReviews}
           onClose={() => setShowAllReviews(false)}
