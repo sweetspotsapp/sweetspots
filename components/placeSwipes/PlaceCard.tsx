@@ -30,6 +30,7 @@ import { getRecContext } from '@/endpoints/recommendations/endpoints';
 import { useRecContextCache } from '@/store/useRecContextCache';
 import SSSpinner from '../ui/SSSpinner';
 import { cn } from '@/lib/utils';
+import { formatDuration } from '@/utils/formatter';
 
 export const TWO_DAYS_MS = 1000 * 60 * 60 * 24 * 2;
 
@@ -300,9 +301,7 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
           >
             <Car size={16} />
             <SSText variant="semibold" className="text-sm text-gray-800">
-              {`${(distance / 1000).toFixed(1)} km • ${Math.round(
-                duration
-              )} min`}
+              {`${(distance / 1000).toFixed(1)} km • ${formatDuration({ seconds: duration })}`}
             </SSText>
           </View>
         )}
