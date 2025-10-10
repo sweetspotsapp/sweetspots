@@ -1,9 +1,5 @@
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { SSText } from '@/components/ui/SSText';
-import SSLinearBackground from '@/components/ui/SSLinearBackground';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView } from 'react-native-gesture-handler';
 import SearchInput from '@/components/ui/SearchInput';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
 import { getRecommendations } from '@/endpoints/recommendations/endpoints';

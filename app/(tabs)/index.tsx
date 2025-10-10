@@ -9,6 +9,7 @@ import {
   Platform,
   TouchableOpacity,
   useWindowDimensions,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Heart, X, Filter } from 'lucide-react-native';
@@ -23,7 +24,6 @@ import { recordSwipe } from '@/endpoints/swipes/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
 import { getCurrentCoordinates } from '@/utils/location';
 import SSSpinner from '@/components/ui/SSSpinner';
-import { ScrollView } from 'react-native-gesture-handler';
 import { PlaceDetails } from '@/components/placeSwipes/PlaceDetails';
 import SSContainer from '@/components/SSContainer';
 import { useHintsStore } from '@/store/useHintsStore';

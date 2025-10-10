@@ -36,6 +36,26 @@ export const register = async (
   await syncOnboardingAfterAuth();
 };
 
+export const registerWithGoogle = async (
+  idToken: string,
+  firstName: string,
+  lastName: string,
+  username: string
+) => {
+  const firebaseUser = await loginWithGoogleCredential(idToken);
+  const fresh = await firebaseUser.user.getIdToken();
+  api.defaults.headers.common.Authorization = `Bearer ${fresh}`;
+
+  await api.post('/auth/sync-profile', {
+    idToken: fresh,
+    firstName,
+    lastName,
+    username,
+  });
+
+  await syncOnboardingAfterAuth();
+}
+
 export const login = async (email: string, password: string) => {
   const cred = await signInWithEmailAndPassword(auth, email, password);
   const idToken = await cred.user.getIdToken();

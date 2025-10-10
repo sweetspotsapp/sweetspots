@@ -1,5 +1,6 @@
+import 'react-native-gesture-handler';
 import { useEffect } from 'react';
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useFonts } from 'expo-font';
@@ -14,7 +15,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '../global.css';
 import React from 'react';
 import ToastManager from 'toastify-react-native';
-import { PortalHost } from '@rn-primitives/portal';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,18 +39,15 @@ export default function RootLayout() {
   }
 
   return (
-    <>
-      {/* <PortalHost /> */}
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <ToastManager useModal={false} />
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="onboarding" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </GestureHandlerRootView>
-    </>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="onboarding" />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style="auto" />
+    </GestureHandlerRootView>
   );
 }

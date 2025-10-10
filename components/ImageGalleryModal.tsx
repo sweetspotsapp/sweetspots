@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   View,
-  Platform,
   FlatList,
 } from 'react-native';
 import Animated, {

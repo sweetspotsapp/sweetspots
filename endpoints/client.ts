@@ -8,7 +8,7 @@ import { logout } from '@/lib/auth';
 const isDev = process.env.NODE_ENV === 'development';
 
 // Replace this with your local machine's IP address
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8080';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.4.23:8080';
 
 let baseURL = `${API_URL}/api/v1`;
 

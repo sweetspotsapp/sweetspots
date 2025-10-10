@@ -4,7 +4,6 @@ import {
   Modal,
   TouchableOpacity,
   ScrollView,
-  Image,
 } from 'react-native';
 import { X, Star, Search } from 'lucide-react-native';
 import { SSText } from './ui/SSText';

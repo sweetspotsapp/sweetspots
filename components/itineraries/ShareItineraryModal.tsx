@@ -1,9 +1,8 @@
-import { Linking, Modal, Share, TouchableOpacity, View } from 'react-native';
+import { Linking, Modal, ScrollView, Share, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import { SSText } from '../ui/SSText';
 import ModalHeader from '../ui/ModalHeader';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import CollaboratorPill from './CollaboratorPill';
