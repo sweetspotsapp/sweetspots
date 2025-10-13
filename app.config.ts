@@ -12,16 +12,18 @@ const config: ExpoConfig = {
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   android: {
-    permissions: [
-      'ACCESS_FINE_LOCATION',
-      'ACCESS_COARSE_LOCATION',
-    ],
+    permissions: ['ACCESS_FINE_LOCATION', 'ACCESS_COARSE_LOCATION'],
+    googleServicesFile: './google-services.json',
+    package: 'com.mycorp.myapp',
   },
   ios: {
     supportsTablet: true,
     infoPlist: {
-      NSLocationWhenInUseUsageDescription: 'This app uses your location to show nearby places.',
-    }
+      NSLocationWhenInUseUsageDescription:
+        'This app uses your location to show nearby places.',
+    },
+    googleServicesFile: './GoogleService-Info.plist',
+    bundleIdentifier: 'com.mycorp.myapp',
   },
   web: {
     bundler: 'metro',
@@ -34,6 +36,17 @@ const config: ExpoConfig = {
     'expo-web-browser',
     'expo-secure-store',
     'expo-notifications',
+    '@react-native-firebase/app',
+    '@react-native-firebase/auth',
+    '@react-native-google-signin/google-signin',
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          useFrameworks: 'static',
+        },
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,
@@ -43,7 +56,7 @@ const config: ExpoConfig = {
     GOOGLE_EXPO_CLIENT_ID: process.env.GOOGLE_EXPO_CLIENT_ID,
     GOOGLE_IOS_CLIENT_ID: process.env.GOOGLE_IOS_CLIENT_ID,
     GOOGLE_ANDROID_CLIENT_ID: process.env.GOOGLE_ANDROID_CLIENT_ID,
-    
+
     // Renamed Firebase keys
     FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,

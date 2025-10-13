@@ -18,6 +18,7 @@ import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
 import { cn } from '@/lib/utils';
 import { IPlace, IPlaceImage } from '@/dto/places/place.dto';
 import { ImageGalleryModal } from '../ImageGalleryModal';
+import { syncPlaceOnce } from '@/lib/places/syncPlaceOnce';
 
 interface PlaceDetailsProps {
   place: IRecommendedPlace | IPlace;
@@ -81,6 +82,11 @@ PlaceDetailsProps) {
     setCurrentImageIndex(newIndex);
   };
 
+  const handleImageError = (placeId: string, placeImageId?: string) => {
+    console.log('Image failed to load, syncing place data...');
+    syncPlaceOnce(placeId);
+  }
+
   return (
     <View className="pb-6">
       {/* Location & Time */}
@@ -99,7 +105,7 @@ PlaceDetailsProps) {
             >
               <Image
                 onLoadEnd={() => console.log('Image loaded')}
-                onError={(err) => console.log('Image failed to load', err)}
+                onError={(err) => handleImageError(place.id, (img as IPlaceImage)?.id)}
                 source={{ uri: (img as IPlaceImage)?.url || (img as string) }}
                 className="w-full h-full"
                 resizeMode="cover"

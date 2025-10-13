@@ -69,6 +69,12 @@ export const syncPlacesInArea = async (
   return res.data;
 };
 
+export const syncPlace = async (
+  placeId: string
+): Promise<void> => {
+  await api.post(`/places/sync/${placeId}`);
+};
+
 export const calculateTimeAndDistance = async (
   data: CalculateDistanceDto
 ): Promise<ApiResponse<{ distance: number; duration: number }>> => {
