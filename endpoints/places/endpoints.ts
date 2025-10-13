@@ -75,6 +75,13 @@ export const syncPlace = async (
   await api.post(`/places/sync/${placeId}`);
 };
 
+export const hidePlace = async (
+  placeId: string
+): Promise<ApiResponse<{ success: boolean }>> => {
+  const res = await api.patch(`/places/${placeId}/hide`);
+  return res.data;
+};
+
 export const calculateTimeAndDistance = async (
   data: CalculateDistanceDto
 ): Promise<ApiResponse<{ distance: number; duration: number }>> => {

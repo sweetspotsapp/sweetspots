@@ -7,7 +7,7 @@ import { SSText } from '../ui/SSText';
 // import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
-import { calculateTimeAndDistance } from '@/endpoints/places/endpoints';
+import { calculateTimeAndDistance, hidePlace } from '@/endpoints/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
 import {
   formatCurrency,
@@ -84,7 +84,8 @@ PlaceDetailsProps) {
 
   const handleImageError = (placeId: string, placeImageId?: string) => {
     console.log('Image failed to load, syncing place data...');
-    syncPlaceOnce(placeId);
+    // syncPlaceOnce(placeId);
+    hidePlace(placeId);
   }
 
   return (
