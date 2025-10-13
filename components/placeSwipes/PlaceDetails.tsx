@@ -116,7 +116,7 @@ PlaceDetailsProps) {
         </View>
       )}
 
-      {location && distance && (
+      {/* {location && distance && (
         <Card className="p-4 flex-row justify-between mb-5">
           <View className="flex-row items-center gap-1.5">
             <MapPin size={18} color="#64748b" />
@@ -147,7 +147,7 @@ PlaceDetailsProps) {
             </SSText>
           </View>
         </Card>
-      )}
+      )} */}
 
       <Card className="p-4 mb-5">
         <View className="flex-row items-center mb-3 gap-2">
