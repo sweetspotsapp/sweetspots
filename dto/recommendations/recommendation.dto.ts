@@ -17,6 +17,8 @@ export interface IRecommendedPlace {
   longitude: number;
   category: string;
   address: string;
+  phoneNumber?: string;
+  websiteUrl?: string;
   reviews?: IReview[];
   openingHours?: string[];
 }

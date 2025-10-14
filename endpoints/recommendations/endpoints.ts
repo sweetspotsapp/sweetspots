@@ -20,6 +20,11 @@ export const updateTravelPreferences = async (
 };
 
 export const getRecContext = async (data: GetRecContextDto): Promise<ApiResponse<string>> => {
-  const res = await api.get('/recommendations/context', { params: data });
+  const res = await api.get('/recommendations/reason-context', { params: data });
   return res.data;
 };
+
+export const getPrepareContext = async (data: GetRecContextDto): Promise<ApiResponse<{ item: string }[]>> => {
+  const res = await api.get('/recommendations/prepare-context', { params: data });
+  return res.data;
+}

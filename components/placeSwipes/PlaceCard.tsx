@@ -26,11 +26,15 @@ import { useLocationStore } from '@/store/useLocationStore';
 import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
 import VibePill from '../ui/VibePill';
 import { useAuth } from '@/hooks/useAuth';
-import { getRecContext } from '@/endpoints/recommendations/endpoints';
+import {
+  getPrepareContext,
+  getRecContext,
+} from '@/endpoints/recommendations/endpoints';
 import { useRecContextCache } from '@/store/useRecContextCache';
 import SSSpinner from '../ui/SSSpinner';
 import { cn } from '@/lib/utils';
 import { formatDuration } from '@/utils/formatter';
+import { capitalCase } from 'change-case';
 
 export const TWO_DAYS_MS = 1000 * 60 * 60 * 24 * 2;
 
@@ -152,12 +156,12 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
         setIsLoadingContext(false);
       });
   }, [place?.id, user?.uid]);
-
   // ----- Animate ONLY the “Why should you visit?” card -----
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const heightAnim = useRef(new Animated.Value(0)).current;     // in px (animated container height)
-  const opacityAnim = useRef(new Animated.Value(1)).current;     // fade in/out
-  const measuredContentH = useRef(0);                            // natural content height
+  // const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const heightAnim = useRef(new Animated.Value(0)).current; // in px (animated container height)
+  const opacityAnim = useRef(new Animated.Value(1)).current; // fade in/out
+  const measuredContentH = useRef(0); // natural content height
 
   // Measure natural content height once it renders
   const onContentLayout = (e: any) => {
@@ -171,30 +175,30 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
     }
   };
 
-  const animateCard = (collapse: boolean) => {
-    setIsCollapsed(collapse);
-    const toH = collapse ? 0 : Math.max(0, measuredContentH.current);
-    Animated.parallel([
-      Animated.timing(heightAnim, {
-        toValue: toH,
-        duration: 260,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: false, // height cannot use native driver
-      }),
-      Animated.timing(opacityAnim, {
-        toValue: collapse ? 0 : 1,
-        duration: 220,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
+  // const animateCard = (collapse: boolean) => {
+  //   setIsCollapsed(collapse);
+  //   const toH = collapse ? 0 : Math.max(0, measuredContentH.current);
+  //   Animated.parallel([
+  //     Animated.timing(heightAnim, {
+  //       toValue: toH,
+  //       duration: 260,
+  //       easing: Easing.out(Easing.cubic),
+  //       useNativeDriver: false, // height cannot use native driver
+  //     }),
+  //     Animated.timing(opacityAnim, {
+  //       toValue: collapse ? 0 : 1,
+  //       duration: 220,
+  //       easing: Easing.out(Easing.cubic),
+  //       useNativeDriver: true,
+  //     }),
+  //   ]).start();
+  // };
 
   // Auto-collapse on 2nd image; expand on 1st
-  useEffect(() => {
-    if (currentImageIndex === 1) animateCard(true);
-    else if (currentImageIndex === 0) animateCard(false);
-  }, [currentImageIndex]);
+  // useEffect(() => {
+  //   if (currentImageIndex === 1) animateCard(true);
+  //   else if (currentImageIndex === 0) animateCard(false);
+  // }, [currentImageIndex]);
 
   return (
     <Card elevation={4} className="flex-1 !rounded-3xl overflow-hidden">
@@ -239,7 +243,10 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
           <>
             {currentImageIndex > 0 && (
               <TouchableOpacity
-                className={cn("absolute transition-all left-4 w-10 h-10 rounded-full bg-black/50 justify-center items-center z-20", isCollapsed ? "top-1/2" : "top-1/4")}
+                className={cn(
+                  'absolute transition-all left-4 w-10 h-10 rounded-full bg-black/50 justify-center items-center z-20',
+                  isCollapsed ? 'top-1/2' : 'top-1/4'
+                )}
                 style={{ marginTop: -20 }}
                 onPress={goToPreviousImage}
                 activeOpacity={0.7}
@@ -250,7 +257,10 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
 
             {currentImageIndex < place.images.length - 1 && (
               <TouchableOpacity
-                className={cn("absolute transition-all right-4 w-10 h-10 rounded-full bg-black/50 justify-center items-center z-20", isCollapsed ? "top-1/2" : "top-1/4")}
+                className={cn(
+                  'absolute transition-all right-4 w-10 h-10 rounded-full bg-black/50 justify-center items-center z-20',
+                  isCollapsed ? 'top-1/2' : 'top-1/4'
+                )}
                 style={{ marginTop: -20 }}
                 onPress={goToNextImage}
                 activeOpacity={0.7}
@@ -301,10 +311,25 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
           >
             <Car size={16} />
             <SSText variant="semibold" className="text-sm text-gray-800">
-              {`${(distance / 1000).toFixed(1)} km • ${formatDuration({ seconds: duration })}`}
+              {`${(distance / 1000).toFixed(1)} km • ${formatDuration({
+                seconds: duration,
+              })}`}
             </SSText>
           </View>
         )}
+
+        {
+          place.category !== "other" && (
+            <View
+              className="flex-row items-center w-fit bg-white px-3 py-1.5 rounded-full gap-1 z-10 mb-4"
+              pointerEvents="none"
+            >
+              <SSText variant="semibold" className="text-sm text-gray-800">
+                {capitalCase(place.category)}
+              </SSText>
+            </View>
+          )
+        }
 
         <SSText variant="bold" className="text-3xl text-white mb-2">
           {place.name}
@@ -318,7 +343,7 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
         </View>
 
         {/* Only the context card minimizes with smooth animation */}
-        {isLoadingContext ? (
+        {/* {isLoadingContext ? (
           <SSSpinner className="mb-4" />
         ) : context ? (
           <>
@@ -335,7 +360,10 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
                 onLayout={onContentLayout}
               >
                 <View className="flex-row items-center justify-between mb-2">
-                  <SSText variant="semibold" className="text-base text-muted-foreground">
+                  <SSText
+                    variant="semibold"
+                    className="text-base text-muted-foreground"
+                  >
                     Why should you visit?
                   </SSText>
                   <TouchableOpacity onPress={() => animateCard(true)}>
@@ -346,7 +374,6 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
               </View>
             </Animated.View>
 
-            {/* Tiny floating expand button when collapsed */}
             {isCollapsed && (
               <TouchableOpacity
                 onPress={() => animateCard(false)}
@@ -357,7 +384,7 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
               </TouchableOpacity>
             )}
           </>
-        ) : null}
+        ) : null} */}
       </View>
 
       {onImagePress && (
