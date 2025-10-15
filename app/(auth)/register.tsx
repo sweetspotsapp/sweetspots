@@ -10,6 +10,7 @@ import SSLinearBackground from '@/components/ui/SSLinearBackground';
 import { Toast } from 'toastify-react-native';
 import { firebaseErrorMessage } from '@/lib/utils';
 import { Home } from 'lucide-react-native';
+import { useOnboardingStore } from '@/store/useOnboardingStore';
 
 type RegisterFormData = {
   // name: string;
@@ -41,6 +42,8 @@ export default function RegisterScreen() {
     },
   });
 
+  const onboardingData = useOnboardingStore((state) => state.answers)
+
   useEffect(() => {
     if (!dirtyFields.username) {
       setValue('username', watch('email').split('@')[0]);
@@ -49,16 +52,35 @@ export default function RegisterScreen() {
     }
   }, [dirtyFields.username, watch('email'), setValue]);
 
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const goToStep = useOnboardingStore((state) => state.goToStep);
+
   const onSubmit = async (data: RegisterFormData) => {
     try {
+      setIsSubmitting(true);
       await registerWithEmail(
         data.email,
         data.password,
         data.firstName,
         data.lastName,
         data.username || data.email.split('@')[0]
-      ); // Assuming username is optional
+      );
       Toast.success('Account created. Please log in.');
+      if (onboardingData.email !== data.email) {
+        goToStep(0);
+        useOnboardingStore.setState((prev) => ({
+          answers: {
+            requirements: [],
+            vibes: [],
+            companion: undefined,
+            budget: undefined,
+            travelerType: undefined,
+            email: data.email,
+          },
+        }));
+        router.replace('/onboarding');
+        return;
+      }
       router.replace('/(auth)/login');
     } catch (err) {
       console.log(firebaseErrorMessage((err as any).code));
@@ -67,6 +89,8 @@ export default function RegisterScreen() {
         router.replace('/(auth)/login');
         return;
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -136,7 +160,7 @@ export default function RegisterScreen() {
           />
         </View>
 
-        <Button onPress={handleSubmit(onSubmit)}>
+        <Button disabled={isSubmitting} onPress={handleSubmit(onSubmit)}>
           <SSText>Register</SSText>
         </Button>
         <View>

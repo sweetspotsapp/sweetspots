@@ -29,7 +29,6 @@ export async function syncOnboardingAfterAuth() {
           requirements: server.requirements ?? [],
         },
         ui: {
-          // keep local step/timestamps
           step: prev.ui.step ?? 0,
           dismissed: !!server.dismissed,
           completed: !!server.completed,

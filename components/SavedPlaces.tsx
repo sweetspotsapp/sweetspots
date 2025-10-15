@@ -87,7 +87,7 @@ export default function SavedPlaces({
           keyExtractor={(_, i) => i.toString()}
           showsVerticalScrollIndicator={false}
           refreshing={refreshing}
-          contentContainerClassName="gap-3 grid grid-cols-2"
+          contentContainerClassName={savedPlaces.length > 0 ? "gap-3 grid grid-cols-2" : "flex-1 justify-center items-center"}
           onRefresh={loadSavedPlaces}
           ListEmptyComponent={
             <View className="flex-1 justify-center items-center pt-25">

@@ -13,6 +13,7 @@ import { SSControlledInput } from '@/components/ui/SSControlledInput';
 import { Home } from 'lucide-react-native';
 import { Toast } from 'toastify-react-native';
 import { firebaseErrorMessage } from '@/lib/utils';
+import { useOnboardingStore } from '@/store/useOnboardingStore';
 
 type LoginFormData = {
   email: string;
@@ -33,12 +34,30 @@ export default function LoginScreen() {
     },
   });
 
+  const goToStep = useOnboardingStore((state) => state.goToStep);
+
   const handleLogin = async (data: LoginFormData) => {
     setIsLoggingIn(true);
     try {
       const userCred = await login(data.email, data.password);
       const token = await userCred.user.getIdToken();
       await saveToken(token);
+      const onboardingAnswers = useOnboardingStore.getState().answers;
+      if (onboardingAnswers.email !== data.email) {
+        useOnboardingStore.setState({
+          answers: {
+            requirements: [],
+            vibes: [],
+            email: data.email,
+            budget: undefined,
+            companion: undefined,
+            travelerType: undefined,
+          },
+        });
+        goToStep(0);
+        router.replace('/onboarding');
+        return;
+      }
       router.replace('/(tabs)');
     } catch (err) {
       console.log(err);

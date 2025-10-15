@@ -103,7 +103,6 @@ export default function QuestionnaireScreen() {
   } = useOnboardingStore();
 
   const canNext = useMemo(() => {
-    // Require an answer per step (except requirements which can be empty or "none")
     switch (ui.step) {
       case 0:
         return !!answers.travelerType;
@@ -114,7 +113,7 @@ export default function QuestionnaireScreen() {
       case 3:
         return !!answers.budget;
       case 4:
-        return true; // requirements optional
+        return true;
       default:
         return false;
     }
