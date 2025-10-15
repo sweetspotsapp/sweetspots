@@ -27,6 +27,61 @@ type ControlledPickerProps = BaseControlledPickerProps &
     type?: PickerType;
   };
 
+function pad(n: number) {
+  return n < 10 ? `0${n}` : `${n}`;
+}
+
+function formatLocalStringFromDate(d: Date, type: PickerType): string {
+  const yyyy = d.getFullYear();
+  const mm = pad(d.getMonth() + 1);
+  const dd = pad(d.getDate());
+  const HH = pad(d.getHours());
+  const MM = pad(d.getMinutes());
+
+  if (type === 'date') return `${yyyy}-${mm}-${dd}`;
+  if (type === 'time') return `${HH}:${MM}`;
+  return `${yyyy}-${mm}-${dd}T${HH}:${MM}`;
+}
+
+function parseLocalDateFromString(value: string, type: PickerType): Date | null {
+  if (!value) return null;
+
+  try {
+    if (type === 'date') {
+      const [y, m, d] = value.split('-').map(Number);
+      if (!y || !m || !d) return null;
+      return new Date(y, m - 1, d, 0, 0, 0, 0);
+    }
+
+    if (type === 'time') {
+      const [hms, maybeSec] = value.split('.');
+      const [hStr, mStr, sStr] = (hms ?? value).split(':');
+      const h = Number(hStr);
+      const m = Number(mStr);
+      const s = sStr ? Number(sStr) : 0;
+      if (Number.isNaN(h) || Number.isNaN(m) || Number.isNaN(s)) return null;
+
+      return new Date(1970, 0, 1, h, m, s, 0);
+    }
+
+    const [datePart, timePartRaw] = value.split('T');
+    if (!datePart || !timePartRaw) return null;
+
+    const [y, m, d] = datePart.split('-').map(Number);
+    const [timePart] = timePartRaw.split('Z');
+    const [hStr, minStr, sStr] = timePart.split(':');
+    const h = Number(hStr);
+    const min = Number(minStr);
+    const s = sStr ? Number(sStr) : 0;
+
+    if ([y, m, d, h, min, s].some((n) => Number.isNaN(n))) return null;
+
+    return new Date(y, m - 1, d, h, min, s, 0);
+  } catch {
+    return null;
+  }
+}
+
 export const SSControlledPicker: React.FC<ControlledPickerProps> = ({
   name,
   control,
@@ -50,27 +105,37 @@ export const SSControlledPicker: React.FC<ControlledPickerProps> = ({
         name={name}
         render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => {
           const stringValue =
-            valueAsDate && value instanceof Date
-              ? value.toISOString().split('T')[0]
-              : value;
+            value instanceof Date
+              ? formatLocalStringFromDate(value, type)
+              : (value ?? '');
+
+          const handleChange = (val: string) => {
+            if (valueAsDate) {
+              const d = parseLocalDateFromString(val, type);
+            } else {
+              onChange(val);
+            }
+          };
+
           return (
             <>
               <PickerComponent
                 value={stringValue}
-                onTextChange={(val: string) => {
-                  console.log('Text changed:', val);
-                  onChange(valueAsDate ? new Date(val) : val);
-                }}
-                onChange={(val: string) => {
-                  onChange(valueAsDate ? new Date(val) : val);
-                }}
+                onTextChange={handleChange}
+                onChange={handleChange}
                 onBlur={onBlur}
                 {...rest}
               />
               {helperText && !error && (
-                <SSText className="text-xs text-muted-foreground">{helperText}</SSText>
+                <SSText className="text-xs text-muted-foreground">
+                  {helperText}
+                </SSText>
               )}
-              {error && <SSText className="text-xs text-red-500">{error?.message}</SSText>}
+              {error && (
+                <SSText className="text-xs text-red-500">
+                  {error?.message}
+                </SSText>
+              )}
             </>
           );
         }}
