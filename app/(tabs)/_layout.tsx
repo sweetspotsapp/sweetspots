@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs, Redirect } from 'expo-router';
+import { Tabs, Redirect, router } from 'expo-router';
 import { Heart, User, Compass, Search, Briefcase } from 'lucide-react-native';
 import { Platform } from 'react-native';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
@@ -10,7 +10,7 @@ import Constants from 'expo-constants';
 import FeedbackDialog from '@/components/feedbacks/FeedbackDialog';
 
 export default function TabLayout() {
-  const { ui } = useOnboardingStore();
+  const { ui, answers, goToStep } = useOnboardingStore();
   const { user, loading } = useAuth();
 
   const [hydrated, setHydrated] = useState(
@@ -37,6 +37,14 @@ export default function TabLayout() {
       markPromptShown(APP_VERSION);
     }
   }, [promptOk, markPromptShown, APP_VERSION]);
+
+  React.useEffect(() => {
+    if (user && answers.email !== user.email && !ui.dismissed) {
+      useOnboardingStore.getState().reset();
+      goToStep(0);
+      router.replace('/onboarding');
+    }
+  }, [user, needsOnboarding]);
 
   if (loading || !hydrated) return null;
 
