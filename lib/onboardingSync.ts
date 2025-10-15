@@ -1,4 +1,7 @@
-import { getMyOnboarding, upsertMyOnboarding } from '@/endpoints/users-onboarding/endpoints';
+import {
+  getMyOnboarding,
+  upsertMyOnboarding,
+} from '@/endpoints/users-onboarding/endpoints';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
 
 const pickPayload = () => {
@@ -19,7 +22,16 @@ export async function syncOnboardingAfterAuth() {
     const res = await getMyOnboarding();
     const server = res?.data ?? null;
 
-    if (server) {
+    console.log('syncOnboardingAfterAuth', { server });
+
+    if (
+      server?.budget &&
+      server?.companion &&
+      server?.travelerType &&
+      server?.vibes?.length &&
+      server?.requirements?.length
+    ) {
+      console.log('  - pulling from server');
       useOnboardingStore.setState((prev) => ({
         answers: {
           travelerType: server.travelerType ?? undefined,
@@ -27,6 +39,7 @@ export async function syncOnboardingAfterAuth() {
           vibes: server.vibes ?? [],
           budget: server.budget ?? undefined,
           requirements: server.requirements ?? [],
+          email: prev.answers.email ?? server.email ?? '',
         },
         ui: {
           step: prev.ui.step ?? 0,
@@ -39,7 +52,6 @@ export async function syncOnboardingAfterAuth() {
       return;
     }
 
-    // No server record => push only allowed fields
     await upsertMyOnboarding(pickPayload());
   } catch (e) {
     console.log('syncOnboardingAfterAuth skipped:', (e as any)?.message ?? e);

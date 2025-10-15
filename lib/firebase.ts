@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 import {
   initializeAuth,
   getAuth,
-  Auth
+  Auth,
 } from 'firebase/auth';
 import { getReactNativePersistence } from 'firebase/auth';
 import Constants from 'expo-constants';

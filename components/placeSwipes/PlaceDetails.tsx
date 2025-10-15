@@ -26,7 +26,7 @@ import { SSText } from '../ui/SSText';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
 import {
-  calculateTimeAndDistance,
+  // calculateTimeAndDistance,
   hidePlace,
 } from '@/endpoints/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
@@ -63,8 +63,8 @@ export function PlaceDetails({
 // onFindSimilar,
 PlaceDetailsProps) {
   const [showAllReviews, setShowAllReviews] = useState(false);
-  const [distance, setDistance] = useState<number | null>(null);
-  const [duration, setDuration] = useState<number | null>(null);
+  // const [distance, setDistance] = useState<number | null>(null);
+  // const [duration, setDuration] = useState<number | null>(null);
   const user = useAuth().user;
 
   const images = Array.isArray(place?.images)
@@ -73,34 +73,34 @@ PlaceDetailsProps) {
 
   const { location } = useLocationStore();
 
-  useEffect(() => {
-    const fetchDistanceAndDuration = async () => {
-      if (place && location) {
-        try {
-          const dto: CalculateDistanceDto = {
-            origin: {
-              latitude: location.latitude,
-              longitude: location.longitude,
-              // latitude: -37.899,
-              // longitude: 145.123,
-            },
-            destination: {
-              latitude: Number(place.latitude),
-              longitude: Number(place.longitude),
-            },
-          };
-          const result = await calculateTimeAndDistance(dto);
-          if (result?.data) {
-            setDistance(result.data?.distance);
-            setDuration(result.data?.duration);
-          }
-        } catch (error) {
-          // handle error if needed
-        }
-      }
-    };
-    fetchDistanceAndDuration();
-  }, [place]);
+  // useEffect(() => {
+  //   const fetchDistanceAndDuration = async () => {
+  //     if (place && location) {
+  //       try {
+  //         const dto: CalculateDistanceDto = {
+  //           origin: {
+  //             latitude: location.latitude,
+  //             longitude: location.longitude,
+  //             // latitude: -37.899,
+  //             // longitude: 145.123,
+  //           },
+  //           destination: {
+  //             latitude: Number(place.latitude),
+  //             longitude: Number(place.longitude),
+  //           },
+  //         };
+  //         const result = await calculateTimeAndDistance(dto);
+  //         if (result?.data) {
+  //           setDistance(result.data?.distance);
+  //           setDuration(result.data?.duration);
+  //         }
+  //       } catch (error) {
+  //         // handle error if needed
+  //       }
+  //     }
+  //   };
+  //   fetchDistanceAndDuration();
+  // }, [place]);
 
   const openingHours =
     (place as IRecommendedPlace).openingHours ||

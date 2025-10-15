@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
-import { set, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Link, useRouter } from 'expo-router';
-import { register as registerWithEmail } from '@/lib/auth';
+import { register as registerWithEmail, loginWithGoogle } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { SSText } from '@/components/ui/SSText';
 import { SSControlledInput } from '@/components/ui/SSControlledInput';
@@ -11,9 +11,12 @@ import { Toast } from 'toastify-react-native';
 import { firebaseErrorMessage } from '@/lib/utils';
 import { Home } from 'lucide-react-native';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
+import type { UserCredential } from 'firebase/auth';
+import { saveToken } from '@/utils/token';
+import { Separator } from '@/components/ui/separator';
+import { FcGoogle } from 'react-icons/fc';
 
 type RegisterFormData = {
-  // name: string;
   firstName: string;
   lastName: string;
   username: string;
@@ -32,7 +35,6 @@ export default function RegisterScreen() {
     formState: { errors, dirtyFields },
   } = useForm<RegisterFormData>({
     defaultValues: {
-      // name: '',
       firstName: '',
       lastName: '',
       username: '',
@@ -42,57 +44,88 @@ export default function RegisterScreen() {
     },
   });
 
-  const onboardingData = useOnboardingStore((state) => state.answers)
+  const onboardingData = useOnboardingStore((s) => s.answers);
+  const goToStep = useOnboardingStore((s) => s.goToStep);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   useEffect(() => {
     if (!dirtyFields.username) {
-      setValue('username', watch('email').split('@')[0]);
-      // Optionally, you can validate username uniqueness here
-      // For now, we assume it's always valid
+      const email = watch('email') || '';
+      setValue('username', email.includes('@') ? email.split('@')[0] : email);
     }
-  }, [dirtyFields.username, watch('email'), setValue]);
+  }, [dirtyFields.username, watch, setValue]);
 
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const goToStep = useOnboardingStore((state) => state.goToStep);
+  // Shared: after successful auth (already logged in)
+  const finalizeAuth = async (cred: UserCredential, emailHint?: string) => {
+    const token = await cred.user.getIdToken();
+    await saveToken(token);
 
-  const onSubmit = async (data: RegisterFormData) => {
+    const email = emailHint ?? cred.user.email ?? '';
+    const current = useOnboardingStore.getState().answers;
+    const onboardingUi = useOnboardingStore.getState().ui;
+
+    // First-time or different email → restart onboarding
+    if (
+      current.email !== email &&
+      !onboardingUi.completed &&
+      !onboardingUi.dismissed
+    ) {
+      useOnboardingStore.setState({
+        answers: {
+          requirements: [],
+          vibes: [],
+          companion: undefined,
+          budget: undefined,
+          travelerType: undefined,
+          email,
+        },
+      });
+      goToStep(0);
+      router.replace('/onboarding');
+      return;
+    }
+
+    // Otherwise go straight in
+    Toast.success('Welcome! Your account is ready.');
+    router.replace('/(tabs)');
+  };
+
+  // Wrapper: handles loading + error toast
+  const runRegisterFlow = async (
+    getCred: () => Promise<UserCredential>,
+    emailHint?: string
+  ) => {
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-      await registerWithEmail(
-        data.email,
-        data.password,
-        data.firstName,
-        data.lastName,
-        data.username || data.email.split('@')[0]
-      );
-      Toast.success('Account created. Please log in.');
-      if (onboardingData.email !== data.email) {
-        goToStep(0);
-        useOnboardingStore.setState((prev) => ({
-          answers: {
-            requirements: [],
-            vibes: [],
-            companion: undefined,
-            budget: undefined,
-            travelerType: undefined,
-            email: data.email,
-          },
-        }));
-        router.replace('/onboarding');
-        return;
-      }
-      router.replace('/(auth)/login');
-    } catch (err) {
-      console.log(firebaseErrorMessage((err as any).code));
-      Toast.error(firebaseErrorMessage((err as any).code));
-      if ((err as any).code === 'auth/email-already-in-use') {
-        router.replace('/(auth)/login');
-        return;
-      }
+      const cred = await getCred();
+      await finalizeAuth(cred, emailHint);
+    } catch (err: any) {
+      console.log(err);
+      Toast.error(firebaseErrorMessage(err?.code));
+      // If email exists, nudge to login (but we don't navigate automatically anymore)
+      // because register() auto-logs in when successful.
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // Email/password registration → returns logged-in UserCredential
+  const onSubmit = (data: RegisterFormData) =>
+    runRegisterFlow(
+      () =>
+        registerWithEmail(
+          data.email,
+          data.password,
+          data.firstName,
+          data.lastName,
+          data.username || data.email.split('@')[0]
+        ),
+      data.email
+    );
+
+  // “Register with Google” (same function as login)
+  const handleRegisterWithGoogle = () =>
+    runRegisterFlow(() => loginWithGoogle());
 
   const password = watch('password');
 
@@ -160,9 +193,30 @@ export default function RegisterScreen() {
           />
         </View>
 
-        <Button disabled={isSubmitting} onPress={handleSubmit(onSubmit)}>
-          <SSText>Register</SSText>
+        <Button
+          disabled={isSubmitting}
+          onPress={handleSubmit(onSubmit)}
+          className="w-full"
+        >
+          <SSText>{isSubmitting ? 'Creating…' : 'Register'}</SSText>
         </Button>
+
+        <View className="flex-row items-center justify-between w-full gap-3 my-4">
+          <Separator className="flex-1" />
+          <SSText className="text-sm text-muted-foreground">or</SSText>
+          <Separator className="flex-1" />
+        </View>
+
+        <Button
+          disabled={isSubmitting}
+          onPress={handleRegisterWithGoogle}
+          variant='outline'
+          className="w-full border border-[#4285F4]"
+        >
+          <FcGoogle size={16} color="white" />
+          <SSText>Continue with Google</SSText>
+        </Button>
+
         <View>
           <SSText className="text-sm text-muted-foreground mt-4">
             Already have an account?{' '}
@@ -174,6 +228,7 @@ export default function RegisterScreen() {
             </SSText>
           </SSText>
         </View>
+
         <Link href="/" asChild>
           <Button variant="outline" className="mt-6">
             <Home size={16} />

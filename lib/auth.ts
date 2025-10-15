@@ -1,10 +1,11 @@
-// lib/auth.ts
+// src/lib/auth.ts
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   GoogleAuthProvider,
-  signInWithCredential,
+  // @ts-ignore
+  signInWithPopup,
 } from 'firebase/auth';
 import { auth } from './firebase';
 import { api } from '@/endpoints/client';
@@ -18,11 +19,7 @@ export const register = async (
   lastName: string,
   username: string
 ) => {
-  const firebaseUser = await createUserWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
+  const firebaseUser = await createUserWithEmailAndPassword(auth, email, password);
   const idToken = await firebaseUser.user.getIdToken();
   api.defaults.headers.common.Authorization = `Bearer ${idToken}`;
 
@@ -34,27 +31,9 @@ export const register = async (
   });
 
   await syncOnboardingAfterAuth();
+  const cred = await login(email, password);
+  return cred;
 };
-
-export const registerWithGoogle = async (
-  idToken: string,
-  firstName: string,
-  lastName: string,
-  username: string
-) => {
-  const firebaseUser = await loginWithGoogleCredential(idToken);
-  const fresh = await firebaseUser.user.getIdToken();
-  api.defaults.headers.common.Authorization = `Bearer ${fresh}`;
-
-  await api.post('/auth/sync-profile', {
-    idToken: fresh,
-    firstName,
-    lastName,
-    username,
-  });
-
-  await syncOnboardingAfterAuth();
-}
 
 export const login = async (email: string, password: string) => {
   const cred = await signInWithEmailAndPassword(auth, email, password);
@@ -69,12 +48,33 @@ export const logout = () => {
   signOut(auth);
 };
 
-export const loginWithGoogleCredential = async (idToken: string) => {
-  const credential = GoogleAuthProvider.credential(idToken);
-  const cred = await signInWithCredential(auth, credential);
-  const fresh = await cred.user.getIdToken();
-  api.defaults.headers.common.Authorization = `Bearer ${fresh}`;
+export const loginWithGoogle = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
 
-  await syncOnboardingAfterAuth();
-  return cred;
+    const cred = await signInWithPopup(auth, provider);
+
+    const idToken = await cred.user.getIdToken();
+    api.defaults.headers.common.Authorization = `Bearer ${idToken}`;
+
+    const displayName = cred.user.displayName || '';
+    const [firstName = '', lastName = ''] = displayName.split(' ');
+    const usernameFallback =
+      cred.user.email?.split('@')[0] || cred.user.uid.slice(0, 8);
+
+    await api.post('/auth/sync-profile', {
+      idToken,
+      firstName,
+      lastName,
+      username: usernameFallback,
+    });
+
+    await syncOnboardingAfterAuth();
+
+    return cred;
+  } catch (error) {
+    console.error('Google login error:', error);
+    // throw error;
+  }
 };

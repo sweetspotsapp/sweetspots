@@ -39,12 +39,23 @@ export default function TabLayout() {
   }, [promptOk, markPromptShown, APP_VERSION]);
 
   React.useEffect(() => {
+    console.log("YAHOOO", { user, answers });
     if (user && answers.email !== user.email && !ui.dismissed) {
-      useOnboardingStore.getState().reset();
+      useOnboardingStore.setState({
+        answers: {
+          requirements: [],
+          vibes: [],
+          email: user.email ?? '',
+          budget: undefined,
+          companion: undefined,
+          travelerType: undefined,
+        },
+        ui: { ...ui, step: 0, dismissed: false, completed: false },
+      });
       goToStep(0);
       router.replace('/onboarding');
     }
-  }, [user, needsOnboarding]);
+  }, [user, answers]);
 
   if (loading || !hydrated) return null;
 

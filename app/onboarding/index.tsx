@@ -1,23 +1,22 @@
 // app/(onboarding)/QuestionnaireScreen.tsx
 import React, { useMemo } from 'react';
-import { View, TouchableOpacity, FlatList, Platform } from 'react-native';
+import { View, TouchableOpacity, Platform } from 'react-native';
 import { router } from 'expo-router';
 import {
   ArrowLeft,
   Banknote,
   CircleAlert,
   HandMetal,
-  IconNode,
   Luggage,
   SmilePlus,
   X,
 } from 'lucide-react-native';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
 import SSContainer from '@/components/SSContainer';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { SSText } from '@/components/ui/SSText';
 import { AlertDialog } from '@/components/ui/AlertDialog';
+import { syncOnboardingAfterAuth } from '@/lib/onboardingSync';
 
 const QuestionTitle = ({
   emoji,
@@ -120,7 +119,8 @@ export default function QuestionnaireScreen() {
   }, [ui.step, answers]);
 
   const handleFinish = () => {
-    markCompleted();
+    // markCompleted();
+    syncOnboardingAfterAuth();
     router.replace('/(tabs)');
   };
 

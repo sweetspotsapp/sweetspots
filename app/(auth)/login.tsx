@@ -1,19 +1,20 @@
 import React from 'react';
 import { Link, useRouter } from 'expo-router';
-import { View, Alert } from 'react-native';
+import { View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { saveToken } from '@/utils/token';
 import { SSText } from '@/components/ui/SSText';
-import { login } from '@/lib/auth';
+import { login, loginWithGoogle } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import SSLinearBackground from '@/components/ui/SSLinearBackground';
 import { Separator } from '@/components/ui/separator';
-import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { SSControlledInput } from '@/components/ui/SSControlledInput';
 import { Home } from 'lucide-react-native';
 import { Toast } from 'toastify-react-native';
 import { firebaseErrorMessage } from '@/lib/utils';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
+import type { UserCredential } from 'firebase/auth';
+import { FcGoogle } from 'react-icons/fc';
 
 type LoginFormData = {
   email: string;
@@ -27,64 +28,68 @@ export default function LoginScreen() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
+  } = useForm<LoginFormData>({ defaultValues: { email: '', password: '' } });
 
-  const goToStep = useOnboardingStore((state) => state.goToStep);
+  const goToStep = useOnboardingStore((s) => s.goToStep);
+  const answers = useOnboardingStore((s) => s.answers);
 
-  const handleLogin = async (data: LoginFormData) => {
+  console.log("TOGI2", { answers });
+
+  // Shared “after auth” logic
+  const finalizeLogin = async (cred: UserCredential, emailHint?: string) => {
+    const token = await cred.user.getIdToken();
+    await saveToken(token);
+
+    const email = emailHint ?? cred.user.email ?? '';
+    const onboardingAnswers = useOnboardingStore.getState().answers;
+    const onboardingUi = useOnboardingStore.getState().ui;
+
+    console.log("TOGI", { onboardingAnswers, onboardingUi });
+
+    if (
+      onboardingAnswers.email !== email &&
+      !onboardingUi.completed &&
+      !onboardingUi.dismissed
+    ) {
+      useOnboardingStore.setState({
+        answers: {
+          requirements: [],
+          vibes: [],
+          email,
+          budget: undefined,
+          companion: undefined,
+          travelerType: undefined,
+        },
+      });
+      goToStep(0);
+      router.replace('/onboarding');
+      return;
+    }
+
+    router.replace('/(tabs)');
+  };
+
+  // Wrap an auth action with common loading & error handling
+  const runAuthFlow = async (
+    getCred: () => Promise<UserCredential>,
+    emailHint?: string
+  ) => {
     setIsLoggingIn(true);
     try {
-      const userCred = await login(data.email, data.password);
-      const token = await userCred.user.getIdToken();
-      await saveToken(token);
-      const onboardingAnswers = useOnboardingStore.getState().answers;
-      if (onboardingAnswers.email !== data.email) {
-        useOnboardingStore.setState({
-          answers: {
-            requirements: [],
-            vibes: [],
-            email: data.email,
-            budget: undefined,
-            companion: undefined,
-            travelerType: undefined,
-          },
-        });
-        goToStep(0);
-        router.replace('/onboarding');
-        return;
-      }
-      router.replace('/(tabs)');
-    } catch (err) {
+      const cred = await getCred();
+      await finalizeLogin(cred, emailHint);
+    } catch (err: any) {
       console.log(err);
-      Toast.error(firebaseErrorMessage((err as any).code));
+      Toast.error(firebaseErrorMessage(err?.code));
     } finally {
       setIsLoggingIn(false);
     }
   };
 
-  const { promptAsync: loginWithGoogle, authError } = useGoogleAuth();
+  const handleLogin = (data: LoginFormData) =>
+    runAuthFlow(() => login(data.email, data.password), data.email);
 
-  const handleGoogleLogin = async () => {
-    try {
-      const { auth } = require('@/lib/firebase');
-      await loginWithGoogle();
-      const token = await auth.currentUser?.getIdToken();
-      if (token) {
-        await saveToken(token);
-        router.replace('/(tabs)');
-      }
-    } catch (err) {
-      Alert.alert(
-        'Google login failed',
-        authError?.message || 'Something went wrong'
-      );
-    }
-  };
+  const handleGoogleLogin = () => runAuthFlow(() => loginWithGoogle());
 
   return (
     <SSLinearBackground>
@@ -93,6 +98,7 @@ export default function LoginScreen() {
         <SSText className="text-sm text-muted-foreground">
           Welcome back! Please login to continue.
         </SSText>
+
         <View className="my-4 w-full gap-3">
           <SSControlledInput
             name="email"
@@ -111,6 +117,7 @@ export default function LoginScreen() {
             error={errors.password?.message}
           />
         </View>
+
         <Button
           onPress={handleSubmit(handleLogin)}
           className="w-full"
@@ -118,21 +125,23 @@ export default function LoginScreen() {
         >
           <SSText>Login</SSText>
         </Button>
+
         <View className="flex-row items-center justify-between w-full gap-3 my-4">
           <Separator className="flex-1" />
-          <SSText className="text-sm text-muted-foreground">
-            or continue with
-          </SSText>
+          <SSText className="text-sm text-muted-foreground">or</SSText>
           <Separator className="flex-1" />
         </View>
-        {/* <Button
+
+        <Button
           onPress={handleGoogleLogin}
-          className="flex-row items-center justify-center bg-white border border-[#4285F4] rounded-md py-2 px-4 shadow-sm"
-          style={{ elevation: 2 }}
+          variant="outline"
+          className="w-full border border-[#4285F4]"
+          disabled={isLoggingIn}
         >
-          <Ionicons name="logo-google" size={20} color="#4285F4" style={{ marginRight: 8 }} />
-          <SSText className="text-[#4285F4]">Sign in with Google</SSText>
-        </Button> */}
+          <FcGoogle size={16} color="white" />
+          <SSText>Sign in with Google</SSText>
+        </Button>
+
         <View>
           <SSText className="text-sm text-muted-foreground mt-4">
             Don't have an account?{' '}
@@ -144,6 +153,7 @@ export default function LoginScreen() {
             </SSText>
           </SSText>
         </View>
+
         <Link href="/" asChild>
           <Button variant="outline" className="mt-6">
             <Home size={16} />

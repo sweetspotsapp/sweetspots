@@ -1,6 +1,10 @@
+import { OnboardingAnswers } from '@/store/useOnboardingStore';
 import { api } from '../client';
 import { ApiResponse } from '../pagination.dto';
-export const getMyOnboarding = async () => {
+export const getMyOnboarding = async (): Promise<ApiResponse<OnboardingAnswers & {
+  completed: boolean;
+  dismissed: boolean;
+}>> => {
   const res = await api.get('/onboarding/me');
   return res.data;
 };
@@ -20,6 +24,7 @@ export type UpsertOnboardingPayload = {
 export const upsertMyOnboarding = async (
   data: UpsertOnboardingPayload
 ): Promise<ApiResponse<any>> => {
+  console.log('upsertMyOnboarding', { data });
   const res = await api.put('/onboarding/me', data);
   return res.data;
 };
