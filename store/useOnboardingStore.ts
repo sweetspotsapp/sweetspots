@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type OnboardingAnswers = {
+  email?: string;
   travelerType?: "planner" | "chill" | "mix";
   companion?: "solo" | "friends" | "couple" | "family" | "budgetBackpacker" | "comfortSeeker";
   vibes: ("chill" | "social" | "nature" | "city" | "mixed")[];
@@ -19,9 +20,9 @@ export type OnboardingAnswers = {
 };
 
 export type OnboardingUI = {
-  step: number;          // 0..4 for the questionnaire steps
-  dismissed: boolean;    // user skipped onboarding
-  completed: boolean;    // finished all steps
+  step: number;
+  dismissed: boolean;
+  completed: boolean;
   dismissedAt?: string;
   completedAt?: string;
 };
