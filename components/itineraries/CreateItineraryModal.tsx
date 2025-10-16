@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { SSControlledInput } from '../ui/SSControlledInput';
-import { SSControlledPicker } from '../ui/SSControlledDateTimePicker';
+import { formatLocalStringFromDate, SSControlledPicker } from '../ui/SSControlledDateTimePicker';
 import { Label } from '../ui/label';
 import CollaboratorPill from './CollaboratorPill';
 import { SSText } from '../ui/SSText';
@@ -23,6 +23,8 @@ import { Minus, Plus } from 'lucide-react-native';
 import { createAutoItinerary } from '@/endpoints/auto-itinerary/endpoints';
 import { useAuth } from '@/hooks/useAuth';
 import { useFeedbackNudgeStore } from '@/store/useFeedbackNudgeStore';
+import { Badge } from '../ui/badge';
+import { getCentralCoordinate } from '@/lib/geo';
 
 interface CreateItineraryModalProps {
   visible: boolean;
@@ -35,38 +37,34 @@ const initItinerarySchema = yup.object().shape({
   query: yup.string().optional(),
   location: yup.string().required('Location is required'),
 
-  startDate: yup
-    .date()
-    .required('Start date is required')
-    .typeError('Start date must be a valid date'),
+  // startDate: yup
+  //   .date()
+  //   .required('Start date is required')
+  //   .typeError('Start date must be a valid date'),
 
-  endDate: yup
+  startTime: yup
     .date()
-    .required('End date is required')
-    .typeError('End date must be a valid date')
-    .test(
-      'is-after-start',
-      'End date must be after or same as start date',
-      function (value) {
-        const { startDate } = this.parent as { startDate?: Date };
-        return !startDate || !value || value >= startDate;
-      }
-    ),
+    .required('Start time is required')
+    .typeError('Start time must be a valid time'),
+
+  // endDate: yup
+  //   .date()
+  //   .required('End date is required')
+  //   .typeError('End date must be a valid date')
+  //   .test(
+  //     'is-after-start',
+  //     'End date must be after or same as start date',
+  //     function (value) {
+  //       const { startDate } = this.parent as { startDate?: Date };
+  //       return !startDate || !value || value >= startDate;
+  //     }
+  //   ),
 
   budget: yup.number().required('Budget is required').min(0),
   targetCount: yup
     .number()
     .required('Please input how many places you want to go')
     .min(0),
-
-  // collaborator: yup
-  //   .string()
-  //   .required('Collaborator is required')
-  //   .min(3, 'Collaborator must be at least 3 characters'),
-
-  // collaborators: yup
-  //   .array()
-  //   .of(yup.string().required('Collaborator is required')),
 });
 
 type FormData = yup.InferType<typeof initItinerarySchema>;
@@ -75,8 +73,8 @@ export function CreateItineraryModal({
   visible,
   onClose,
   onCreated,
-}: // selectedPlaces,
-CreateItineraryModalProps) {
+  selectedPlaces,
+}: CreateItineraryModalProps) {
   const {
     control,
     setValue,
@@ -105,6 +103,7 @@ CreateItineraryModalProps) {
 
   // const collaborators = watch('collaborators') || [];
   const query = watch('query');
+  const isFromSelectedPlaces = selectedPlaces && selectedPlaces.length > 0;
 
   const [loadingCities, setLoadingCities] = React.useState(false);
   const [coords, setCoords] = React.useState<{
@@ -175,7 +174,7 @@ CreateItineraryModalProps) {
         .finally(() => {
           if (!cancelled) setLoadingCities(false);
         });
-    }, 250); // debounce
+    }, 250);
 
     return () => {
       cancelled = true;
@@ -186,6 +185,10 @@ CreateItineraryModalProps) {
   const [isDoneForm, setIsDoneForm] = React.useState(false);
 
   function onSubmit(data: FormData) {
+    if (isFromSelectedPlaces) {
+      onSelectSuggestedSpot();
+      return;
+    }
     setIsDoneForm(true);
     // onCreated();
     // onClose();
@@ -198,8 +201,9 @@ CreateItineraryModalProps) {
     saveDraft({
       query: getValues('query') || undefined,
       location: getValues('location'),
-      startDateISO: getValues('startDate').toISOString(),
-      endDateISO: getValues('endDate').toISOString(),
+      // startDateISO: getValues('startDate').toISOString(),
+      // endDateISO: getValues('endDate').toISOString(),
+      startTimeISO: getValues('startTime').toISOString(),
       budget: getValues('budget'),
       // collaborators: getValues('collaborators') || [],
       targetCount: getValues('targetCount'),
@@ -212,34 +216,40 @@ CreateItineraryModalProps) {
     });
   }
 
-  const [isCreatingAutoItinerary, setIsCreatingAutoItinerary] = React.useState(false);
+  const [isCreatingAutoItinerary, setIsCreatingAutoItinerary] =
+    React.useState(false);
   const user = useAuth().user;
 
-  const recordItineraryCreated = useFeedbackNudgeStore((s) => s.recordItineraryCreated);
+  const recordItineraryCreated = useFeedbackNudgeStore(
+    (s) => s.recordItineraryCreated
+  );
   function onSelectSuggestedSpot() {
     setIsCreatingAutoItinerary(true);
     // console.log(user?.uid);
     createAutoItinerary({
-      description: getValues('query') || getValues('location'),
+      // description: getValues('query') || getValues('location'),
       query: getValues('query') || getValues('location'),
-      startDate: getValues('startDate').toISOString(),
-      endDate: getValues('endDate').toISOString(),
+      // startDate: getValues('startDate').toISOString(),
+      // endDate: getValues('endDate').toISOString(),
+      startTime: formatLocalStringFromDate(getValues('startTime'), 'datetime'),
       targetCount: getValues('targetCount'),
       maxBudget: getValues('budget'),
       latitude: coords?.lat || undefined,
       longitude: coords?.lon || undefined,
       userId: user?.uid,
-      placeIds: []
-    }).then((res) => {
-      recordItineraryCreated();
-      const itineraryId = res.data?.id;
-      if (itineraryId) {
-        router.replace(`/itineraries/${itineraryId}`);
-      }
-    }).finally(() => {
-      setIsCreatingAutoItinerary(false);
-      onClose?.();
+      placeIds: selectedPlaces?.map((p) => p.id) || [],
     })
+      .then((res) => {
+        recordItineraryCreated();
+        const itineraryId = res.data?.id;
+        if (itineraryId) {
+          router.replace(`/itineraries/${itineraryId}`);
+        }
+      })
+      .finally(() => {
+        setIsCreatingAutoItinerary(false);
+        onClose?.();
+      });
   }
 
   const targetCount = watch('targetCount') || 0;
@@ -248,10 +258,56 @@ CreateItineraryModalProps) {
     setValue('targetCount', isIncrement ? targetCount + 1 : targetCount - 1);
   }
 
+  const estimatedCost = selectedPlaces?.reduce((sum, place) => {
+    return sum + ((place.maxPrice || 0) + (place.minPrice || 0)) / 2;
+  }, 0);
+
+  const estimatedMaxCost = selectedPlaces?.reduce((sum, place) => {
+    return sum + (place.maxPrice || 0);
+  }, 0);
+
+  useEffect(() => {
+    setValue('budget', estimatedMaxCost ? estimatedMaxCost * 1.2 : 0);
+  }, [estimatedMaxCost]);
+
+  useEffect(() => {
+    if (selectedPlaces && selectedPlaces.length > 0) {
+      setValue('targetCount', selectedPlaces.length + Math.floor(Math.random() * 3));
+    }
+  }, [selectedPlaces?.length])
+
+  const centralisedCoords = React.useMemo(() => 
+    getCentralCoordinate(
+      selectedPlaces?.map((p) => ({
+        lat: Number(p.latitude),
+        lon: Number(p.longitude),
+      })) || []
+    ),
+    [selectedPlaces]
+  );
+
+  useEffect(() => {
+    if (centralisedCoords) {
+      setCoords(centralisedCoords);
+      setValue('location', `${centralisedCoords.lat}, ${centralisedCoords.lon}`); // reset location to avoid confusion
+    }
+  }, [centralisedCoords]);
+
+  const timeSelections = [
+    { label: 'Morning (6 AM)', value: '06:00' },
+    { label: 'Afternoon (12 PM)', value: '12:00' },
+    { label: 'Evening (6 PM)', value: '18:00' },
+    { label: 'Night (9 PM)', value: '21:00' },
+  ];
+
+  function handleSelectTime(value: Date) {
+    setValue('startTime', value);
+  }
+
   return (
     <>
       <Modal
-        visible={visible && !isDoneForm}
+        visible={visible && !isDoneForm && !isCreatingAutoItinerary}
         animationType="fade"
         presentationStyle="pageSheet"
         onRequestClose={onClose}
@@ -267,59 +323,68 @@ CreateItineraryModalProps) {
 
         <View className="container my-auto max-w-4xl mx-auto px-4 gap-4 justify-center">
           {/* Destination */}
-          <Card className="p-4">
-            <View>
-              <Label className="text-xl font-bold" htmlFor="trip-name">
-                Where do you want to go?
-              </Label>
-              <SSControlledInput
-                readOnly={isLoadingCoords}
-                control={control}
-                name="query"
-                placeholder='Search for a city, e.g. "Sydney"'
-              />
-            </View>
-
-            {loadingCities ? (
-              <SSSpinner />
-            ) : (
-              cities.length > 0 && (
-                <View className="mt-2 max-h-40 overflow-y-auto rounded border border-gray-200">
-                  {cities.map((city, index) => (
-                    <TouchableOpacity
-                      key={`${city.placeId}-${index}`}
-                      onPress={() => {
-                        setSelectedCity(city);
-                        setValue('location', city.description);
-                        setValue('query', city.description); // show chosen city in the input
-                        setCities([]); // hide list
-                        setSuppressFetch(true); // freeze future fetches until user edits
-                      }}
-                      className="p-2 border-b border-gray-200"
-                    >
-                      <SSText>{city.description}</SSText>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )
-            )}
-            <View className="flex-row items-center justify-between mt-4 flex-1">
-                <Label className="text-xl flex-1">How many spots?</Label>
-              <View className="flex-row items-center gap-4">
-                <Pressable className="rounded-full w-8 h-8 items-center justify-center bg-amber-500" onPress={() => handleChangeTargetCount(false)} disabled={targetCount <= 0}>
-                  <Minus className="text-white" />
-                </Pressable>
-                <SSText className='font-bold h-fit'>{targetCount}</SSText>
-                <Pressable className="rounded-full w-8 h-8 items-center justify-center bg-amber-500" onPress={() => handleChangeTargetCount(true)}>
-                  <Plus className="text-white" />
-                </Pressable>
+          {!isFromSelectedPlaces ? (
+            <Card className="p-4">
+              <View>
+                <Label className="text-xl font-bold" htmlFor="trip-name">
+                  Where do you want to go?
+                </Label>
+                <SSControlledInput
+                  readOnly={isLoadingCoords}
+                  control={control}
+                  name="query"
+                  placeholder='Search for a city, e.g. "Sydney"'
+                />
               </View>
-            </View>
-          </Card>
+
+              {loadingCities ? (
+                <SSSpinner />
+              ) : (
+                cities.length > 0 && (
+                  <View className="mt-2 max-h-40 overflow-y-auto rounded border border-gray-200">
+                    {cities.map((city, index) => (
+                      <TouchableOpacity
+                        key={`${city.placeId}-${index}`}
+                        onPress={() => {
+                          setSelectedCity(city);
+                          setValue('location', city.description);
+                          setValue('query', city.description); // show chosen city in the input
+                          setCities([]); // hide list
+                          setSuppressFetch(true); // freeze future fetches until user edits
+                        }}
+                        className="p-2 border-b border-gray-200"
+                      >
+                        <SSText>{city.description}</SSText>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )
+              )}
+              <View className="flex-row items-center justify-between mt-4 flex-1">
+                <Label className="text-xl flex-1">How many spots?</Label>
+                <View className="flex-row items-center gap-4">
+                  <Pressable
+                    className="rounded-full w-8 h-8 items-center justify-center bg-amber-500"
+                    onPress={() => handleChangeTargetCount(false)}
+                    disabled={targetCount <= 0}
+                  >
+                    <Minus className="text-white" />
+                  </Pressable>
+                  <SSText className="font-bold h-fit">{targetCount}</SSText>
+                  <Pressable
+                    className="rounded-full w-8 h-8 items-center justify-center bg-amber-500"
+                    onPress={() => handleChangeTargetCount(true)}
+                  >
+                    <Plus className="text-white" />
+                  </Pressable>
+                </View>
+              </View>
+            </Card>
+          ) : null}
 
           {/* Dates */}
           <Card className="p-4">
-            <View>
+            {/* <View>
               <Label className="text-xl font-bold" htmlFor="trip-dates">
                 When do you want to go?
               </Label>
@@ -343,51 +408,97 @@ CreateItineraryModalProps) {
                   />
                 </View>
               </View>
+            </View> */}
+            <View>
+              <Label className="text-xl font-bold">
+                What time do you want to leave?
+              </Label>
+              <View className='flex-row flex-wrap gap-2 mb-2'>
+                {timeSelections.map((time) => {
+                  const isSelected = watch('startTime')
+                    ?.toTimeString()
+                    .startsWith(time.value);
+                  return (
+                    <Pressable
+                      key={time.value}
+                      onPress={() => {
+                        const timeStart = new Date();
+                        const [hours, minutes] = time.value
+                          .split(':')
+                          .map(Number);
+                        timeStart.setHours(hours, minutes, 0, 0);
+                        handleSelectTime(timeStart);
+                      }}
+                    >
+                      <Badge variant={isSelected ? 'default' : 'outline'}>
+                        <SSText>{time.label}</SSText>
+                      </Badge>
+                    </Pressable>
+                  );
+                })}
+              </View>
+              <SSControlledPicker
+                control={control}
+                name="startTime"
+                type="time"
+                valueAsDate
+              />
             </View>
           </Card>
 
           {/* Budget & Collaborators */}
-          <Card className="p-4 gap-4">
-            <View>
-              <Label className="text-xl font-bold" htmlFor="trip-budget">
-                What is your budget?
-              </Label>
-              <View className="flex-row gap-2 items-center">
-                <SSText>AU$</SSText>
-                <SSControlledInput
-                  control={control}
-                  name="budget"
-                  className="flex-1"
-                  valueAsNumber
-                />
-                <SSText>per person</SSText>
+          {isFromSelectedPlaces ? (
+            <Card className="p-4 gap-4">
+              <View>
+                <Label>Estimated Cost</Label>
+                  <SSText className="text-3xl font-extrabold text-amber-500 mt-2">
+                    {estimatedCost ? `AU$${estimatedCost.toFixed(2)}/person` : 'Free'}
+                  </SSText>
               </View>
-            </View>
-          {/* 
-            <View>
-              <Label className="text-xl font-bold" htmlFor="trip-collaborator">
-                Who is going with you?
-              </Label>
-              <SSControlledInput
-                control={control}
-                name="collaborator"
-                helperText="Add a collaborator"
-                onSubmitEditing={(e) => {
-                  const v = e.nativeEvent.text?.trim();
-                  if (v) handleAddCollaborator(v);
-                }}
-              />
-              <View className="flex-row flex-wrap gap-2 mt-2">
-                {collaborators.map((collaborator: string, index: number) => (
-                  <CollaboratorPill
-                    key={`${collaborator}-${index}`}
-                    collaborator={collaborator}
-                    onRemove={() => handleRemoveCollaborator(collaborator)}
+            </Card>
+          ) : (
+            <Card className="p-4 gap-4">
+              <View>
+                <Label className="text-xl font-bold" htmlFor="trip-budget">
+                  What is your budget?
+                </Label>
+                <View className="flex-row gap-2 items-center">
+                  <SSText>AU$</SSText>
+                  <SSControlledInput
+                    control={control}
+                    name="budget"
+                    className="flex-1"
+                    valueAsNumber
                   />
-                ))}
+                  <SSText>per person</SSText>
+                </View>
               </View>
-            </View> */}
-          </Card>
+              {/* 
+                <View>
+                  <Label className="text-xl font-bold" htmlFor="trip-collaborator">
+                    Who is going with you?
+                  </Label>
+                  <SSControlledInput
+                    control={control}
+                    name="collaborator"
+                    helperText="Add a collaborator"
+                    onSubmitEditing={(e) => {
+                      const v = e.nativeEvent.text?.trim();
+                      if (v) handleAddCollaborator(v);
+                    }}
+                  />
+                  <View className="flex-row flex-wrap gap-2 mt-2">
+                    {collaborators.map((collaborator: string, index: number) => (
+                      <CollaboratorPill
+                        key={`${collaborator}-${index}`}
+                        collaborator={collaborator}
+                        onRemove={() => handleRemoveCollaborator(collaborator)}
+                      />
+                    ))}
+                  </View>
+                </View> */}
+            </Card>
+          )}
           <Button onPress={handleSubmit(onSubmit)} className="self-end">
             <SSText>Let&apos;s Go!</SSText>
           </Button>
@@ -409,9 +520,7 @@ CreateItineraryModalProps) {
       </Dialog>
       <Dialog open={isCreatingAutoItinerary} onOpenChange={() => {}}>
         <DialogContent>
-          <SSText className="text-center">
-            Creating your itinerary...
-          </SSText>
+          <SSText className="text-center">Creating your itinerary...</SSText>
           <SSText className="text-center text-sm text-gray-500 mt-2">
             This may take a while depending on how many spots you want to go to.
           </SSText>

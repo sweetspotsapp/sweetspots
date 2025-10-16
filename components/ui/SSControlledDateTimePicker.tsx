@@ -31,7 +31,7 @@ function pad(n: number) {
   return n < 10 ? `0${n}` : `${n}`;
 }
 
-function formatLocalStringFromDate(d: Date, type: PickerType): string {
+export function formatLocalStringFromDate(d: Date, type: PickerType): string {
   const yyyy = d.getFullYear();
   const mm = pad(d.getMonth() + 1);
   const dd = pad(d.getDate());

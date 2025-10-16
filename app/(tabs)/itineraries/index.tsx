@@ -65,14 +65,14 @@ export default function ItinerariesScreen() {
     return `${wholeHours}h ${minutes}min`;
   };
 
-  const getDurationInDays = (startDate?: string, endDate?: string) => {
-    if (!startDate || !endDate) return 0;
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    return (
-      Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
-    );
-  };
+  // const getDurationInDays = (startDate?: string, endDate?: string) => {
+  //   if (!startDate || !endDate) return 0;
+  //   const start = new Date(startDate);
+  //   const end = new Date(endDate);
+  //   return (
+  //     Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
+  //   );
+  // };
 
   const renderItinerary = ({ item }: { item: IItinerary }) => (
     <TouchableOpacity onPress={() => router.push(`/itineraries/${item.id}`)}>
@@ -99,7 +99,7 @@ export default function ItinerariesScreen() {
           )}
 
           {/* Trip Dates */}
-          {item.startDate && item.endDate && (
+          {/* {item.startDate && item.endDate && (
             <View className="flex-row items-center bg-orange-50 px-3 py-2 rounded-xl mb-4 gap-2">
               <Calendar size={14} className="text-orange-500" />
               <SSText
@@ -115,7 +115,7 @@ export default function ItinerariesScreen() {
                 {getDurationInDays(item.startDate, item.endDate)} days
               </SSText>
             </View>
-          )}
+          )} */}
 
           {/* Trip Summary */}
           <View className="flex-row gap-4 mb-4 pb-4 border-b border-slate-100">

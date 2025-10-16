@@ -7,8 +7,9 @@ export type ItineraryDraft = {
   query?: string;
   location: string;
 
-  startDateISO: string | null;
-  endDateISO: string | null;
+  // startDateISO: string | null;
+  // endDateISO: string | null;
+  startTimeISO?: string | null;
 
   budget: number;
   targetCount: number;
@@ -30,8 +31,9 @@ type State = {
 const initialDraft: ItineraryDraft = {
   query: "",
   location: "",
-  startDateISO: null,
-  endDateISO: null,
+  // startDateISO: null,
+  // endDateISO: null,
+  startTimeISO: null,
   budget: 0,
   targetCount: 0,
   collaborator: "",
