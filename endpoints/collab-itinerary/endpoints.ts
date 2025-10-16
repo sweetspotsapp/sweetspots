@@ -1,5 +1,7 @@
+import { CollabItineraryRoomDto } from "@/dto/collab-itineraries/collab-itinerary-room.dto";
 import { api } from "../client";
 import { ApiResponse } from "../pagination.dto";
+import { IItineraryUser } from "@/dto/itinerary-users/itinerary-user.dto";
 
 export const removeCollaborator = async ({
   itineraryId,
@@ -35,8 +37,13 @@ export const addCollaborator = async ({
   return res.data;
 };
 
-export const getActiveCollaborators = async (itineraryId: string): Promise<ApiResponse<any>> => {
+export const getActiveCollaborators = async (itineraryId: string): Promise<ApiResponse<CollabItineraryRoomDto[]>> => {
     const res = await api.get(`/collab-itinerary/${itineraryId}/active`);
+    return res.data;
+};
+
+export const getItineraryCollaborators = async (itineraryId: string): Promise<ApiResponse<IItineraryUser[]>> => {
+    const res = await api.get(`/collab-itinerary/${itineraryId}`);
     return res.data;
 };
 

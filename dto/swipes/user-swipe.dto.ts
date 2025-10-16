@@ -1,4 +1,4 @@
-import { IPlace } from "@/api/places/dto/place.dto";
+import { IPlace } from "../places/place.dto";
 
 export interface IUserSwipe {
   id: string;

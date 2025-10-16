@@ -1,5 +1,12 @@
-import { Linking, Modal, ScrollView, Share, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import {
+  Linking,
+  Modal,
+  ScrollView,
+  Share,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import { SSText } from '../ui/SSText';
 import ModalHeader from '../ui/ModalHeader';
@@ -9,6 +16,7 @@ import CollaboratorPill from './CollaboratorPill';
 import { AlertDialog } from '../ui/AlertDialog';
 import {
   addCollaborator,
+  getItineraryCollaborators,
   removeCollaborator,
 } from '@/endpoints/collab-itinerary/endpoints';
 import SSSpinner from '../ui/SSSpinner';
@@ -23,6 +31,12 @@ import {
   TwitterIcon,
 } from 'lucide-react-native';
 import SSContainer from '../SSContainer';
+import { IUserProfile } from '@/dto/users/user-profile.dto';
+import { getUserProfiles } from '@/endpoints/users/endpoints';
+import { useDebounce } from 'use-debounce';
+import ShareItineraryUserCard from './ShareItineraryUserCard';
+import { CollabItineraryRoomDto } from '@/dto/collab-itineraries/collab-itinerary-room.dto';
+import { IItineraryUser } from '@/dto/itinerary-users/itinerary-user.dto';
 
 interface ShareItineraryModalProps {
   visible: boolean;
@@ -39,70 +53,128 @@ export default function ShareItineraryModal({
 }: ShareItineraryModalProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
-  const [collaborators, setCollaborators] = useState<string[]>(
-    itinerary.collaborators || []
-  );
-  const [newCollaborator, setNewCollaborator] = useState('');
-  const [removedCollaborators, setRemovedCollaborators] = useState<string[]>(
-    []
-  );
+  const [collaborators, setCollaborators] = useState<IItineraryUser[]>([]);
 
-  const handleAddCollaborator = async () => {
-    if (
-      newCollaborator.trim() &&
-      !collaborators.includes(newCollaborator.trim())
-    ) {
-      setIsAdding(true);
-      try {
-        await addCollaborator({
-          itineraryId: itinerary.id,
-          userIdentity: newCollaborator.trim(),
+  const [showUsersList, setShowUsersList] = useState(true);
+  const [usersQuery, setUsersQuery] = useState('');
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+  const [users, setUsers] = useState<IUserProfile[]>([]);
+  const [query] = useDebounce(usersQuery, 500);
+  const [newCollaborators, setNewCollaborators] = useState<IUserProfile[]>([]);
+  const [removedCollaboratorUserIds, setRemovedCollaboratorUserIds] = useState<
+    string[]
+  >([]);
+
+  useEffect(() => {
+    if (itinerary.id) {
+      getItineraryCollaborators(itinerary.id)
+        .then((res) => {
+          console.log('collaborators', res);
+          setCollaborators(res.data || []);
+        })
+        .catch((e) => {
+          console.error('Failed to fetch collaborators', e);
         });
-        setCollaborators([...collaborators, newCollaborator.trim()]);
-        setNewCollaborator('');
-        onFinished?.();
-      } catch (e) {
-        setErrorMessage((e as any).data.message);
-      } finally {
-        setIsAdding(false);
-      }
     }
+  }, [itinerary]);
+
+  useEffect(() => {
+    setShowUsersList(true);
+  }, [usersQuery]);
+
+  useEffect(() => {
+    if (query.trim().length === 0) {
+      setUsers([]);
+      return;
+    }
+    setIsLoadingUsers(true);
+    getUserProfiles({
+      query,
+    })
+      .then((res) => {
+        if (res.data) {
+          setUsers(res.data.data);
+        }
+      })
+      .finally(() => {
+        setIsLoadingUsers(false);
+      });
+  }, [query]);
+
+  const handleSaveCollaborators = async () => {
+    setIsAdding(true);
+    try {
+      Promise.all(
+        newCollaborators.map((user) =>
+          addCollaborator({
+            itineraryId: itinerary.id,
+            userId: user.id,
+          })
+        )
+      );
+      const collaboratorsRes = await getItineraryCollaborators(itinerary?.id);
+      console.log('collaboratorsRes', collaboratorsRes);
+      const itineraryCollaborators = collaboratorsRes.data || [];
+      setCollaborators(itineraryCollaborators);
+      setNewCollaborators([]);
+      setUsersQuery('');
+      onFinished?.();
+    } catch (e) {
+      setErrorMessage((e as any).data.message);
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleRemoveExistingCollaborator = async (userId: string) => {
+    setRemovedCollaboratorUserIds((prev) =>
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId]
+    );
   };
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
-  const [removingCollaborator, setRemovingCollaborator] = useState<
-    string | null
-  >(null);
 
-  const handleRemoveToggle = (collaborator: string) => {
-    setIsRemoveDialogOpen(!isRemoveDialogOpen);
-    setRemovingCollaborator(collaborator);
-  };
-  const handleConfirmRemove = async () => {
-    if (removingCollaborator) {
-      setIsRemoving(true);
-      try {
-        await removeCollaborator({
-          itineraryId: itinerary.id,
-          userIdentity: removingCollaborator,
-        });
-        setCollaborators(
-          collaborators.filter((c) => c !== removingCollaborator)
-        );
-        setRemovedCollaborators([
-          ...removedCollaborators,
-          removingCollaborator,
-        ]);
-        setRemovingCollaborator(null);
-        onFinished?.();
-      } catch (e) {
-        Toast.error((e as any).data.message || 'Failed to remove collaborator');
-      } finally {
-        setIsRemoving(false);
-      }
+  // const handleConfirmRemove = async () => {
+  //   if (!removedCollaboratorUserIds.length) return;
+  //   setIsRemoving(true);
+  //   try {
+  //     await Promise.all(
+  //       removedCollaboratorUserIds.map((userId) =>
+  //         removeCollaborator({
+  //           itineraryId: itinerary.id,
+  //           userId,
+  //         })
+  //       )
+  //     );
+  //     const collaboratorsRes = await getItineraryCollaborators(itinerary?.id);
+  //     console.log('collaboratorsRes', collaboratorsRes);
+  //     const itineraryCollaborators = collaboratorsRes.data || [];
+  //     setCollaborators(itineraryCollaborators);
+  //     setRemovedCollaboratorUserIds([]);
+  //     onFinished?.();
+  //   } catch (e) {
+  //     Toast.error('Failed to remove collaborator');
+  //   } finally {
+  //     setIsRemoving(false);
+  //     setIsRemoveDialogOpen(false);
+  //   }
+  // };
+
+  const handleRemoveNewCollaborator = async (collaboratorIdx: number) => {
+    const collaborator = newCollaborators[collaboratorIdx];
+    if (collaborator) {
+      setNewCollaborators((prev) =>
+        prev.filter((_, index) => index !== collaboratorIdx)
+      );
     }
-    setIsRemoveDialogOpen(false);
+  };
+
+  const handlePressNewUser = (user: IUserProfile) => {
+    setNewCollaborators((prev) => [...prev, user]);
+    setShowUsersList(false);
   };
 
   function handleShareTwitter() {
@@ -164,13 +236,13 @@ export default function ShareItineraryModal({
       animationType="slide"
       presentationStyle="pageSheet"
     >
-      <AlertDialog
+      {/* <AlertDialog
         title="Remove Collaborator"
         message={`Are you sure you want to remove ${removingCollaborator}?`}
         visible={isRemoveDialogOpen}
         onCancel={() => setIsRemoveDialogOpen(false)}
         onConfirm={handleConfirmRemove}
-      />
+      /> */}
       <SSContainer>
         <ModalHeader title="Share Itinerary" onClose={onClose} />
         <ScrollView
@@ -179,34 +251,112 @@ export default function ShareItineraryModal({
         >
           <SSText className="mb-2">Collaborators</SSText>
           <View className="flex-row flex-wrap gap-2 mb-4">
-            {collaborators.map((collaborator, index) => (
-              <CollaboratorPill
-                key={index}
-                collaborator={collaborator}
-                onRemove={() => handleRemoveToggle(collaborator)}
-              />
-            ))}
-
-            {isAdding && <SSSpinner size="small" />}
+            {collaborators.map((collaborator) => {
+              const isBeingRemoved = removedCollaboratorUserIds.includes(
+                collaborator.userId
+              );
+              if (collaborator.user) {
+                return (
+                  <ShareItineraryUserCard
+                    key={collaborator.userId}
+                    user={collaborator.user}
+                    onRemove={() =>
+                      handleRemoveExistingCollaborator(collaborator.userId)
+                    }
+                    className={isBeingRemoved ? 'opacity-50' : ''}
+                    isRestore={isBeingRemoved}
+                  />
+                );
+              }
+              return null;
+            })}
           </View>
+          {removedCollaboratorUserIds.length > 0 && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onPress={() => setIsRemoveDialogOpen(true)}
+              disabled={isRemoving}
+            >
+              <SSText>
+                {isRemoving
+                  ? 'Removing...'
+                  : `Remove ${removedCollaboratorUserIds.length} Collaborator(s)`}
+              </SSText>
+            </Button>
+          )}
           <SSText className="mb-2">Invite More</SSText>
           <Input
             placeholder="Enter email or username"
             className="flex-1"
-            value={newCollaborator}
-            onChangeText={setNewCollaborator}
+            value={usersQuery}
+            onChangeText={setUsersQuery}
             onFocus={() => setErrorMessage(null)}
             keyboardType="email-address"
+            onBlur={() => {
+              setTimeout(() => {
+                setShowUsersList(false);
+              }, 200);
+            }}
           />
           {errorMessage && (
             <SSText className="text-red-500 mt-2">{errorMessage}</SSText>
           )}
+          {showUsersList && (
+            <>
+              {isLoadingUsers ? (
+                <SSSpinner />
+              ) : users.length > 0 ? (
+                <View className="max-h-68 mt-2 border border-gray-300 rounded-md">
+                  <ScrollView className="p-2">
+                    <View className="gap-2">
+                      {users.map((user) => {
+                        const isAlreadyCollaborator =
+                          collaborators.some((c) => c.userId === user.id) ||
+                          newCollaborators.some(
+                            (c) =>
+                              (c.email || c.username) ===
+                              (user.email || user.username)
+                          );
+                        return (
+                          <TouchableOpacity
+                            key={user.id}
+                            // className="p-2 border-b border-gray-200"
+                            onPress={() => {
+                              handlePressNewUser(user);
+                            }}
+                          >
+                            <ShareItineraryUserCard
+                              user={user}
+                              checked={isAlreadyCollaborator}
+                            />
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  </ScrollView>
+                </View>
+              ) : query.length > 0 ? (
+                <SSText className="mt-2 text-sm text-muted-foreground">
+                  No users found.
+                </SSText>
+              ) : null}
+            </>
+          )}
+          {newCollaborators.map((user, uIdx) => (
+            <View key={user.id} className="mt-2">
+              <ShareItineraryUserCard
+                user={user}
+                onRemove={() => handleRemoveNewCollaborator(uIdx)}
+              />
+            </View>
+          ))}
           <Button
             className="mt-4 w-full"
-            onPress={handleAddCollaborator}
+            onPress={handleSaveCollaborators}
             disabled={isAdding}
           >
-            <SSText>Add Collaborator</SSText>
+            <SSText>Send Invitation</SSText>
           </Button>
           <View className="flex-row items-center justify-between w-full gap-3 my-4">
             <Separator className="flex-1" />
