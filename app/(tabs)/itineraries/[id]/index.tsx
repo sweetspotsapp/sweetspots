@@ -24,11 +24,18 @@ import ShareItineraryModal from '@/components/itineraries/ShareItineraryModal';
 import { goBack } from '@/utils/goBack';
 import SSContainer from '@/components/SSContainer';
 import { BackArrowButton } from '@/components/BackArrowButton';
+import { IItineraryUser } from '@/dto/itinerary-users/itinerary-user.dto';
+import { getItineraryCollaborators } from '@/endpoints/collab-itinerary/endpoints';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [itinerary, setItinerary] = useState<IItinerary | null>(null);
+  const [itineraryUsers, setItineraryUsers] = useState<IItineraryUser[] | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
+  const user = useAuth().user;
 
   // useEffect(() => {
   //   loadItinerary();
@@ -48,6 +55,9 @@ export default function ItineraryDetailsScreen() {
       } else {
         console.error('Failed to fetch itinerary:', response.message);
       }
+      const collaboratorsRes = await getItineraryCollaborators(id);
+      const itineraryCollaborators = collaboratorsRes.data || [];
+      setItineraryUsers(itineraryCollaborators);
     } catch (error) {
       console.error('Error loading itinerary:', error);
     } finally {
@@ -132,6 +142,9 @@ export default function ItineraryDetailsScreen() {
     itinerary.endDate || undefined
   );
 
+  const itineraryUser = itineraryUsers?.find((iu) => iu.userId === user?.uid);
+  const isOwner = itineraryUser?.role === 'owner';
+
   return (
     <>
       <ShareItineraryModal
@@ -145,20 +158,22 @@ export default function ItineraryDetailsScreen() {
         <View className="flex-row justify-between items-center  pt-2.5 pb-4">
           <BackArrowButton fallbackUrl="/itineraries" forceFallback />
 
-          <View className="flex-row gap-3">
-            <TouchableOpacity
-              className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-              onPress={handleToggleShare}
-            >
-              <Share2 size={24} className="text-orange-500" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-              onPress={handleEditItinerary}
-            >
-              <EditIcon size={24} className="text-orange-500" />
-            </TouchableOpacity>
-          </View>
+          {isOwner && (
+            <View className="flex-row gap-3">
+              <TouchableOpacity
+                className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
+                onPress={handleToggleShare}
+              >
+                <Share2 size={24} className="text-orange-500" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
+                onPress={handleEditItinerary}
+              >
+                <EditIcon size={24} className="text-orange-500" />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false}>
