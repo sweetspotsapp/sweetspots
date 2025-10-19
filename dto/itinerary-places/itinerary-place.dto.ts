@@ -1,6 +1,7 @@
 import { IPlace } from "../places/place.dto";
 
 export interface IItineraryPlace {
+  longitude(longitude: any): number;
   id: string;
   itineraryId?: string | null;
   placeId?: string | null;

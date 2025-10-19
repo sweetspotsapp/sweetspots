@@ -113,7 +113,6 @@ export default function ShareItineraryModal({
         )
       );
       const collaboratorsRes = await getItineraryCollaborators(itinerary?.id);
-      console.log('collaboratorsRes', collaboratorsRes);
       const itineraryCollaborators = collaboratorsRes.data || [];
       setCollaborators(itineraryCollaborators);
       setNewCollaborators([]);

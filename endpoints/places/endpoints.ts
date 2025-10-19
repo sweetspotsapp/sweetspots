@@ -88,3 +88,10 @@ export const calculateTimeAndDistance = async (
   const res = await api.post('/places/calculate-time-distance', data);
   return res.data;
 };
+
+export const getCentralCoordinate = async (
+  placeIds: string[]
+): Promise<ApiResponse<{ latitude: number; longitude: number }>> => {
+  const res = await api.post('/places/central-coordinates', { placeIds });
+  return res.data;
+};

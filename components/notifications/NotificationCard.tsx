@@ -12,16 +12,38 @@ export default function NotificationCard({
 }: {
   notification: IUserNotification;
 }) {
+  function handleRead() {
+    markNotificationAsRead(notification.id);
+  }
+
   function renderAction() {
     switch (notification.type) {
       case 'itinerary-collaboration':
-        function handleAction() {
-          markNotificationAsRead(notification.id);
-          router.push(`/itineraries/${notification.data?.itineraryId}`);
-        }
         return (
-          <Button onPress={handleAction} className="mt-2 self-start" size="sm">
+          <Button
+            onPress={() => {
+              handleRead();
+              router.push(`/itineraries/${notification.data?.itineraryId}`);
+            }}
+            className="mt-2 self-start"
+            size="sm"
+          >
             <SSText className="text-sm font-medium">View Itinerary</SSText>
+          </Button>
+        );
+      case 'itinerary-place-suggested':
+        return (
+          <Button
+            onPress={() => {
+              handleRead();
+              router.push(
+                `/itineraries/${notification.data?.itineraryId}`
+              );
+            }}
+            className="mt-2 self-start"
+            size="sm"
+          >
+            <SSText className="text-sm font-medium">View Suggested Place</SSText>
           </Button>
         );
       default:

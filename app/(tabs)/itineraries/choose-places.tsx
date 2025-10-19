@@ -13,12 +13,13 @@ import { createAutoItinerary } from '@/endpoints/auto-itinerary/endpoints';
 import { useAuth } from '@/hooks/useAuth';
 import { router } from 'expo-router';
 import CreatingItineraryLoadingDialog from '@/components/itineraries/CreatingItineraryLoadingDialog';
+import ChoosePlaces from '@/components/places/ChoosePlaces';
 
-export default function ChoosePlaces() {
+export default function ChoosePlacesPage() {
   const draft = useItineraryDraft((state) => state.draft);
 
   const [selectedPlaceIds, setSelectedPlaceIds] = useState<string[]>([]);
-  const [placeCounts, setPlaceCounts] = useState<{ [key: string]: number }>({});
+  const [placeCounts, setPlaceCounts] = useState<Partial<Record<'saved' | 'discover', number>>>({});
 
   const handleSelectPlace = (placeId: string, tab: 'saved' | 'discover') => {
     setSelectedPlaceIds((prev) => {
@@ -51,8 +52,9 @@ export default function ChoosePlaces() {
     setIsCreatingItinerary(true);
     createAutoItinerary({
       placeIds: selectedPlaceIds,
-      startDate: draft.startDateISO,
-      endDate: draft.endDateISO,
+      // startDate: draft.startDateISO,
+      startTime: draft.startTimeISO,
+      // endDate: draft.endDateISO,
       targetCount: draft.targetCount,
       maxBudget: draft.budget,
       userId: user?.uid,
@@ -87,60 +89,17 @@ export default function ChoosePlaces() {
               </SSText>
             )}
           </View>
-          <ScrollView className="flex-1">
-            <Tabs value={tab} onValueChange={setTab} className="mb-4">
-              <TabsList>
-                <TabsTrigger value="saved">
-                  <SSText>
-                    Saved Places
-                    {placeCounts.saved ? ' (' + placeCounts.saved + ')' : null}
-                  </SSText>
-                </TabsTrigger>
-                <TabsTrigger value="discover">
-                  <SSText>
-                    Discover
-                    {placeCounts.discover
-                      ? ' (' + placeCounts.discover + ')'
-                      : null}
-                  </SSText>
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="saved">
-                <SavedPlaces
-                  isSelectionMode
-                  onSelectPlace={(placeId) =>
-                    handleSelectPlace(placeId, 'saved')
-                  }
-                  selectedPlaceIds={selectedPlaceIds}
-                  coords={
-                    draft.lat && draft.lon
-                      ? {
-                          lat: draft.lat,
-                          lon: draft.lon,
-                        }
-                      : undefined
-                  }
-                />
-              </TabsContent>
-              <TabsContent value="discover">
-                <DiscoverPlaces
-                  isSelectionMode
-                  onSelectPlace={(placeId) =>
-                    handleSelectPlace(placeId, 'discover')
-                  }
-                  selectedPlaceIds={selectedPlaceIds}
-                  coords={
-                    draft.lat && draft.lon
-                      ? {
-                          lat: draft.lat,
-                          lon: draft.lon,
-                        }
-                      : undefined
-                  }
-                />
-              </TabsContent>
-            </Tabs>
-          </ScrollView>
+          <ChoosePlaces
+            onChangeTab={setTab}
+            onSelectDiscoverPlace={(placeId) => handleSelectPlace(placeId, 'discover')}
+            onSelectSavedPlace={(placeId) => handleSelectPlace(placeId, 'saved')}
+            selectedPlaceIds={selectedPlaceIds}
+            selectedDiscoverCount={placeCounts.discover || 0}
+            selectedSavedCount={placeCounts.saved || 0}
+            tab={tab as any}
+            lat={draft.lat}
+            lon={draft.lon}
+          />
           {selectedCount > 0 && (
             <Button
               className="absolute bottom-24 left-5 right-5 shadow-lg"

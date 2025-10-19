@@ -11,8 +11,9 @@ import {
   Clock,
   DollarSign,
   EditIcon,
+  Plus,
 } from 'lucide-react-native';
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { Link, router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,13 +28,12 @@ import { BackArrowButton } from '@/components/BackArrowButton';
 import { IItineraryUser } from '@/dto/itinerary-users/itinerary-user.dto';
 import { getItineraryCollaborators } from '@/endpoints/collab-itinerary/endpoints';
 import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [itinerary, setItinerary] = useState<IItinerary | null>(null);
-  const [itineraryUsers, setItineraryUsers] = useState<IItineraryUser[] | null>(
-    null
-  );
+  const [itineraryUsers, setItineraryUsers] = useState<IItineraryUser[]>([]);
   const [loading, setLoading] = useState(true);
   const user = useAuth().user;
 
@@ -144,6 +144,7 @@ export default function ItineraryDetailsScreen() {
 
   const itineraryUser = itineraryUsers?.find((iu) => iu.userId === user?.uid);
   const isOwner = itineraryUser?.role === 'owner';
+  const isEditor = itineraryUser?.role === 'editor';
 
   return (
     <>
@@ -349,9 +350,19 @@ export default function ItineraryDetailsScreen() {
 
             {/* Places List */}
             <View className="mb-10 gap-4">
-              <SSText variant="semibold" className="text-xl text-gray-800">
-                Places to Visit
-              </SSText>
+              <View className="flex-row justify-between items-center">
+                <SSText variant="semibold" className="text-xl text-gray-800">
+                  Spots to Visit
+                </SSText>
+                {isEditor && (
+                  <Link href={`/itineraries/${id}/add-places`} asChild>
+                    <Button>
+                      <Plus size={16} className="text-white" />
+                      <SSText>Suggest New Spot</SSText>
+                    </Button>
+                  </Link>
+                )}
+              </View>
 
               {itinerary.itineraryPlaces?.map((place, index) => (
                 <TouchableOpacity

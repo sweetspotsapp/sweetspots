@@ -41,13 +41,11 @@ export default function DiscoverPlaces({
         limit: 30,
       });
 
-      setSavedPlaces(res.data || []);
+      setSavedPlaces(res.data?.data || []);
     } finally {
       setIsLoading(false);
     }
   }
-
-  console.log(savedPlaces);
 
   useEffect(() => {
     fetchRecommendations();
