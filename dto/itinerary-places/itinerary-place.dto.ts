@@ -16,4 +16,5 @@ export interface IItineraryPlace {
   suggestionStatus?: "accepted" | "rejected" | "pending";
   // Optional populated place
   place?: IPlace;
+  userId?: string | null;
 }
