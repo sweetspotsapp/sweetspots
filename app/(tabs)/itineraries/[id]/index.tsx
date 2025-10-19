@@ -12,6 +12,7 @@ import {
   DollarSign,
   EditIcon,
   Plus,
+  Bell,
 } from 'lucide-react-native';
 import { Link, router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
@@ -173,6 +174,13 @@ export default function ItineraryDetailsScreen() {
               >
                 <EditIcon size={24} className="text-orange-500" />
               </TouchableOpacity>
+              <Link href={`/itineraries/${id}/place-suggestions`}>
+                <TouchableOpacity
+                  className="w-11 h-11 rounded-full bg-orange-600 justify-center items-center shadow-sm"
+                >
+                  <Bell size={24} className="text-white" />
+                </TouchableOpacity>
+              </Link>
             </View>
           )}
         </View>
