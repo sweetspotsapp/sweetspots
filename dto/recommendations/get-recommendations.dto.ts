@@ -8,4 +8,5 @@ export class GetRecommendationsDto {
   latitude?: number;
   longitude?: number;
   seed?: string;
+  forDemo?: boolean;
 }

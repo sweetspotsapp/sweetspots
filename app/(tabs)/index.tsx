@@ -28,6 +28,7 @@ import { PlaceDetails } from '@/components/placeSwipes/PlaceDetails';
 import SSContainer from '@/components/SSContainer';
 import { useHintsStore } from '@/store/useHintsStore';
 import { useFeedbackNudgeStore } from '@/store/useFeedbackNudgeStore';
+import { useAuth } from '@/hooks/useAuth';
 
 interface CardStackItem {
   id: string;
@@ -146,6 +147,7 @@ export default function DiscoverTab() {
 
     try {
       const res = await getRecommendations({
+        forDemo: user?.email === 'kao@gmail.com',
         limit: PAGE_SIZE,
         page,
         vibes: vibeFilters,
@@ -205,6 +207,8 @@ export default function DiscoverTab() {
     }
     setCardStack(newStack);
   };
+
+  const user = useAuth().user;
 
   const animateStackMovement = () => {
     if (isAnimatingRef.current) return;
