@@ -146,12 +146,12 @@ export default function ItineraryDetailsScreen() {
           <BackArrowButton fallbackUrl="/itineraries" forceFallback />
 
           <View className="flex-row gap-3">
-            <TouchableOpacity
+            {/* <TouchableOpacity
               className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
               onPress={handleToggleShare}
             >
               <Share2 size={24} className="text-orange-500" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
               onPress={handleEditItinerary}
