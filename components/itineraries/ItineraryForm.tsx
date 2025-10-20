@@ -33,8 +33,6 @@ import { updateSuggestionStatus } from '@/endpoints/collab-itinerary/endpoints';
 import SuggestionCardList, { Suggestion } from './SuggestionCardList';
 import { CreateItineraryDto } from '@/dto/itineraries/create-itinerary.dto';
 
-// ------------------ helpers: default cost/duration ------------------
-
 function getStartOrNow(p: IItineraryPlace) {
   return parseStart(p.visitDate, p.visitTime) || moment();
 }
@@ -87,7 +85,6 @@ function formatTime(m: moment.Moment | null) {
   return m ? m.format(TIME_FMT) : '';
 }
 
-// Build per-place "gapAfter" based on current order
 const computeGapAfterMap = (list: IItineraryPlace[]) => {
   const gapAfter = new Map<string, number>();
   for (let i = 0; i < list.length - 1; i++) {
@@ -111,7 +108,6 @@ const startKey = (p?: IItineraryPlace) => {
   return m ? m.toISOString() : null; // canonical key
 };
 
-// Rebuild chain after reorder, keeping each place's original gapAfter
 const rebuildTimesKeepingGivenGaps = (
   list: IItineraryPlace[],
   gapAfter: Map<string, number>
@@ -153,15 +149,12 @@ const rebuildTimesKeepingGivenGaps = (
   return chain;
 };
 
-// Move one element in an array
 function arrayMove<T>(arr: T[], from: number, to: number): T[] {
   const copy = [...arr];
   const [item] = copy.splice(from, 1);
   copy.splice(to, 0, item);
   return copy;
 }
-
-// ------------------ RHF schema & types ------------------
 
 const DATE_FMT = 'YYYY-MM-DD';
 const TIME_FMT = 'HH:mm';
@@ -481,6 +474,7 @@ export function ItineraryForm({
       notes: '',
       orderIndex: index + 1,
       suggestionStatus: 'accepted',
+      itineraryId: itineraryId || '',
     }));
     setValue('itineraryPlaces', places, {
       shouldDirty: true,
@@ -825,6 +819,7 @@ export function ItineraryForm({
           estimatedCost: Number(p.estimatedCost) || 0,
           notes: p.notes || '',
           orderIndex: p.orderIndex,
+          itineraryId: itineraryId || '',
         })),
         collaborators: values.collaborators || [],
         isPublic: values.isPublic || false,
@@ -851,29 +846,6 @@ export function ItineraryForm({
       console.error('Failed to create/update itinerary', error);
       Alert.alert('Error', 'Failed to save itinerary. Please try again.');
     }
-  };
-
-  // ------------------ collaborators helpers ------------------
-
-  const [newCollaborator, setNewCollaborator] = React.useState('');
-  const addCollaborator = () => {
-    const v = newCollaborator.trim();
-    if (!v) return;
-    if ((collaborators || []).includes(v)) {
-      setNewCollaborator('');
-      return;
-    }
-    setValue('collaborators', [...(collaborators || []), v], {
-      shouldDirty: true,
-    });
-    setNewCollaborator('');
-  };
-  const removeCollaborator = (email: string) => {
-    setValue(
-      'collaborators',
-      (collaborators || []).filter((c) => c !== email),
-      { shouldDirty: true }
-    );
   };
 
   // ------------------ render ------------------

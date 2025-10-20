@@ -48,6 +48,7 @@ import { useAuth } from '@/hooks/useAuth';
 import SSSpinner from '../ui/SSSpinner';
 import { useRecContextCache } from '@/store/useRecContextCache';
 import { TWO_DAYS_MS } from './PlaceCard';
+import { getPlaceImages } from '@/endpoints/place-images/endpoints';
 
 interface PlaceDetailsProps {
   place: IRecommendedPlace | IPlace;
@@ -67,11 +68,27 @@ PlaceDetailsProps) {
   // const [duration, setDuration] = useState<number | null>(null);
   const user = useAuth().user;
 
-  const images = Array.isArray(place?.images)
-    ? place?.images.slice(skipFirstImage ? 1 : 0, 4)
+  const [placeImages, setPlaceImages] = useState<(IPlaceImage | string)[]>(
+    Array.isArray(place.images) ? (place.images as IPlaceImage[]) : []
+  );
+
+  const images = Array.isArray(placeImages)
+    ? placeImages.slice(skipFirstImage ? 1 : 0, 4)
     : [];
 
   const { location } = useLocationStore();
+
+  useEffect(() => {
+    if (!place.images || place.images.length === 0) {
+      getPlaceImages({
+        placeId: place?.id,
+      }).then((res) => {
+        if (res.success && res.data) {
+          setPlaceImages(res.data.data);
+        }
+      });
+    }
+  }, [place.images]);
 
   // useEffect(() => {
   //   const fetchDistanceAndDuration = async () => {
@@ -459,9 +476,8 @@ PlaceDetailsProps) {
       <ImageGalleryModal
         visible={currentImageIndex >= 0}
         images={
-          place.images?.map((img) =>
-            typeof img === 'string' ? img : img.url
-          ) || []
+          placeImages.map((img) => (typeof img === 'string' ? img : img.url)) ||
+          []
         }
         startIndex={currentImageIndex}
         onClose={() => {
