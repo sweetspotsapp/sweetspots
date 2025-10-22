@@ -40,17 +40,17 @@ export default function PlaceSuggestionsPage() {
   function handleAddToItinerary() {
     setIsAddingToItinerary(true);
     // Logic to add the selected place to the itinerary
-    console.log('Adding place to itinerary:', selectedPlace);
   }
 
   return (
     <SSContainer>
       {
-        selectedPlace && (
+        selectedPlace && selectedItineraryPlace && (
           <PlaceSuggestionTimingDialog
             open={!!selectedItineraryPlaceId && isAddingToItinerary}
             onOpenChange={setIsAddingToItinerary}
             itineraryId={id}
+            itineraryPlace={selectedItineraryPlace}
           />
         )
       }

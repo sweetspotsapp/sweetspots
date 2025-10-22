@@ -8,6 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../ui/card';
 import { SSText } from '../ui/SSText';
 import { Button } from '../ui/button';
+import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
 
 export default function PlaceSuggestionModal({
   visible,
@@ -29,7 +30,7 @@ export default function PlaceSuggestionModal({
     >
       <SSContainer disableBottomPadding className="relative flex-1">
         <Button className="absolute bottom-6 inset-x-0 z-10 p-4" onPress={onAddPlaceToItinerary}>
-          <SSText>Add to itinerary</SSText>
+          <SSText>Add to Itinerary</SSText>
         </Button>
         <ModalHeader onClose={onClose} />
         <ScrollView>

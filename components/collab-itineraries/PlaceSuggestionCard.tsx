@@ -22,7 +22,7 @@ export default function PlaceSuggestionCard({
   itineraryPlace: IItineraryPlace;
   onAccept?: () => void;
   onReject?: () => void;
-  onSelect?: (place: IPlace) => void;
+  onSelect?: (place: IPlace, itineraryPlace: IItineraryPlace) => void;
 }) {
   const [place, setPlace] = useState<IPlace | null>(
     itineraryPlace.place || null
@@ -82,7 +82,7 @@ export default function PlaceSuggestionCard({
   const imageUrl = placeImages.length > 0 ? placeImages[0].url : null;
 
   return (
-    <Pressable onPress={() => place && onSelect?.(place)}>
+    <Pressable onPress={() => place && onSelect?.(place, itineraryPlace)}>
       <Card className="p-4">
         <View className="flex-row gap-4">
           {imageUrl && (
