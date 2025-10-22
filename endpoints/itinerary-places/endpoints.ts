@@ -19,6 +19,13 @@ export const bulkCreateItineraryPlaces = async (
   return res.data;
 };
 
+export const bulkUpdateItineraryPlaces = async (
+  data: UpdateItineraryPlaceDto[]
+): Promise<ApiResponse<IItineraryPlace[]>> => {
+  const res = await api.patch('/itinerary-places/bulk', { places: data });
+  return res.data;
+};
+
 export const getAllItineraryPlaces = async (
   params?: GetItineraryPlacesQueryDto
 ): Promise<ApiPluralResponse<IItineraryPlace>> => {
