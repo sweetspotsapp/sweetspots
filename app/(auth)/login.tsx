@@ -33,8 +33,6 @@ export default function LoginScreen() {
   const goToStep = useOnboardingStore((s) => s.goToStep);
   const answers = useOnboardingStore((s) => s.answers);
 
-  console.log("TOGI2", { answers });
-
   // Shared “after auth” logic
   const finalizeLogin = async (cred: UserCredential, emailHint?: string) => {
     const token = await cred.user.getIdToken();
@@ -43,8 +41,6 @@ export default function LoginScreen() {
     const email = emailHint ?? cred.user.email ?? '';
     const onboardingAnswers = useOnboardingStore.getState().answers;
     const onboardingUi = useOnboardingStore.getState().ui;
-
-    console.log("TOGI", { onboardingAnswers, onboardingUi });
 
     if (
       onboardingAnswers.email !== email &&
