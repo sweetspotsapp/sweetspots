@@ -17,4 +17,5 @@ export interface IItineraryPlace {
   // Optional populated place
   place?: IPlace;
   userId?: string | null;
+  includedUserIds: string[];
 }

@@ -54,3 +54,23 @@ export const updateSuggestionStatus = async (
     const res = await api.patch(`/collab-itinerary/suggestions/${suggestionId}`, { status });
     return res.data;
 };
+
+export const tapIn = async (itineraryPlaceId: string, userId: string): Promise<ApiResponse<any>> => {
+  const res = await api.patch(`/collab-itinerary/tap-in/${itineraryPlaceId}`, { userId });
+  return res.data;
+};
+
+export const tapOut = async (itineraryPlaceId: string, userId: string): Promise<ApiResponse<any>> => {
+  const res = await api.patch(`/collab-itinerary/tap-out/${itineraryPlaceId}`, { userId });
+  return res.data;
+};
+
+export const tapAllIn = async (itineraryId: string, userId: string): Promise<ApiResponse<any>> => {
+  const res = await api.patch(`/collab-itinerary/tap-all-in/${itineraryId}`, { userId });
+  return res.data;
+};
+
+export const tapAllOut = async (itineraryId: string, userId: string): Promise<ApiResponse<any>> => {
+  const res = await api.patch(`/collab-itinerary/tap-all-out/${itineraryId}`, { userId });
+  return res.data;
+};
