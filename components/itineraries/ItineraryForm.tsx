@@ -32,6 +32,7 @@ import { SSControlledInput } from '../ui/SSControlledInput';
 import { updateSuggestionStatus } from '@/endpoints/collab-itinerary/endpoints';
 import SuggestionCardList, { Suggestion } from './SuggestionCardList';
 import { CreateItineraryDto } from '@/dto/itineraries/create-itinerary.dto';
+import { arrayMove } from '@/lib/utils';
 
 function getStartOrNow(p: IItineraryPlace) {
   return parseStart(p.visitDate, p.visitTime) || moment();
@@ -85,7 +86,12 @@ function formatTime(m: moment.Moment | null) {
   return m ? m.format(TIME_FMT) : '';
 }
 
-const computeGapAfterMap = (list: IItineraryPlace[]) => {
+const DEFAULT_GAP_MS = 15 * 60 * 1000;
+
+export const computeGapAfterMap = (
+  list: IItineraryPlace[],
+  defaultGapMs: number = DEFAULT_GAP_MS
+) => {
   const gapAfter = new Map<string, number>();
   for (let i = 0; i < list.length - 1; i++) {
     const a = list[i];
@@ -95,10 +101,14 @@ const computeGapAfterMap = (list: IItineraryPlace[]) => {
       ? aStart.clone().add(Number(a.visitDuration) || 0, 'hours')
       : null;
     const bStart = parseStart(b.visitDate, b.visitTime);
-    const gap = aEnd && bStart ? bStart.valueOf() - aEnd.valueOf() : 0;
+    const gap = aEnd && bStart ? bStart.valueOf() - aEnd.valueOf() : defaultGapMs;
     gapAfter.set(a.id, gap);
   }
-  if (list[list.length - 1]) gapAfter.set(list[list.length - 1].id, 0);
+  if (list[list.length - 1]) {
+    // Important: last item keeps a *default* gap, so if it moves earlier later,
+    // it still has 15 minutes after it.
+    gapAfter.set(list[list.length - 1].id, defaultGapMs);
+  }
   return gapAfter;
 };
 
@@ -108,7 +118,7 @@ const startKey = (p?: IItineraryPlace) => {
   return m ? m.toISOString() : null; // canonical key
 };
 
-const rebuildTimesKeepingGivenGaps = (
+export const rebuildTimesKeepingGivenGaps = (
   list: IItineraryPlace[],
   gapAfter: Map<string, number>
 ) => {
@@ -148,13 +158,6 @@ const rebuildTimesKeepingGivenGaps = (
 
   return chain;
 };
-
-function arrayMove<T>(arr: T[], from: number, to: number): T[] {
-  const copy = [...arr];
-  const [item] = copy.splice(from, 1);
-  copy.splice(to, 0, item);
-  return copy;
-}
 
 const DATE_FMT = 'YYYY-MM-DD';
 const TIME_FMT = 'HH:mm';
