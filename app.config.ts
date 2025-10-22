@@ -14,7 +14,12 @@ const config: ExpoConfig = {
   android: {
     permissions: ['ACCESS_FINE_LOCATION', 'ACCESS_COARSE_LOCATION'],
     googleServicesFile: './google-services.json',
-    package: 'com.mycorp.myapp',
+    package: 'com.sweetspots.sweetspotsapp',
+    config: {
+      googleMaps: {
+        apiKey: process.env.ANDROID_GOOGLE_MAPS_SDK_KEY, // Android native SDK
+      },
+    },
   },
   ios: {
     supportsTablet: true,
@@ -23,7 +28,10 @@ const config: ExpoConfig = {
         'This app uses your location to show nearby places.',
     },
     googleServicesFile: './GoogleService-Info.plist',
-    bundleIdentifier: 'com.mycorp.myapp',
+    bundleIdentifier: 'com.sweetspots.sweetspotsapp',
+    config: {
+      googleMapsApiKey: process.env.IOS_GOOGLE_MAPS_SDK_KEY, // iOS native SDK
+    },
   },
   web: {
     bundler: 'metro',
@@ -64,6 +72,7 @@ const config: ExpoConfig = {
     FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID,
     FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
     FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID,
+    EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY: process.env.EXPO_PUBLIC_GOOGLE_MAPS_WEB_KEY,
   },
 };
 
