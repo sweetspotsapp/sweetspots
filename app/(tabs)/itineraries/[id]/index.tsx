@@ -380,7 +380,7 @@ export default function ItineraryDetailsScreen() {
             >
               <TabsList>
                 <TabsTrigger value="places">
-                  <SSText>Places</SSText>
+                  <SSText>Spots</SSText>
                 </TabsTrigger>
                 <TabsTrigger value="maps">
                   <SSText>Maps</SSText>
