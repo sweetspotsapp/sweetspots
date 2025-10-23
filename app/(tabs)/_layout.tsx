@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Tabs, Redirect, router } from 'expo-router';
-import { Heart, User, Compass, Search, Briefcase } from 'lucide-react-native';
+import { Heart, User, Compass, Search, Briefcase, Bell } from 'lucide-react-native';
 import { Platform } from 'react-native';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
 import { useAuth } from '@/hooks/useAuth';
@@ -138,6 +138,13 @@ export default function TabLayout() {
           options={{
             title: 'Profile',
             tabBarIcon: ({ size, color }) => <User size={size} color={color} />,
+          }}
+        />
+          <Tabs.Screen
+          name="notifications"
+          options={{
+            title: 'Notifications',
+            tabBarIcon: ({ size, color }) => <Bell size={size} color={color} />,
           }}
         />
       </Tabs>
