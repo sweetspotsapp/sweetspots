@@ -35,6 +35,8 @@ import { Button } from '@/components/ui/button';
 import ItineraryPlaceCard from '@/components/itineraries/ItineraryPlaceCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ItineraryMap from '@/components/itinerary-maps/ItineraryMap';
+import { IPlace } from '@/dto/places/place.dto';
+import PlaceDetailsModal from '@/components/places/PlaceDetailsModal';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -42,6 +44,7 @@ export default function ItineraryDetailsScreen() {
   const [itineraryUsers, setItineraryUsers] = useState<IItineraryUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<'places' | 'maps'>('places');
+  const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null);
 
   const user = useAuth().user;
 
@@ -154,8 +157,17 @@ export default function ItineraryDetailsScreen() {
   const isOwner = itineraryUser?.role === 'owner';
   const isEditor = itineraryUser?.role === 'editor';
 
+  function handleSelectPlace(place: IPlace) {
+    setSelectedPlace(place);
+  }
+
   return (
     <>
+      <PlaceDetailsModal
+        visible={selectedPlace !== null}
+        onClose={() => setSelectedPlace(null)}
+        place={selectedPlace as IPlace}
+      />
       <ShareItineraryModal
         visible={isSharing}
         onClose={handleToggleShare}
@@ -398,10 +410,7 @@ export default function ItineraryDetailsScreen() {
                     <TouchableOpacity
                       key={place.id}
                       onPress={() => {
-                        router.push({
-                          pathname: `/places/${place.place?.id}` as any,
-                          params: { from: `itineraries/${id}` },
-                        });
+                        handleSelectPlace(place.place!);
                       }}
                     >
                       <ItineraryPlaceCard index={index} place={place} />
@@ -410,8 +419,10 @@ export default function ItineraryDetailsScreen() {
                 </View>
               </TabsContent>
               <TabsContent value="maps">
+                {/* TODO: should be just places that we tap in */}
                 <ItineraryMap
                   itineraryPlaces={itinerary.itineraryPlaces || []}
+                  onPressPlace={handleSelectPlace}
                 />
               </TabsContent>
             </Tabs>

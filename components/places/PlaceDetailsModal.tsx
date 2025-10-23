@@ -1,23 +1,19 @@
-import { View, Modal } from 'react-native';
+import { View, Text, Modal } from 'react-native';
 import React from 'react';
 import { IPlace } from '@/dto/places/place.dto';
 import ModalHeader from '../ui/ModalHeader';
 import SSContainer from '../SSContainer';
 import { PlaceDetails } from '../placeSwipes/PlaceDetails';
 import { ScrollView } from 'react-native-gesture-handler';
-import { SSText } from '../ui/SSText';
-import { Button } from '../ui/button';
 
-export default function PlaceSuggestionModal({
+export default function PlaceDetailsModal({
   visible,
   onClose,
   place,
-  onAddPlaceToItinerary,
 }: {
   visible: boolean;
   onClose: () => void;
-  place: IPlace;
-  onAddPlaceToItinerary: () => void;
+  place?: IPlace;
 }) {
   return (
     <Modal
@@ -27,14 +23,13 @@ export default function PlaceSuggestionModal({
       onRequestClose={onClose}
     >
       <SSContainer disableBottomPadding className="relative flex-1">
-        <Button className="absolute bottom-6 inset-x-0 z-10 p-4" onPress={onAddPlaceToItinerary}>
-          <SSText>Add to Itinerary</SSText>
-        </Button>
-        <ModalHeader title={place.name} onClose={onClose} />
+        <ModalHeader title={place?.name} onClose={onClose} />
         <ScrollView>
-          <View className="pb-24">
-            <PlaceDetails place={place} />
-          </View>
+          {place && (
+            <View className="pb-24">
+              <PlaceDetails place={place} />
+            </View>
+          )}
         </ScrollView>
       </SSContainer>
     </Modal>

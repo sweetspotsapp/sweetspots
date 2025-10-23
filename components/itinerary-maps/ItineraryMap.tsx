@@ -12,8 +12,10 @@ import ItineraryMapMarker from './ItineraryMapMarker';
 
 export default function ItineraryMap({
   itineraryPlaces,
+  onPressPlace,
 }: {
   itineraryPlaces: IItineraryPlace[];
+  onPressPlace?: (place: IPlace) => void;
 }) {
   const places = itineraryPlaces
     .map((place) => place.place)
@@ -22,7 +24,12 @@ export default function ItineraryMap({
   const placeMarkers: Marker[] = itineraryPlaces.map(
     (ip) =>
       ip.place && {
-        element: <ItineraryMapMarker itineraryPlace={ip} />,
+        element: (
+          <ItineraryMapMarker
+            itineraryPlace={ip}
+            onPress={() => ip.place && onPressPlace?.(ip.place)}
+          />
+        ),
         latitude: parseFloat(ip.place.latitude),
         longitude: parseFloat(ip.place.longitude),
       }
