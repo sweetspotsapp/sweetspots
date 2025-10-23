@@ -34,7 +34,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import ItineraryPlaceCard from '@/components/itineraries/ItineraryPlaceCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import ItineraryMap from '@/components/itineraries/ItineraryMap';
+import ItineraryMap from '@/components/itinerary-maps/ItineraryMap';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

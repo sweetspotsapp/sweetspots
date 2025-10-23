@@ -3,8 +3,12 @@ import React, { useEffect } from 'react';
 import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
 import { IPlace } from '@/dto/places/place.dto';
 import { calculateTimeAndDistance } from '@/endpoints/places/endpoints';
-import { CoordinatesDto, TravelMode } from '@/dto/places/calculate-distance.dto';
-import SSMaps from '../SSMaps';
+import {
+  CoordinatesDto,
+  TravelMode,
+} from '@/dto/places/calculate-distance.dto';
+import SSMaps, { Marker } from '../SSMaps';
+import ItineraryMapMarker from './ItineraryMapMarker';
 
 export default function ItineraryMap({
   itineraryPlaces,
@@ -15,10 +19,14 @@ export default function ItineraryMap({
     .map((place) => place.place)
     .filter(Boolean) as IPlace[];
 
-  const placeCoordinates = places.map((place) => ({
-    latitude: parseFloat(place.latitude),
-    longitude: parseFloat(place.longitude),
-  }));
+  const placeMarkers: Marker[] = itineraryPlaces.map(
+    (ip) =>
+      ip.place && {
+        element: <ItineraryMapMarker itineraryPlace={ip} />,
+        latitude: parseFloat(ip.place.latitude),
+        longitude: parseFloat(ip.place.longitude),
+      }
+  ) as Marker[];
 
   const coordinatePairs = places
     .map((place, index) => {
@@ -43,7 +51,9 @@ export default function ItineraryMap({
     destination: { latitude: number; longitude: number };
   }[];
 
-  const [routeSegments, setRouteSegments] = React.useState<{ coordinates: CoordinatesDto[] }[]>([]);
+  const [routeSegments, setRouteSegments] = React.useState<
+    { coordinates: CoordinatesDto[] }[]
+  >([]);
 
   useEffect(() => {
     async function fetchRoutes() {
@@ -57,7 +67,11 @@ export default function ItineraryMap({
           })
         )
       );
-      setRouteSegments(routeSegments.map((segment) => ({ coordinates: segment.data?.coordinates || [] })));
+      setRouteSegments(
+        routeSegments.map((segment) => ({
+          coordinates: segment.data?.coordinates || [],
+        }))
+      );
     }
     fetchRoutes();
   }, [coordinatePairs.length]);
@@ -69,7 +83,7 @@ export default function ItineraryMap({
       <SSMaps
         segments={mergedCoordinates}
         height={800}
-        markers={placeCoordinates}
+        markers={placeMarkers}
       />
     </View>
   );

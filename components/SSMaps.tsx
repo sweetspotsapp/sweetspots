@@ -1,3 +1,4 @@
+// components/SSMaps.tsx
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Platform, View, StyleSheet } from 'react-native';
 import { CoordinatesDto } from '@/dto/places/calculate-distance.dto';
@@ -14,13 +15,14 @@ let MapNative: any, MarkerNative: any, PolylineNative: any, PROVIDER_GOOGLE: any
 import {
   APIProvider,
   Map as GMap,
-  Marker as GMarker,
   useMap,
+  AdvancedMarker as GAdvancedMarker,
 } from '@vis.gl/react-google-maps';
 
-type Marker = CoordinatesDto & {
+export type Marker = CoordinatesDto & {
   element?: React.ReactNode;
-}
+  zIndex?: number;
+};
 
 type SSMapsProps = {
   path?: CoordinatesDto[];
@@ -57,15 +59,13 @@ function WebInner({
     return arr;
   }, [path, segments, markers]);
 
+  // Draw polylines (imperative)
   useEffect(() => {
     if (!map || !(window as any).google) return;
-
-    // cleanup previous polylines
     polylinesRef.current.forEach((pl) => pl.setMap(null));
     polylinesRef.current = [];
 
     const g = (window as any).google as typeof google;
-
     const toGPath = (pts: CoordinatesDto[]) =>
       pts.map((p) => ({ lat: p.latitude, lng: p.longitude }));
 
@@ -98,6 +98,7 @@ function WebInner({
     };
   }, [map, path, segments, strokeWidth, strokeColor]);
 
+  // Fit bounds
   useEffect(() => {
     if (!map || !autoFit || !allCoords.length || !(window as any).google) return;
     const g = (window as any).google as typeof google;
@@ -108,9 +109,26 @@ function WebInner({
 
   return (
     <>
-      {markers?.map((m, i) => (
-        <GMarker key={`m-${i}`} position={{ lat: m.latitude, lng: m.longitude }} />
-      ))}
+      {markers?.map((m, i) =>
+        m.element ? (
+          // ✅ Custom content via AdvancedMarker
+          <GAdvancedMarker
+            key={`m-${i}`}
+            position={{ lat: m.latitude, lng: m.longitude }}
+            zIndex={m.zIndex}
+          >
+            {/* Your custom React node */}
+            {m.element}
+          </GAdvancedMarker>
+        ) : (
+          // Fallback to default pin if no custom element
+          <GAdvancedMarker
+            key={`m-${i}`}
+            position={{ lat: m.latitude, lng: m.longitude }}
+            zIndex={m.zIndex}
+          />
+        )
+      )}
     </>
   );
 }
@@ -127,11 +145,13 @@ export default function SSMaps({
   strokeWidth = 5,
   strokeColor = '#f97316',
 }: SSMapsProps) {
+  // WEB
   if (Platform.OS === 'web') {
     return (
       <APIProvider apiKey={webApiKey!}>
         <div style={{ height, borderRadius, overflow: 'hidden' }}>
           <GMap
+            mapId={'yeehoo'}
             defaultCenter={{ lat: initialCenter.latitude, lng: initialCenter.longitude }}
             defaultZoom={12}
             gestureHandling="greedy"
@@ -184,14 +204,17 @@ export default function SSMaps({
         }}
       >
         {markers?.map((m, i) => (
-          <MarkerNative key={`m-${i}`} coordinate={m} />
+          <MarkerNative key={`m-${i}`} coordinate={m} zIndex={m.zIndex}>
+            {/* ✅ Custom marker UI on native */}
+            {m.element ?? null}
+          </MarkerNative>
         ))}
 
         {path?.length ? (
           <PolylineNative
             coordinates={path}
             strokeWidth={strokeWidth}
-            {...(strokeColor ? { strokeColor } : {})}
+            strokeColor={strokeColor}
           />
         ) : null}
 
@@ -200,7 +223,7 @@ export default function SSMaps({
             key={`seg-${i}`}
             coordinates={seg}
             strokeWidth={strokeWidth}
-            {...(strokeColor ? { strokeColor } : {})}
+            strokeColor={strokeColor}
           />
         ))}
       </MapNative>
