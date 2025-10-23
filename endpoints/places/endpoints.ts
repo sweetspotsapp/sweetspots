@@ -69,9 +69,7 @@ export const syncPlacesInArea = async (
   return res.data;
 };
 
-export const syncPlace = async (
-  placeId: string
-): Promise<void> => {
+export const syncPlace = async (placeId: string): Promise<void> => {
   await api.post(`/places/sync/${placeId}`);
 };
 
@@ -84,7 +82,13 @@ export const hidePlace = async (
 
 export const calculateTimeAndDistance = async (
   data: CalculateDistanceDto
-): Promise<ApiResponse<{ distance: number; duration: number }>> => {
+): Promise<
+  ApiResponse<{
+    distance: number;
+    duration: number;
+    coordinates: { latitude: number; longitude: number }[];
+  }>
+> => {
   const res = await api.post('/places/calculate-time-distance', data);
   return res.data;
 };

@@ -2,22 +2,24 @@ import React, { useState, useCallback } from 'react';
 import { View, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  ArrowLeft,
   MapPin,
   Calendar,
   Share2,
-  Navigation,
-  Star,
   Clock,
   DollarSign,
   EditIcon,
   Plus,
   Bell,
 } from 'lucide-react-native';
-import { Link, router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import {
+  Link,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+} from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { getItineraryById } from '@/endpoints/itineraries/endpoints';
 import { formatCurrency, formatDuration } from '@/utils/formatter';
 import SSSpinner from '@/components/ui/SSSpinner';
@@ -31,12 +33,16 @@ import { getItineraryCollaborators } from '@/endpoints/collab-itinerary/endpoint
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import ItineraryPlaceCard from '@/components/itineraries/ItineraryPlaceCard';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ItineraryMap from '@/components/itineraries/ItineraryMap';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [itinerary, setItinerary] = useState<IItinerary | null>(null);
   const [itineraryUsers, setItineraryUsers] = useState<IItineraryUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState<'places' | 'maps'>('places');
+
   const user = useAuth().user;
 
   // useEffect(() => {
@@ -176,9 +182,7 @@ export default function ItineraryDetailsScreen() {
                 <EditIcon size={24} className="text-orange-500" />
               </TouchableOpacity>
               <Link href={`/itineraries/${id}/place-suggestions`}>
-                <TouchableOpacity
-                  className="w-11 h-11 rounded-full bg-orange-600 justify-center items-center shadow-sm"
-                >
+                <TouchableOpacity className="w-11 h-11 rounded-full bg-orange-600 justify-center items-center shadow-sm">
                   <Bell size={24} className="text-white" />
                 </TouchableOpacity>
               </Link>
@@ -357,39 +361,60 @@ export default function ItineraryDetailsScreen() {
               </View>
             )}
 
-            {/* Places List */}
-            <View className="mb-10 gap-4">
-              <View className="flex-row justify-between items-center">
-                <SSText variant="semibold" className="text-xl text-gray-800">
-                  Spots to Visit
-                </SSText>
-                {isEditor && (
-                  <Link href={`/itineraries/${id}/add-places`} asChild>
-                    <Button>
-                      <Plus size={16} className="text-white" />
-                      <SSText>Suggest New Spot</SSText>
-                    </Button>
-                  </Link>
-                )}
-              </View>
+            <Tabs
+              value={tab}
+              onValueChange={(value) => setTab(value as any)}
+              className="mb-6"
+            >
+              <TabsList>
+                <TabsTrigger value="places">
+                  <SSText>Places</SSText>
+                </TabsTrigger>
+                <TabsTrigger value="maps">
+                  <SSText>Maps</SSText>
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="places">
+                {/* Places List */}
+                <View className="mb-10 gap-4">
+                  <View className="flex-row justify-between items-center">
+                    <SSText
+                      variant="semibold"
+                      className="text-xl text-gray-800"
+                    >
+                      Spots to Visit
+                    </SSText>
+                    {isEditor && (
+                      <Link href={`/itineraries/${id}/add-places`} asChild>
+                        <Button>
+                          <Plus size={16} className="text-white" />
+                          <SSText>Suggest New Spot</SSText>
+                        </Button>
+                      </Link>
+                    )}
+                  </View>
 
-              {itinerary.itineraryPlaces?.map((place, index) => (
-                <TouchableOpacity
-                  key={place.id}
-                  onPress={() => {
-                    router.push({
-                      pathname: `/places/${place.place?.id}` as any,
-                      params: { from: `itineraries/${id}` },
-                    });
-                  }}
-                >
-                  <ItineraryPlaceCard
-                    index={index}
-                    place={place}
-                  />
-                </TouchableOpacity>
-              ))}
-            </View>
+                  {itinerary.itineraryPlaces?.map((place, index) => (
+                    <TouchableOpacity
+                      key={place.id}
+                      onPress={() => {
+                        router.push({
+                          pathname: `/places/${place.place?.id}` as any,
+                          params: { from: `itineraries/${id}` },
+                        });
+                      }}
+                    >
+                      <ItineraryPlaceCard index={index} place={place} />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </TabsContent>
+              <TabsContent value="maps">
+                <ItineraryMap
+                  itineraryPlaces={itinerary.itineraryPlaces || []}
+                />
+              </TabsContent>
+            </Tabs>
           </View>
         </ScrollView>
       </SSContainer>
