@@ -16,7 +16,7 @@ export default function SSContainer({
   return (
     <>
       {!disableGradient && <SSLinearGradient />}
-      <SafeAreaView className={`flex-1 container mx-auto !px-4 pt-2.5 ${disableBottomPadding ? 'pb-0' : 'pb-20'} ${className}`}>
+      <SafeAreaView className={`flex-1 container mx-auto !px-4 pt-2.5 ${disableBottomPadding ? 'pb-0' : '!pb-20'} ${className}`}>
         {children}
       </SafeAreaView>
     </>
