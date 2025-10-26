@@ -1,12 +1,11 @@
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
 import {
+  deleteItineraryPlace,
   getAllItineraryPlaces,
-  updateItineraryPlace,
 } from '@/endpoints/itinerary-places/endpoints';
-import { useLocalSearchParams } from 'expo-router';
-import { ItineraryPlaceSuggestionStatus } from '@/dto/itinerary-places/itinerary-place-status.enum';
+import { Link, useLocalSearchParams } from 'expo-router';
 import SSContainer from '@/components/SSContainer';
 import { FlatList } from 'react-native-gesture-handler';
 import PlaceSuggestionCard from '@/components/collab-itineraries/PlaceSuggestionCard';
@@ -14,29 +13,40 @@ import { SSText } from '@/components/ui/SSText';
 import SSBackButton from '@/components/SSBackButton';
 import PlaceSuggestionModal from '@/components/collab-itineraries/PlaceSuggestionModal';
 import { IPlace } from '@/dto/places/place.dto';
-import PlaceSuggestionTimingDialog from '@/components/collab-itineraries/PlaceSuggestionTimingDialog';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
+import SSSpinner from '@/components/ui/SSSpinner';
 
 export default function PlaceSuggestionsPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const user = useAuth().user;
+  const [isLoading, setIsLoading] = useState(false);
   const [itineraryPlaces, setItineraryPlaces] = useState<IItineraryPlace[]>([]);
 
   function fetchData() {
+    setIsLoading(true);
     getAllItineraryPlaces({
       itineraryId: id,
-      suggestionStatus: ItineraryPlaceSuggestionStatus.Pending,
       limit: 50,
       page: 1,
-    }).then((res) => {
-      if (res.success && res.data) {
-        setItineraryPlaces(res.data?.data || []);
-      }
-    });
+      userId: user?.uid,
+    })
+      .then((res) => {
+        if (res.success && res.data) {
+          setItineraryPlaces(res.data?.data || []);
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   useEffect(() => {
     // Fetch itinerary places from API
+    if (!user) return;
+
     fetchData();
-  }, []);
+  }, [user]);
 
   const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null);
   const selectedItineraryPlace = itineraryPlaces.find(
@@ -53,16 +63,17 @@ export default function PlaceSuggestionsPage() {
     // Logic to add the selected place to the itinerary
   }
 
+  function handleCancelSuggestion() {
+    deleteItineraryPlace(selectedItineraryPlaceId!).then((res) => {
+      if (res.success) {
+        fetchData();
+        setSelectedPlace(null);
+      }
+    });
+  }
+
   return (
     <SSContainer>
-      {selectedPlace && selectedItineraryPlace && (
-        <PlaceSuggestionTimingDialog
-          open={!!selectedItineraryPlaceId && isAddingToItinerary}
-          onOpenChange={setIsAddingToItinerary}
-          itineraryId={id}
-          itineraryPlace={selectedItineraryPlace}
-        />
-      )}
       {selectedPlace && selectedItineraryPlace && (
         <PlaceSuggestionModal
           visible={!!selectedPlace && !isAddingToItinerary}
@@ -70,7 +81,8 @@ export default function PlaceSuggestionsPage() {
           place={selectedPlace}
           itineraryPlace={selectedItineraryPlace}
           onAddPlaceToItinerary={handleAddToItinerary}
-          onFinishReject={fetchData}
+          onCancelSuggestion={handleCancelSuggestion}
+          hideAddButton
         />
       )}
 
@@ -83,7 +95,7 @@ export default function PlaceSuggestionsPage() {
           </TouchableOpacity> */}
         <SSBackButton />
         <SSText variant="bold" className="text-3xl text-orange-600">
-          Suggested Spots
+          Your Suggested Spots
         </SSText>
         {/* {Platform.OS === 'web' ? (
             <TouchableOpacity
@@ -96,36 +108,43 @@ export default function PlaceSuggestionsPage() {
             <View className="w-11" />
           )} */}
       </View>
-      <FlatList
-        data={itineraryPlaces}
-        renderItem={({ item }) => (
-          <View className="mb-3">
-            <PlaceSuggestionCard
-              itineraryPlace={item}
-              onSelect={setSelectedPlace}
-            />
-          </View>
-        )}
-        keyExtractor={(item) => String(item.id)}
-        showsVerticalScrollIndicator={false}
-        contentContainerClassName={
-          itineraryPlaces.length === 0
-            ? 'flex-1 justify-center items-center pt-25 px-10 kontol'
-            : 'pb-6'
-        }
-        columnWrapperClassName="gap-4"
-        className="gap-4"
-        ListEmptyComponent={
-          <View className="flex-1 justify-center items-center pt-25 px-10">
-            <Text className="text-2xl text-orange-600 text-center mb-3 font-bold">
-              No place suggestions yet
-            </Text>
-            <Text className="text-base text-slate-500 text-center leading-6">
-              There are no pending place suggestions for this itinerary.
-            </Text>
-          </View>
-        }
-      />
+      {isLoading ? (
+        <SSSpinner />
+      ) : (
+        <FlatList
+          data={itineraryPlaces}
+          renderItem={({ item }) => (
+            <View className="mb-3">
+              <PlaceSuggestionCard
+                itineraryPlace={item}
+                onSelect={setSelectedPlace}
+                hideUser
+              />
+            </View>
+          )}
+          keyExtractor={(item) => String(item.id)}
+          showsVerticalScrollIndicator={false}
+          contentContainerClassName={
+            itineraryPlaces.length === 0
+              ? 'flex-1 justify-center items-center pt-25 px-10 kontol'
+              : 'pb-6'
+          }
+          columnWrapperClassName="gap-4"
+          className="gap-4"
+          ListEmptyComponent={
+            <View className="flex-1 justify-center items-center pt-25 px-10">
+              <SSText className="text-2xl text-orange-600 text-center mb-3 font-bold">
+                You have no suggestions yet!
+              </SSText>
+              <Link href={`/itineraries/${id}/add-places`}>
+                <Button>
+                  <SSText>Add Spot Suggestions</SSText>
+                </Button>
+              </Link>
+            </View>
+          }
+        />
+      )}
     </SSContainer>
   );
 }

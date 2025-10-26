@@ -2,7 +2,7 @@ import { View, Text } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import SSContainer from '@/components/SSContainer';
 import { useAuth } from '@/hooks/useAuth';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import { getItineraryById } from '@/endpoints/itineraries/endpoints';
 import SSSpinner from '@/components/ui/SSSpinner';
@@ -110,8 +110,11 @@ export default function AddPlacesPage() {
   const isOwner = itineraryUser?.role === 'owner';
   const isEditor = itineraryUser?.role === 'editor';
 
+  const [isLoading, setIsLoading] = useState(false);
+
   async function handleAddPlaces() {
-    const res = await bulkCreateItineraryPlaces(
+    setIsLoading(true);
+    bulkCreateItineraryPlaces(
       selectedPlaceIds.map((placeId, index) => ({
         placeId,
         itineraryId: id,
@@ -119,7 +122,11 @@ export default function AddPlacesPage() {
         estimatedCost: 0,
         visitDuration: 60,
       }))
-    );
+    ).then(() => {
+      router.back();
+    }).finally(() => {
+      setIsLoading(false);
+    });
   }
 
   return (
@@ -134,14 +141,16 @@ export default function AddPlacesPage() {
         <>
           <View className="mb-5 flex-row items-center gap-4">
             <SSBackButton />
-            <SSText variant="bold" className="text-3xl text-orange-600">
-              Choose your sweet spots
-            </SSText>
-            {itinerary?.name && (
-              <SSText className="text-xl text-muted">
-                {itinerary.name ? `for "${itinerary.name}"` : null}
+            <View>
+              <SSText variant="bold" className="text-3xl text-orange-600">
+                Choose your sweet spots
               </SSText>
-            )}
+              {itinerary?.name && (
+                <SSText className="text-xl text-muted-foreground">
+                  {itinerary.name ? `for "${itinerary.name}"` : null}
+                </SSText>
+              )}
+            </View>
           </View>
           <ChoosePlaces
             onChangeTab={setTab}
@@ -162,6 +171,7 @@ export default function AddPlacesPage() {
             <Button
               className="absolute bottom-24 left-5 right-5 shadow-lg"
               onPress={handleAddPlaces}
+              disabled={isLoading}
             >
               <SSText variant="semibold" className="text-white text-base">
                 {

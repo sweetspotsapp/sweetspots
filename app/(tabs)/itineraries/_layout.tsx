@@ -46,6 +46,13 @@ export default function ItinerariesLayout() {
           headerShown: false,
         }}
       />
+            <Stack.Screen
+        name="[id]/your-suggestions"
+        options={{
+          title: 'Your Suggested Spots',
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

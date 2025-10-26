@@ -12,23 +12,30 @@ import { updateItineraryPlace } from '@/endpoints/itinerary-places/endpoints';
 import { SSText } from '../ui/SSText';
 import ProfileAvatar from '../user/ProfileAvatar';
 import VibePill from '../ui/VibePill';
+import { capitalCase } from 'change-case';
+import { cn } from '@/lib/utils';
+import ItineraryPlaceStatus from './ItineraryPlaceStatus';
 
 export default function PlaceSuggestionCard({
   itineraryPlace,
   onAccept,
   onReject,
   onSelect,
+  hideUser = false,
+  hideStatus = false,
 }: {
   itineraryPlace: IItineraryPlace;
   onAccept?: () => void;
   onReject?: () => void;
   onSelect?: (place: IPlace, itineraryPlace: IItineraryPlace) => void;
+  hideUser?: boolean;
+  hideStatus?: boolean;
 }) {
   const [place, setPlace] = useState<IPlace | null>(
     itineraryPlace.place || null
   );
   const [placeImages, setPlaceImages] = useState<IPlaceImage[]>(
-    place?.images || []
+    place?.placeImages || []
   );
   const [userProfile, setUserProfile] = useState<IUserProfile | null>(null);
 
@@ -43,7 +50,7 @@ export default function PlaceSuggestionCard({
   }, [itineraryPlace.placeId]);
 
   useEffect(() => {
-    if (!place?.images || place.images.length === 0) {
+    if (!place?.placeImages || place.placeImages.length === 0) {
       getPlaceImages({
         placeId: place?.id,
         limit: 1,
@@ -53,7 +60,7 @@ export default function PlaceSuggestionCard({
         }
       });
     }
-  }, [place?.images]);
+  }, [place?.placeImages]);
 
   useEffect(() => {
     if (itineraryPlace.userId) {
@@ -100,7 +107,12 @@ export default function PlaceSuggestionCard({
                 <VibePill vibe={vibe} key={index} />
               ))}
             </View>
-            {userProfile && (
+            {!hideStatus && (
+              <View className="mb-2">
+                <ItineraryPlaceStatus itineraryPlace={itineraryPlace} />
+              </View>
+            )}
+            {userProfile && !hideUser && (
               <View className="flex-row gap-2">
                 <ProfileAvatar user={userProfile} />
                 <View>

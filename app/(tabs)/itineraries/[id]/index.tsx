@@ -376,7 +376,6 @@ export default function ItineraryDetailsScreen() {
             <Tabs
               value={tab}
               onValueChange={(value) => setTab(value as any)}
-              className="mb-6"
             >
               <TabsList>
                 <TabsTrigger value="places">
@@ -389,13 +388,18 @@ export default function ItineraryDetailsScreen() {
               <TabsContent value="places">
                 {/* Places List */}
                 <View className="mb-10 gap-4">
-                  <View className="flex-row justify-between items-center">
+                  <View className="flex-row items-center">
                     <SSText
                       variant="semibold"
                       className="text-xl text-gray-800"
                     >
                       Spots to Visit
                     </SSText>
+                    <Link href={`/itineraries/${id}/your-suggestions`} asChild>
+                      <Button variant='ghost' className='ml-auto mr-2'>
+                        <SSText>Your Suggestions</SSText>
+                      </Button>
+                    </Link>
                     {isEditor && (
                       <Link href={`/itineraries/${id}/add-places`} asChild>
                         <Button>

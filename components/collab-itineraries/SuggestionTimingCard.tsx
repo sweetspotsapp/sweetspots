@@ -50,8 +50,8 @@ export default function SuggestionTimingCard({
   const placeImageUrl =
     placeImages && placeImages.length > 0
       ? placeImages[0].url
-      : place?.images && place.images.length > 0
-      ? place.images[0].url
+      : place?.placeImages && place.placeImages.length > 0
+      ? place.placeImages[0].url
       : itineraryPlace.imageUrl;
 
   const start = moment(`${itineraryPlace.visitDate}T${itineraryPlace.visitTime}`);
@@ -61,12 +61,12 @@ export default function SuggestionTimingCard({
   const timeRange = `${start.format('hh:mm A')} – ${end.format('hh:mm A')}`;
 
   const bgColor = isActive ? 'bg-orange-100' : 'bg-white';
-  const borderColor = isActive ? 'border-orange-400' : 'border-transparent';
+  const borderColor = isActive ? 'border-orange-400' : null;
   const textMuted = 'text-muted-foreground';
 
   return (
-    <Pressable onLongPress={isDraggable ? onLongPress : undefined} delayLongPress={100}>
-      <Card className={`flex-row items-center p-4 rounded-2xl shadow-sm ${bgColor} border ${borderColor}`}>
+    <Pressable onLongPress={isDraggable ? onLongPress : undefined} delayLongPress={200}>
+      <Card className={`flex-row items-center p-4 ${bgColor} ${borderColor}`}>
         {/* Index bubble */}
         <View className="w-7 h-7 rounded-full bg-orange-400 items-center justify-center mr-3">
           <SSText variant="bold" className="text-white text-xs">

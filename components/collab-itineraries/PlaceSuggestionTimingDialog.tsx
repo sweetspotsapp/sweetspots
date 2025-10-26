@@ -207,19 +207,23 @@ export default function PlaceSuggestionTimingDialog({
               <SSText className="text-xs text-slate-500">30min</SSText>
               <SSText className="text-xs text-slate-500">8h</SSText>
             </View>
+            <View>
+              <SSText className='text-sm clear-start text-muted-foreground'>
+                Long-press the new spot and drag it to reposition it in the itinerary.
+              </SSText>
+            </View>
             {/* If your DialogContent isn't already inside a GestureHandlerRootView,
             consider wrapping the whole dialog body with it at a higher level. */}
             <DraggableFlatList
               data={itineraryPlaces}
               keyExtractor={(ip) => String(ip.id)}
               renderItem={renderItem}
-              containerStyle={{ paddingBottom: 16 }}
               activationDistance={8} // small drag threshold; tweak as you like
               onDragEnd={({ from, to }) => reorderPlaces(from, to)}
               // Perf tweaks (optional)
               initialNumToRender={12}
               // windowSize={10}
-              // contentContainerClassName='flex-1'
+              contentContainerClassName='overflow-visible'
               contentContainerStyle={{ paddingTop: 4, overflow: 'scroll' }}
             />
             <Button onPress={handleConfirm}>

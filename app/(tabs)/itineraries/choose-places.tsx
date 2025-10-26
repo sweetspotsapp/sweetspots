@@ -19,7 +19,9 @@ export default function ChoosePlacesPage() {
   const draft = useItineraryDraft((state) => state.draft);
 
   const [selectedPlaceIds, setSelectedPlaceIds] = useState<string[]>([]);
-  const [placeCounts, setPlaceCounts] = useState<Partial<Record<'saved' | 'discover', number>>>({});
+  const [placeCounts, setPlaceCounts] = useState<
+    Partial<Record<'saved' | 'discover', number>>
+  >({});
 
   const handleSelectPlace = (placeId: string, tab: 'saved' | 'discover') => {
     setSelectedPlaceIds((prev) => {
@@ -80,19 +82,25 @@ export default function ChoosePlacesPage() {
         <>
           <View className="mb-5 flex-row items-center gap-4">
             <SSBackButton />
-            <SSText variant="bold" className="text-3xl text-orange-600">
-              Choose your sweet spots!
-            </SSText>
-            {draft.query && (
-              <SSText className="text-xl text-muted">
-                {draft.query ? `for "${draft.query}"` : null}
+            <View>
+              <SSText variant="bold" className="text-3xl text-orange-600">
+                Choose your sweet spots!
               </SSText>
-            )}
+              {draft.query && (
+                <SSText className="text-xl text-muted-foreground">
+                  {draft.query ? `for "${draft.query}"` : null}
+                </SSText>
+              )}
+            </View>
           </View>
           <ChoosePlaces
             onChangeTab={setTab}
-            onSelectDiscoverPlace={(placeId) => handleSelectPlace(placeId, 'discover')}
-            onSelectSavedPlace={(placeId) => handleSelectPlace(placeId, 'saved')}
+            onSelectDiscoverPlace={(placeId) =>
+              handleSelectPlace(placeId, 'discover')
+            }
+            onSelectSavedPlace={(placeId) =>
+              handleSelectPlace(placeId, 'saved')
+            }
             selectedPlaceIds={selectedPlaceIds}
             selectedDiscoverCount={placeCounts.discover || 0}
             selectedSavedCount={placeCounts.saved || 0}
