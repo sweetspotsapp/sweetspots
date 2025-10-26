@@ -8,12 +8,13 @@ const SSSlider: React.FC<SSSliderProps> = (props) => {
     style,
     minimumTrackTintColor = '#f97316',
     maximumTrackTintColor = '#e2e8f0',
+    thumbTintColor = '#f97316',
     ...rest
   } = props;
 
   return (
     <Slider
-      style={[{ width: '100%', height: 40, marginTop: 8 }, style]}
+      style={[{ width: '100%', height: 24, marginTop: 8 }, style]}
       {...rest}
     />
   );
