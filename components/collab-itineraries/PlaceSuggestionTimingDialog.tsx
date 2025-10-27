@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { SSText } from '../ui/SSText';
 import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
@@ -181,9 +181,16 @@ export default function PlaceSuggestionTimingDialog({
       });
   }
 
+  const { height } = useWindowDimensions();
+  const MAX_DIALOG_BODY = Math.round(height * 0.75);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent
+        className="rounded-2xl"
+        // Bound the dialog content so children can scroll
+        style={{ maxHeight: MAX_DIALOG_BODY }}
+      >
         {isConfirming ? (
           <SSText>Saving changes...</SSText>
         ) : (
@@ -208,25 +215,30 @@ export default function PlaceSuggestionTimingDialog({
               <SSText className="text-xs text-slate-500">8h</SSText>
             </View>
             <View>
-              <SSText className='text-sm clear-start text-muted-foreground'>
-                Long-press the new spot and drag it to reposition it in the itinerary.
+              <SSText className="text-sm text-muted-foreground">
+                Long-press the new spot and drag it to reposition it in the
+                itinerary.
               </SSText>
             </View>
-            {/* If your DialogContent isn't already inside a GestureHandlerRootView,
-            consider wrapping the whole dialog body with it at a higher level. */}
-            <DraggableFlatList
-              data={itineraryPlaces}
-              keyExtractor={(ip) => String(ip.id)}
-              renderItem={renderItem}
-              activationDistance={8} // small drag threshold; tweak as you like
-              onDragEnd={({ from, to }) => reorderPlaces(from, to)}
-              // Perf tweaks (optional)
-              initialNumToRender={12}
-              // windowSize={10}
-              contentContainerClassName='overflow-visible'
-              contentContainerStyle={{ paddingTop: 4, overflow: 'scroll' }}
-            />
-            <Button onPress={handleConfirm}>
+            <View className="mt-2 flex-1 min-h-0 overflow-y-scroll">
+              <DraggableFlatList
+                data={itineraryPlaces}
+                keyExtractor={(ip) => String(ip.id)}
+                renderItem={renderItem}
+                activationDistance={8}
+                onDragEnd={({ from, to }) => reorderPlaces(from, to)}
+                // IMPORTANT: make the list fill the available space and be scrollable
+                style={{ flex: 1 }}
+                contentContainerStyle={{ paddingTop: 4, paddingBottom: 16 }}
+                // If DialogContent internally scrolls (e.g., wraps with ScrollView),
+                // enable nested scrolling so gestures propagate correctly.
+                nestedScrollEnabled
+                keyboardShouldPersistTaps="handled"
+                className='flex-1'
+              />
+            </View>
+
+            <Button onPress={handleConfirm} className="mt-3">
               <SSText>Confirm</SSText>
             </Button>
           </>
