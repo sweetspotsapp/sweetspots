@@ -68,8 +68,16 @@ PlaceDetailsProps) {
   // const [duration, setDuration] = useState<number | null>(null);
   const user = useAuth().user;
 
+  const initialPlaceImages = (Array.isArray(
+    (place as IRecommendedPlace).images
+  )
+    ? (place as IRecommendedPlace).images
+    : Array.isArray((place as IPlace).placeImages)
+    ? (place as IPlace).placeImages
+    : []) as (IPlaceImage | string)[];
+
   const [placeImages, setPlaceImages] = useState<(IPlaceImage | string)[]>(
-    Array.isArray(place.images) ? (place.images as IPlaceImage[]) : []
+    initialPlaceImages
   );
 
   const images = Array.isArray(placeImages)
@@ -79,7 +87,12 @@ PlaceDetailsProps) {
   const { location } = useLocationStore();
 
   useEffect(() => {
-    if (!place.images || place.images.length === 0) {
+    if (
+      !(place as IPlace).placeImages ||
+      !(place as IRecommendedPlace).images ||
+      (place as IRecommendedPlace).images.length === 0 ||
+      (place as IPlace).placeImages?.length === 0
+    ) {
       getPlaceImages({
         placeId: place?.id,
       }).then((res) => {
@@ -88,7 +101,7 @@ PlaceDetailsProps) {
         }
       });
     }
-  }, [place.images]);
+  }, [place]);
 
   // useEffect(() => {
   //   const fetchDistanceAndDuration = async () => {
