@@ -13,29 +13,23 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    --primary: 27 96% 56%;
-    /* emerald-400 */
+    --primary: 25 95% 53%; /* Tailwind orange-500 */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 316 69% 68%;
-    /* rose-400 */
+    --secondary: 316 69% 68%; /* rose-400 */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 32 100% 91%;
-    /* very light orange tint */
-    --muted-foreground: 32 70% 40%;
-    /* medium orange text */
+    --muted: 32 100% 91%; /* very light orange tint */
+    --muted-foreground: 32 70% 40%; /* medium orange text */
 
-    --accent: 320 89% 96%;
-    /* very light rose */
-    --accent-foreground: 350 60% 40%;
-    /* rose for readable contrast */
+    --accent: 320 89% 96%; /* very light rose */
+    --accent-foreground: 350 60% 40%; /* rose for readable contrast */
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 32 100% 50%;
-    --input: 160 60% 85%;
+    --input: 32 70% 40%;
     --ring: 32 100% 50%;
   }
 
@@ -74,4 +68,13 @@
     --input: 160 40% 20%;
     --ring: 160 83% 31%;
   }
+}
+
+[role='slider'] > :first-child {
+  background-color: hsl(var(--primary)) !important;
+}
+
+/* Thumb */
+[role='slider'] > :nth-child(2) {
+  background-color: hsl(var(--primary)) !important;
 }

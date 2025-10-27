@@ -1,4 +1,6 @@
+import { IItineraryPlaceParticipant } from "../collab-itineraries/itinerary-place-participant.dto";
 import { IPlace } from "../places/place.dto";
+import { IUserProfile } from "../users/user-profile.dto";
 
 export interface IItineraryPlace {
   id: string;
@@ -15,4 +17,7 @@ export interface IItineraryPlace {
   suggestionStatus?: "accepted" | "rejected" | "pending";
   // Optional populated place
   place?: IPlace;
+  userId?: string | null;
+  participants?: IItineraryPlaceParticipant[];
+  user?: IUserProfile;
 }

@@ -1,11 +1,11 @@
-enum TravelMode {
+export enum TravelMode {
   DRIVE = 'DRIVE',
   WALK = 'WALK',
   BICYCLE = 'BICYCLE',
   TRANSIT = 'TRANSIT',
 }
 
-interface CoordinatesDto {
+export interface CoordinatesDto {
   latitude: number;
   longitude: number;
 }

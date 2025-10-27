@@ -1,34 +1,72 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  ArrowLeft,
   MapPin,
   Calendar,
   Share2,
-  Navigation,
-  Star,
   Clock,
   DollarSign,
   EditIcon,
+  Plus,
+  Bell,
 } from 'lucide-react-native';
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import {
+  Link,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+} from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
-import { Card, CardContent } from '@/components/ui/card';
 import { getItineraryById } from '@/endpoints/itineraries/endpoints';
-import { formatCurrency, formatDuration } from '@/utils/formatter';
 import SSSpinner from '@/components/ui/SSSpinner';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import ShareItineraryModal from '@/components/itineraries/ShareItineraryModal';
 import { goBack } from '@/utils/goBack';
 import SSContainer from '@/components/SSContainer';
 import { BackArrowButton } from '@/components/BackArrowButton';
+import { IItineraryUser } from '@/dto/itinerary-users/itinerary-user.dto';
+import {
+  getItineraryCollaborators,
+  getTappedInItineraryPlaces,
+} from '@/endpoints/collab-itinerary/endpoints';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
+import ItineraryPlaceCard from '@/components/itineraries/ItineraryPlaceCard';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ItineraryMap from '@/components/itinerary-maps/ItineraryMap';
+import { IPlace } from '@/dto/places/place.dto';
+import PlaceDetailsModal from '@/components/places/PlaceDetailsModal';
+import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
+import { ItineraryTimeline } from '@/components/itineraries/ItineraryTimeline';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [itinerary, setItinerary] = useState<IItinerary | null>(null);
+  const [itineraryUsers, setItineraryUsers] = useState<IItineraryUser[]>([]);
+  const [tappedInItineraryPlaces, setTappedInItineraryPlaces] = useState<
+    IItineraryPlace[]
+  >([]);
+  console.log('itinerary', itinerary);
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState<'places' | 'maps'>('places');
+  const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null);
+
+  const user = useAuth().user;
+
+  useEffect(() => {
+    if (!user) return;
+    getTappedInItineraryPlaces(id, user.uid).then((res) => {
+      setTappedInItineraryPlaces(
+        (res.data || []).map((ip) => ({
+          ...ip,
+          imageUrl: itinerary?.itineraryPlaces?.find((itp) => itp.id === ip.id)
+            ?.imageUrl,
+        }))
+      );
+    });
+  }, [user]);
 
   // useEffect(() => {
   //   loadItinerary();
@@ -48,6 +86,9 @@ export default function ItineraryDetailsScreen() {
       } else {
         console.error('Failed to fetch itinerary:', response.message);
       }
+      const collaboratorsRes = await getItineraryCollaborators(id);
+      const itineraryCollaborators = collaboratorsRes.data || [];
+      setItineraryUsers(itineraryCollaborators);
     } catch (error) {
       console.error('Error loading itinerary:', error);
     } finally {
@@ -132,8 +173,21 @@ export default function ItineraryDetailsScreen() {
     itinerary.endDate || undefined
   );
 
+  const itineraryUser = itineraryUsers?.find((iu) => iu.userId === user?.uid);
+  const isOwner = itineraryUser?.role === 'owner';
+  const isEditor = itineraryUser?.role === 'editor';
+
+  function handleSelectPlace(place: IPlace) {
+    setSelectedPlace(place);
+  }
+
   return (
     <>
+      <PlaceDetailsModal
+        visible={selectedPlace !== null}
+        onClose={() => setSelectedPlace(null)}
+        place={selectedPlace as IPlace}
+      />
       <ShareItineraryModal
         visible={isSharing}
         onClose={handleToggleShare}
@@ -146,18 +200,27 @@ export default function ItineraryDetailsScreen() {
           <BackArrowButton fallbackUrl="/itineraries" forceFallback />
 
           <View className="flex-row gap-3">
-            {/* <TouchableOpacity
-              className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-              onPress={handleToggleShare}
-            >
-              <Share2 size={24} className="text-orange-500" />
-            </TouchableOpacity> */}
-            <TouchableOpacity
-              className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-              onPress={handleEditItinerary}
-            >
-              <EditIcon size={24} className="text-orange-500" />
-            </TouchableOpacity>
+            {isOwner && (
+              <>
+                <TouchableOpacity
+                  className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
+                  onPress={handleToggleShare}
+                >
+                  <Share2 size={24} className="text-orange-500" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
+                  onPress={handleEditItinerary}
+                >
+                  <EditIcon size={24} className="text-orange-500" />
+                </TouchableOpacity>
+              </>
+            )}
+            <Link href={`/itineraries/${id}/notifications`}>
+              <TouchableOpacity className="w-11 h-11 rounded-full bg-orange-600 justify-center items-center shadow-sm">
+                <Bell size={24} className="text-white" />
+              </TouchableOpacity>
+            </Link>
           </View>
         </View>
 
@@ -209,7 +272,7 @@ export default function ItineraryDetailsScreen() {
             )}
 
             {/* Trip Summary */}
-            {(itinerary.totalEstimatedCost || itinerary.totalDuration) && (
+            {/* {(itinerary.totalEstimatedCost || itinerary.totalDuration) && (
               <View className="mb-8">
                 <SSText
                   variant="semibold"
@@ -293,10 +356,10 @@ export default function ItineraryDetailsScreen() {
                   )}
                 </View>
               </View>
-            )}
+            )} */}
 
             {/* Collaborators */}
-            {(itinerary.collaborators || []).length > 0 && (
+            {/* {(itinerary.collaborators || []).length > 0 && (
               <View className="mb-8">
                 <SSText
                   variant="semibold"
@@ -330,168 +393,74 @@ export default function ItineraryDetailsScreen() {
                   )}
                 </View>
               </View>
-            )}
+            )} */}
 
-            {/* Places List */}
-            <View className="mb-10 gap-4">
-              <SSText variant="semibold" className="text-xl text-gray-800">
-                Places to Visit
-              </SSText>
-
-              {itinerary.itineraryPlaces?.map((place, index) => (
-                <TouchableOpacity
-                  key={place.id}
-                  onPress={() => {
-                    router.push({
-                      pathname: `/places/${place.place?.id}` as any,
-                      params: { from: `itineraries/${id}` },
-                    });
-                  }}
-                >
-                  <Card>
-                    <CardContent>
-                      <View className="flex-row items-start mb-3">
-                        <View className="w-8 h-8 rounded-full bg-orange-600 justify-center items-center mr-3 mt-1">
-                          <SSText variant="bold" className="text-sm text-white">
-                            {index + 1}
-                          </SSText>
-                        </View>
-                        {place.imageUrl && (
-                          <Image
-                            source={{ uri: place.imageUrl }}
-                            className="w-20 h-20 rounded-xl mr-3"
-                            style={{ resizeMode: 'cover' }}
-                          />
-                        )}
-
-                        <View className="flex-1">
-                          <SSText
-                            variant="semibold"
-                            className="text-lg text-gray-800 mb-1"
-                          >
-                            {place.place?.name}
-                          </SSText>
-                          <SSText
-                            className="text-sm text-slate-500 leading-5"
-                            numberOfLines={2}
-                          >
-                            {place.place?.description}
-                          </SSText>
-                        </View>
-
-                        {/* <TouchableOpacity
-                          className="w-10 h-10 rounded-full bg-orange-50 border border-orange-600 justify-center items-center ml-2 mt-1"
-                          onPress={() => handleNavigateToPlace(place)}
-                        >
-                          <Navigation size={20} className="text-orange-500" />
-                        </TouchableOpacity> */}
-                      </View>
-
-                      {/* Schedule Info */}
-                      {(place.visitDate ||
-                        place.visitTime ||
-                        place.visitDuration ||
-                        place.estimatedCost) && (
-                        <View className="flex-row flex-wrap gap-3 mb-3 px-3 py-2 bg-slate-50 rounded-lg">
-                          {place.visitDate && (
-                            <View className="flex-row items-center gap-1">
-                              <Calendar size={14} color="#64748b" />
-                              <SSText className="text-xs text-slate-500">
-                                {place.visitDate}
-                              </SSText>
-                            </View>
-                          )}
-                          {place.visitTime && (
-                            <View className="flex-row items-center gap-1">
-                              <Clock size={14} color="#64748b" />
-                              <SSText className="text-xs text-slate-500">
-                                {place.visitTime}
-                              </SSText>
-                            </View>
-                          )}
-                          {place.visitDuration && (
-                            <View className="flex-row items-center gap-1">
-                              <Clock size={14} color="#64748b" />
-                              <SSText className="text-xs text-slate-500">
-                                {formatDuration({ hours: place.visitDuration })}
-                              </SSText>
-                            </View>
-                          )}
-                          {place.estimatedCost && (
-                            <View className="flex-row items-center gap-1">
-                              <DollarSign size={14} color="#64748b" />
-                              <SSText className="text-xs text-slate-500">
-                                {formatCurrency(place.estimatedCost)}
-                              </SSText>
-                            </View>
-                          )}
-                        </View>
-                      )}
-
-                      <View className="flex-row gap-3 mb-3">
-                        <View className="flex-row items-center gap-1">
-                          <Star size={14} color="#fbbf24" fill="#fbbf24" />
-                          <SSText
-                            variant="medium"
-                            className="text-xs text-slate-500"
-                          >
-                            {place?.place?.rating}
-                          </SSText>
-                        </View>
-                        <View className="flex-row items-center gap-1">
-                          <MapPin size={14} color="#64748b" />
-                          <SSText
-                            variant="medium"
-                            className="text-xs text-slate-500"
-                          >
-                            {place.place?.distance}
-                          </SSText>
-                        </View>
-                        <View className="flex-row items-center gap-1">
-                          <DollarSign size={14} color="#64748b" />
-                          <SSText
-                            variant="medium"
-                            className="text-xs text-slate-500"
-                          >
-                            {place.place?.priceRange}
-                          </SSText>
-                        </View>
-                      </View>
-
-                      {/* VIBES */}
-                      {/* <View className="flex-row flex-wrap gap-1.5 items-center mb-2">
-                        {place.vibes.slice(0, 3).map((vibe, vibeIndex) => (
-                          <View key={vibeIndex} className="bg-orange-50 border border-orange-600 px-2 py-1 rounded-xl">
-                            <SSText variant="medium" className="text-xs text-orange-600">
-                              {vibe}
-                            </SSText>
-                          </View>
-                        ))}
-                        {place.vibes.length > 3 && (
-                          <SSText variant="medium" className="text-xs text-slate-500">
-                            +{place.vibes.length - 3}
-                          </SSText>
-                        )}
-                      </View> */}
-
-                      {place.notes && (
-                        <View className="bg-amber-50 p-3 rounded-lg mt-2">
-                          <SSText
-                            variant="semibold"
-                            className="text-xs text-amber-800 mb-1"
-                          >
-                            Notes:
-                          </SSText>
-                          <SSText className="text-sm text-amber-800 leading-5">
-                            {place.notes}
-                          </SSText>
-                        </View>
-                      )}
-                    </CardContent>
-                  </Card>
-                </TouchableOpacity>
-              ))}
-            </View>
+            <Tabs value={tab} onValueChange={(value) => setTab(value as any)}>
+              <View className="md:flex-row md:items-center gap-2 justify-between">
+                <TabsList>
+                  <TabsTrigger value="places">
+                    <SSText>Spots</SSText>
+                  </TabsTrigger>
+                  <TabsTrigger value="maps">
+                    <SSText>Maps</SSText>
+                  </TabsTrigger>
+                </TabsList>
+                <View className="flex-row w-full md:w-fit justify-between">
+                  {!isOwner ? (
+                    <Link href={`/itineraries/${id}/your-suggestions`} asChild>
+                      <Button variant="ghost">
+                        <SSText>Your Suggestions</SSText>
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link href={`/itineraries/${id}/place-suggestions`} asChild>
+                      <Button variant="ghost">
+                        <SSText>See Chiller's Suggestions</SSText>
+                      </Button>
+                    </Link>
+                  )}
+                  <Link href={`/itineraries/${id}/add-places`} asChild>
+                    <Button>
+                      <Plus size={16} className="text-white" />
+                      <SSText>{isEditor ? 'Suggest' : 'Add'} New Spot</SSText>
+                    </Button>
+                  </Link>
+                </View>
+              </View>
+              <TabsContent value="places">
+                <ItineraryTimeline
+                  itinerary={itinerary}
+                  handleSelectPlace={handleSelectPlace}
+                  tappedInItineraryPlaces={tappedInItineraryPlaces}
+                />
+                {/* <View className="mb-10 gap-4">
+                  {itinerary.itineraryPlaces?.map((place, index) => (
+                    <TouchableOpacity
+                      key={place.id}
+                      onPress={() => {
+                        handleSelectPlace(place.place!);
+                      }}
+                    >
+                      <ItineraryPlaceCard
+                        index={index}
+                        place={place}
+                        tappedIn={tappedInItineraryPlaces
+                          .map((ip) => ip.id)
+                          .includes(place.id)}
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </View> */}
+              </TabsContent>
+              <TabsContent value="maps">
+                {/* TODO: should be just places that we tap in */}
+                <ItineraryMap
+                  itineraryId={id}
+                  itineraryPlaces={tappedInItineraryPlaces}
+                  onPressPlace={handleSelectPlace}
+                />
+              </TabsContent>
+            </Tabs>
           </View>
         </ScrollView>
       </SSContainer>

@@ -1,6 +1,8 @@
 export interface CreateItineraryPlaceDto {
   placeId: string;
 
+  itineraryId: string;
+
   visitDate?: string;
 
   visitTime?: string;

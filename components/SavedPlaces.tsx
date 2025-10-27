@@ -6,6 +6,7 @@ import { useSavedPlaces } from '@/hooks/useSavedPlaces';
 import { IPlace, ISavedPlace } from '@/dto/places/place.dto';
 import SSSpinner from './ui/SSSpinner';
 import SearchInput from './ui/SearchInput';
+import PlaceDetailsModal from './places/PlaceDetailsModal';
 
 type SavedPlacesProps = {
   isSelectionMode?: boolean;
@@ -24,14 +25,19 @@ export default function SavedPlaces({
 }: SavedPlacesProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const { savedPlaces, loadSavedPlaces, refreshing } = useSavedPlaces({
-    ...coords ? {
-      latitude: coords?.lat,
-      longitude: coords?.lon,
-    }: {},
+    ...(coords
+      ? {
+          latitude: coords?.lat,
+          longitude: coords?.lon,
+        }
+      : {}),
     page: 1,
     limit: 999999,
-    query: searchQuery
+    query: searchQuery,
   });
+
+  const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null);
+
   // const [filteredPlaces, setFilteredPlaces] = useState<ISavedPlace[]>([]);
 
   useEffect(() => {
@@ -69,25 +75,34 @@ export default function SavedPlaces({
       isSelected={selectedPlaceIds.includes(item.id)}
       isSelectionMode={isSelectionMode}
       onSelect={() => onSelectPlace(item.id)}
+      onPress={() => setSelectedPlace(item)}
     />
   );
 
   return (
     <>
-      {/* Search Bar */}
-      <SearchInput
-        value={searchQuery}
-        onTextChange={setSearchQuery}
+      <PlaceDetailsModal
+        visible={selectedPlace !== null}
+        onClose={() => setSelectedPlace(null)}
+        place={selectedPlace as IPlace}
       />
+      {/* Search Bar */}
+      <SearchInput value={searchQuery} onTextChange={setSearchQuery} />
 
-      {refreshing ? <SSSpinner className='mb-4'/> : (
+      {refreshing ? (
+        <SSSpinner className="mb-4" />
+      ) : (
         <FlatList
           data={savedPlaces}
           renderItem={renderPlaceCard}
           keyExtractor={(_, i) => i.toString()}
           showsVerticalScrollIndicator={false}
           refreshing={refreshing}
-          contentContainerClassName={savedPlaces.length > 0 ? "gap-3 grid grid-cols-2" : "flex-1 justify-center items-center"}
+          contentContainerClassName={
+            savedPlaces.length > 0
+              ? 'gap-3 grid grid-cols-2'
+              : 'flex-1 justify-center items-center'
+          }
           onRefresh={loadSavedPlaces}
           ListEmptyComponent={
             <View className="flex-1 justify-center items-center pt-25">

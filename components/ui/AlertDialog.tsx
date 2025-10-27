@@ -13,6 +13,9 @@ interface AlertDialogProps {
   cancelText?: string;
   confirmText?: string;
   destructive?: boolean;
+  disabled?: boolean;
+  disableConfirmButton?: boolean;
+  disableCancelButton?: boolean;
 }
 
 export const AlertDialog: React.FC<AlertDialogProps> = ({
@@ -24,6 +27,9 @@ export const AlertDialog: React.FC<AlertDialogProps> = ({
   cancelText = 'Cancel',
   confirmText = 'Confirm',
   destructive = false,
+  disabled = false,
+  disableConfirmButton = false,
+  disableCancelButton = false,
 }) => {
   return (
     <Modal
@@ -47,6 +53,7 @@ export const AlertDialog: React.FC<AlertDialogProps> = ({
             <Button
               onPress={onCancel}
               variant='outline'
+              disabled={disabled || disableCancelButton}
             >
               <SSText>{cancelText}</SSText>
             </Button>
@@ -58,6 +65,7 @@ export const AlertDialog: React.FC<AlertDialogProps> = ({
                   ? 'bg-red-500'
                   : 'bg-orange-500'
               )}
+              disabled={disabled || disableConfirmButton}
             >
               <SSText>{confirmText}</SSText>
             </Button>

@@ -113,7 +113,6 @@ export default function ShareItineraryModal({
         )
       );
       const collaboratorsRes = await getItineraryCollaborators(itinerary?.id);
-      console.log('collaboratorsRes', collaboratorsRes);
       const itineraryCollaborators = collaboratorsRes.data || [];
       setCollaborators(itineraryCollaborators);
       setNewCollaborators([]);
@@ -137,31 +136,30 @@ export default function ShareItineraryModal({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
 
-  // const handleConfirmRemove = async () => {
-  //   if (!removedCollaboratorUserIds.length) return;
-  //   setIsRemoving(true);
-  //   try {
-  //     await Promise.all(
-  //       removedCollaboratorUserIds.map((userId) =>
-  //         removeCollaborator({
-  //           itineraryId: itinerary.id,
-  //           userId,
-  //         })
-  //       )
-  //     );
-  //     const collaboratorsRes = await getItineraryCollaborators(itinerary?.id);
-  //     console.log('collaboratorsRes', collaboratorsRes);
-  //     const itineraryCollaborators = collaboratorsRes.data || [];
-  //     setCollaborators(itineraryCollaborators);
-  //     setRemovedCollaboratorUserIds([]);
-  //     onFinished?.();
-  //   } catch (e) {
-  //     Toast.error('Failed to remove collaborator');
-  //   } finally {
-  //     setIsRemoving(false);
-  //     setIsRemoveDialogOpen(false);
-  //   }
-  // };
+  const handleConfirmRemove = async () => {
+    if (!removedCollaboratorUserIds.length) return;
+    setIsRemoving(true);
+    try {
+      await Promise.all(
+        removedCollaboratorUserIds.map((userId) =>
+          removeCollaborator({
+            itineraryId: itinerary.id,
+            userId,
+          })
+        )
+      );
+      const collaboratorsRes = await getItineraryCollaborators(itinerary?.id);
+      const itineraryCollaborators = collaboratorsRes.data || [];
+      setCollaborators(itineraryCollaborators);
+      setRemovedCollaboratorUserIds([]);
+      onFinished?.();
+    } catch (e) {
+      Toast.error('Failed to remove collaborator');
+    } finally {
+      setIsRemoving(false);
+      setIsRemoveDialogOpen(false);
+    }
+  };
 
   const handleRemoveNewCollaborator = async (collaboratorIdx: number) => {
     const collaborator = newCollaborators[collaboratorIdx];
@@ -236,13 +234,13 @@ export default function ShareItineraryModal({
       animationType="slide"
       presentationStyle="pageSheet"
     >
-      {/* <AlertDialog
+      <AlertDialog
         title="Remove Collaborator"
-        message={`Are you sure you want to remove ${removingCollaborator}?`}
+        message={`Are you sure you want to remove ${removedCollaboratorUserIds.length} collaborator(s)?`}
         visible={isRemoveDialogOpen}
         onCancel={() => setIsRemoveDialogOpen(false)}
         onConfirm={handleConfirmRemove}
-      /> */}
+      />
       <SSContainer>
         <ModalHeader title="Share Itinerary" onClose={onClose} />
         <ScrollView

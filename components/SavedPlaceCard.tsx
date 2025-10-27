@@ -18,6 +18,7 @@ interface SavedPlaceCardProps {
   place: IPlace;
   isSelectionMode: boolean;
   onSelect: () => void;
+  onPress?: () => void;
   isSelected?: boolean;
 }
 
@@ -25,6 +26,7 @@ export function SavedPlaceCard({
   place,
   isSelectionMode,
   onSelect,
+  onPress,
   isSelected = false,
 }: SavedPlaceCardProps) {
   return (
@@ -32,7 +34,7 @@ export function SavedPlaceCard({
       // className={`flex-row bg-white rounded-2xl mb-4 overflow-hidden shadow-sm ${
       //   place.selected ? 'border-2 border-orange-700' : ''
       // }`}
-      onPress={isSelectionMode ? onSelect : () => {
+      onPress={isSelectionMode ? onPress ? onPress : onSelect : () => {
         router.push(`/places/${place.id}`);
       }}
       activeOpacity={isSelectionMode ? 0.7 : 1}
@@ -48,7 +50,7 @@ export function SavedPlaceCard({
       >
         {/* {place.images?.[0] && ( */}
           <Image
-            source={{ uri: place.images?.[0].url }}
+            source={{ uri: place.placeImages?.[0].url }}
             // height={120}
             // width={120}
             className="w-full md:w-32 h-32"
@@ -66,10 +68,12 @@ export function SavedPlaceCard({
                 {place.name}
               </SSText>
               {isSelectionMode && (
-                <CheckCircle
-                  size={24}
-                  className={isSelected ? 'text-orange-600' : 'text-gray-300'}
-                />
+                <TouchableOpacity onPress={onSelect} className="ml-2">
+                  <CheckCircle
+                    size={24}
+                    className={isSelected ? 'text-orange-600' : 'text-gray-300'}
+                  />
+                </TouchableOpacity>
               )}
             </View>
 

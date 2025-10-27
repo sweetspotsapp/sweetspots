@@ -1,14 +1,25 @@
+// components/ui/tabs.tsx
 import React from 'react';
-import { TextClassContext } from '@/components/ui/text';
-import { cn } from '@/lib/utils';
 import * as TabsPrimitive from '@rn-primitives/tabs';
 import { Platform } from 'react-native';
+import { cn } from '@/lib/utils';
+import { TextClassContext } from '@/components/ui/SSText';
+
+const TRACK_BG = 'bg-orange-500'; // orange bar
+const SELECTED_BG = 'bg-white';
+const SELECTED_TEXT = 'text-slate-900'; // dark text when active
+const UNSELECTED_TEXT = 'text-white';   // white text when inactive
 
 function Tabs({
   className,
   ...props
 }: TabsPrimitive.RootProps & React.RefAttributes<TabsPrimitive.RootRef>) {
-  return <TabsPrimitive.Root className={cn('flex flex-col gap-2', className)} {...props} />;
+  return (
+    <TabsPrimitive.Root
+      className={cn('flex flex-col gap-3', className)}
+      {...props}
+    />
+  );
 }
 
 function TabsList({
@@ -18,7 +29,8 @@ function TabsList({
   return (
     <TabsPrimitive.List
       className={cn(
-        'bg-muted flex h-9 flex-row items-center justify-center rounded-lg p-[3px]',
+        TRACK_BG,
+        'flex h-10 flex-row items-center rounded-full p-1',
         Platform.select({ web: 'inline-flex w-fit', native: 'mr-auto' }),
         className
       )}
@@ -32,20 +44,23 @@ function TabsTrigger({
   ...props
 }: TabsPrimitive.TriggerProps & React.RefAttributes<TabsPrimitive.TriggerRef>) {
   const { value } = TabsPrimitive.useRootContext();
+  const isSelected = value === props.value;
+
   return (
     <TextClassContext.Provider
-      value={cn(
-        'text-foreground dark:text-muted-foreground text-sm font-medium',
-        value === props.value && 'dark:text-foreground'
-      )}>
+      value={cn('text-base font-medium', isSelected ? SELECTED_TEXT : UNSELECTED_TEXT)}
+    >
       <TabsPrimitive.Trigger
         className={cn(
-          'flex h-[calc(100%-1px)] flex-row items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 shadow-none shadow-black/5',
+          'relative flex flex-row items-center justify-center rounded-full px-6 py-1',
+          'transition-all duration-200',
+          isSelected
+            ? cn(SELECTED_BG, 'shadow-sm')
+            : 'bg-transparent',
           Platform.select({
-            web: 'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring inline-flex cursor-default whitespace-nowrap transition-[color,box-shadow] focus-visible:outline-1 focus-visible:ring-[3px] disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0',
+            web: 'focus-visible:outline-2 focus-visible:outline-white/60',
           }),
           props.disabled && 'opacity-50',
-          props.value === value && 'bg-background dark:border-foreground/10 dark:bg-input/30',
           className
         )}
         {...props}
@@ -66,4 +81,4 @@ function TabsContent({
   );
 }
 
-export { Tabs, TabsContent, TabsList, TabsTrigger };
+export { Tabs, TabsList, TabsTrigger, TabsContent };

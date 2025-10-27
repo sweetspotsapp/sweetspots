@@ -28,12 +28,9 @@ import { PickerProvider } from '../ui/SSDateTimePicker';
 import { SSText } from '../ui/SSText';
 import { Button } from '../ui/button';
 import { SSControlledInput } from '../ui/SSControlledInput';
-
-import { updateSuggestionStatus } from '@/endpoints/collab-itinerary/endpoints';
 import SuggestionCardList, { Suggestion } from './SuggestionCardList';
 import { CreateItineraryDto } from '@/dto/itineraries/create-itinerary.dto';
-
-// ------------------ helpers: default cost/duration ------------------
+import { arrayMove } from '@/lib/utils';
 
 function getStartOrNow(p: IItineraryPlace) {
   return parseStart(p.visitDate, p.visitTime) || moment();
@@ -87,8 +84,12 @@ function formatTime(m: moment.Moment | null) {
   return m ? m.format(TIME_FMT) : '';
 }
 
-// Build per-place "gapAfter" based on current order
-const computeGapAfterMap = (list: IItineraryPlace[]) => {
+const DEFAULT_GAP_MS = 15 * 60 * 1000;
+
+export const computeGapAfterMap = (
+  list: IItineraryPlace[],
+  defaultGapMs: number = DEFAULT_GAP_MS
+) => {
   const gapAfter = new Map<string, number>();
   for (let i = 0; i < list.length - 1; i++) {
     const a = list[i];
@@ -98,10 +99,14 @@ const computeGapAfterMap = (list: IItineraryPlace[]) => {
       ? aStart.clone().add(Number(a.visitDuration) || 0, 'hours')
       : null;
     const bStart = parseStart(b.visitDate, b.visitTime);
-    const gap = aEnd && bStart ? bStart.valueOf() - aEnd.valueOf() : 0;
+    const gap = aEnd && bStart ? bStart.valueOf() - aEnd.valueOf() : defaultGapMs;
     gapAfter.set(a.id, gap);
   }
-  if (list[list.length - 1]) gapAfter.set(list[list.length - 1].id, 0);
+  if (list[list.length - 1]) {
+    // Important: last item keeps a *default* gap, so if it moves earlier later,
+    // it still has 15 minutes after it.
+    gapAfter.set(list[list.length - 1].id, defaultGapMs);
+  }
   return gapAfter;
 };
 
@@ -111,8 +116,7 @@ const startKey = (p?: IItineraryPlace) => {
   return m ? m.toISOString() : null; // canonical key
 };
 
-// Rebuild chain after reorder, keeping each place's original gapAfter
-const rebuildTimesKeepingGivenGaps = (
+export const rebuildTimesKeepingGivenGaps = (
   list: IItineraryPlace[],
   gapAfter: Map<string, number>
 ) => {
@@ -152,16 +156,6 @@ const rebuildTimesKeepingGivenGaps = (
 
   return chain;
 };
-
-// Move one element in an array
-function arrayMove<T>(arr: T[], from: number, to: number): T[] {
-  const copy = [...arr];
-  const [item] = copy.splice(from, 1);
-  copy.splice(to, 0, item);
-  return copy;
-}
-
-// ------------------ RHF schema & types ------------------
 
 const DATE_FMT = 'YYYY-MM-DD';
 const TIME_FMT = 'HH:mm';
@@ -473,7 +467,8 @@ export function ItineraryForm({
       id: place.id,
       createdAt: new Date().toISOString(),
       place,
-      imageUrl: place.images?.[0]?.url || null,
+      placeId: place.id,
+      imageUrl: place.placeImages?.[0]?.url || null,
       visitDuration: getDefaultDuration(place.category),
       estimatedCost: getDefaultCost(place.priceRange),
       visitDate: '',
@@ -481,6 +476,8 @@ export function ItineraryForm({
       notes: '',
       orderIndex: index + 1,
       suggestionStatus: 'accepted',
+      itineraryId: itineraryId || '',
+
     }));
     setValue('itineraryPlaces', places, {
       shouldDirty: true,
@@ -768,29 +765,6 @@ export function ItineraryForm({
     setValue('itineraryPlaces', after, { shouldDirty: true });
   };
 
-  // ------------------ suggestions accept/reject ------------------
-
-  const handleAcceptRejectPlaceSuggestion = (
-    suggestionId: string,
-    status: 'accepted' | 'rejected'
-  ) => {
-    const list = getValues('itineraryPlaces') as IItineraryPlace[];
-    const idx = list.findIndex((p) => p.id === suggestionId);
-    if (idx === -1) return;
-    const target = list[idx];
-    if (target.suggestionStatus !== 'pending') return;
-
-    // update backend
-    updateSuggestionStatus(suggestionId, status);
-
-    // update form list
-    const next = [...list];
-    next[idx] = { ...target, suggestionStatus: status };
-    setValue('itineraryPlaces', next, { shouldDirty: true });
-  };
-
-  // ------------------ create/save ------------------
-
   const onSubmit = async (values: FormValues) => {
     if (!values.name.trim()) {
       Alert.alert('Missing name', 'Please enter a name for your itinerary.');
@@ -825,6 +799,7 @@ export function ItineraryForm({
           estimatedCost: Number(p.estimatedCost) || 0,
           notes: p.notes || '',
           orderIndex: p.orderIndex,
+          itineraryId: itineraryId || '',
         })),
         collaborators: values.collaborators || [],
         isPublic: values.isPublic || false,
@@ -851,29 +826,6 @@ export function ItineraryForm({
       console.error('Failed to create/update itinerary', error);
       Alert.alert('Error', 'Failed to save itinerary. Please try again.');
     }
-  };
-
-  // ------------------ collaborators helpers ------------------
-
-  const [newCollaborator, setNewCollaborator] = React.useState('');
-  const addCollaborator = () => {
-    const v = newCollaborator.trim();
-    if (!v) return;
-    if ((collaborators || []).includes(v)) {
-      setNewCollaborator('');
-      return;
-    }
-    setValue('collaborators', [...(collaborators || []), v], {
-      shouldDirty: true,
-    });
-    setNewCollaborator('');
-  };
-  const removeCollaborator = (email: string) => {
-    setValue(
-      'collaborators',
-      (collaborators || []).filter((c) => c !== email),
-      { shouldDirty: true }
-    );
   };
 
   // ------------------ render ------------------
@@ -917,12 +869,6 @@ export function ItineraryForm({
                 error={errors.name?.message}
               />
             </View>
-
-            <SuggestionCardList
-              suggestions={nameSuggestions}
-              title="Name Suggestions"
-              onSuggestionStatusChange={handleAcceptRejectPlaceSuggestion}
-            />
 
             <View className="mb-4">
               <SSText
@@ -1001,37 +947,6 @@ export function ItineraryForm({
                 lockedFields={lockedFields}
               />
             ))}
-
-            {suggestedPlaces.length > 0 && (
-              <>
-                <SSText
-                  variant="semibold"
-                  className="text-xl text-gray-800 mb-2 mt-6"
-                >
-                  Suggested Places ({suggestedPlaces.length} places)
-                </SSText>
-                <SSText className="text-sm text-slate-500 mb-6">
-                  Tap each place to configure when and how long you&apos;ll
-                  visit
-                </SSText>
-                {suggestedPlaces.map((place) => (
-                  <PlaceScheduleCard
-                    key={place.id}
-                    itineraryPlace={place}
-                    onUpdate={(updates) => updatePlace(place.id, updates)}
-                    onFieldFocus={handleFieldFocus}
-                    onFieldBlur={handleFieldBlur}
-                    lockedFields={lockedFields}
-                    onAcceptSuggestion={() =>
-                      handleAcceptRejectPlaceSuggestion(place.id, 'accepted')
-                    }
-                    onRejectSuggestion={() =>
-                      handleAcceptRejectPlaceSuggestion(place.id, 'rejected')
-                    }
-                  />
-                ))}
-              </>
-            )}
           </View>
 
           {!editMode && (
@@ -1096,7 +1011,7 @@ export function ItineraryForm({
             id: place.id,
             createdAt: new Date().toISOString(),
             place,
-            imageUrl: place.images?.[0]?.url || null,
+            imageUrl: place.placeImages?.[0]?.url || null,
             visitDuration: getDefaultDuration(place.category),
             estimatedCost: getDefaultCost(place.priceRange),
             visitDate: '',

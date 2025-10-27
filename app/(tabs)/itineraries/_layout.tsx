@@ -32,6 +32,34 @@ export default function ItinerariesLayout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="[id]/add-places"
+        options={{
+          title: 'Add Places to Itinerary',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="[id]/place-suggestions"
+        options={{
+          title: 'Suggested Spots',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="[id]/your-suggestions"
+        options={{
+          title: 'Your Suggested Spots',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="[id]/notifications"
+        options={{
+          title: 'Notifications',
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }
