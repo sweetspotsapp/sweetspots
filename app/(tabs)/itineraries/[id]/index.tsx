@@ -60,10 +60,13 @@ export default function ItineraryDetailsScreen() {
   useEffect(() => {
     if (!user) return;
     getTappedInItineraryPlaces(id, user.uid).then((res) => {
-      setTappedInItineraryPlaces((res.data || []).map((ip) => ({
-        ...ip,
-        imageUrl: itinerary?.itineraryPlaces?.find((itp) => itp.id === ip.id)?.imageUrl
-      })));
+      setTappedInItineraryPlaces(
+        (res.data || []).map((ip) => ({
+          ...ip,
+          imageUrl: itinerary?.itineraryPlaces?.find((itp) => itp.id === ip.id)
+            ?.imageUrl,
+        }))
+      );
     });
   }, [user]);
 
@@ -198,27 +201,29 @@ export default function ItineraryDetailsScreen() {
         <View className="flex-row justify-between items-center  pt-2.5 pb-4">
           <BackArrowButton fallbackUrl="/itineraries" forceFallback />
 
-          {isOwner && (
-            <View className="flex-row gap-3">
-              <TouchableOpacity
-                className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-                onPress={handleToggleShare}
-              >
-                <Share2 size={24} className="text-orange-500" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
-                onPress={handleEditItinerary}
-              >
-                <EditIcon size={24} className="text-orange-500" />
-              </TouchableOpacity>
-              <Link href={`/itineraries/${id}/notifications`}>
-                <TouchableOpacity className="w-11 h-11 rounded-full bg-orange-600 justify-center items-center shadow-sm">
-                  <Bell size={24} className="text-white" />
+          <View className="flex-row gap-3">
+            {isOwner && (
+              <>
+                <TouchableOpacity
+                  className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
+                  onPress={handleToggleShare}
+                >
+                  <Share2 size={24} className="text-orange-500" />
                 </TouchableOpacity>
-              </Link>
-            </View>
-          )}
+                <TouchableOpacity
+                  className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
+                  onPress={handleEditItinerary}
+                >
+                  <EditIcon size={24} className="text-orange-500" />
+                </TouchableOpacity>
+              </>
+            )}
+            <Link href={`/itineraries/${id}/notifications`}>
+              <TouchableOpacity className="w-11 h-11 rounded-full bg-orange-600 justify-center items-center shadow-sm">
+                <Bell size={24} className="text-white" />
+              </TouchableOpacity>
+            </Link>
+          </View>
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -393,7 +398,7 @@ export default function ItineraryDetailsScreen() {
             )} */}
 
             <Tabs value={tab} onValueChange={(value) => setTab(value as any)}>
-              <View className="md:flex-row items-center gap-2 justify-between">
+              <View className="md:flex-row md:items-center gap-2 justify-between">
                 <TabsList>
                   <TabsTrigger value="places">
                     <SSText>Spots</SSText>
@@ -402,7 +407,7 @@ export default function ItineraryDetailsScreen() {
                     <SSText>Maps</SSText>
                   </TabsTrigger>
                 </TabsList>
-                <View className='flex-row w-full md:w-fit justify-between'>
+                <View className="flex-row w-full md:w-fit justify-between">
                   {!isOwner ? (
                     <Link href={`/itineraries/${id}/your-suggestions`} asChild>
                       <Button variant="ghost">
@@ -429,7 +434,6 @@ export default function ItineraryDetailsScreen() {
                   itinerary={itinerary}
                   handleSelectPlace={handleSelectPlace}
                   tappedInItineraryPlaces={tappedInItineraryPlaces}
-
                 />
                 {/* <View className="mb-10 gap-4">
                   {itinerary.itineraryPlaces?.map((place, index) => (

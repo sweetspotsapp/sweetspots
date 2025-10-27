@@ -105,7 +105,7 @@ export default function ItineraryMap({
     <View>
       <SSMaps
         segments={mergedCoordinates}
-        height={800}
+        height={500}
         markers={placeMarkers}
       />
     </View>

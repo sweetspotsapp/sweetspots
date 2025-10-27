@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import React from 'react';
 import { Card } from '../ui/card';
 import { SSText } from '../ui/SSText';
@@ -13,7 +13,9 @@ export default function NotificationCard({
 }: {
   notification: IUserNotification;
 }) {
+  const [isRead, setIsRead] = React.useState(notification.isRead);
   function handleRead() {
+    setIsRead(true);
     markNotificationAsRead(notification.id);
   }
 
@@ -37,14 +39,14 @@ export default function NotificationCard({
           <Button
             onPress={() => {
               handleRead();
-              router.push(
-                `/itineraries/${notification.data?.itineraryId}`
-              );
+              router.push(`/itineraries/${notification.data?.itineraryId}`);
             }}
             className="mt-2 self-start"
             size="sm"
           >
-            <SSText className="text-sm font-medium">View Suggested Place</SSText>
+            <SSText className="text-sm font-medium">
+              View Suggested Place
+            </SSText>
           </Button>
         );
       default:
@@ -53,38 +55,43 @@ export default function NotificationCard({
   }
 
   return (
-    <Card
-      className={`p-4 mb-3 rounded-2xl border border-border/60 bg-background/70 
+    <Pressable onPress={handleRead}>
+      <Card
+        className={`p-4 mb-3 rounded-2xl !border bg-background/70 
       shadow-sm active:scale-[0.98] transition-all`}
-    >
-      <View className='flex-row justify-between'>
-      <SSText className='text-neutral-500'>
-        {moment(notification.createdAt).format('LLL')}
-      </SSText>
-        {!notification.isRead && (
-          <View className="w-2.5 h-2.5 bg-primary rounded-full ml-2 mt-1" />
-        )}
-      </View>
-      <View className="flex-row justify-between items-start">
-        <SSText className="text-lg font-semibold flex-shrink" numberOfLines={2}>
-          {notification.title}
-        </SSText>
-      </View>
-
-      <SSText
-        className="text-muted-foreground mt-1 leading-relaxed"
-        numberOfLines={3}
       >
-        {notification.message}
-      </SSText>
+        <View className="flex-row justify-between">
+          <SSText className="text-neutral-500">
+            {moment(notification.createdAt).format('LLL')}
+          </SSText>
+          {!isRead && (
+            <View className="w-2.5 h-2.5 bg-primary rounded-full ml-2 mt-1" />
+          )}
+        </View>
+        <View className="flex-row justify-between items-start">
+          <SSText
+            className="text-lg font-semibold flex-shrink"
+            numberOfLines={2}
+          >
+            {notification.title}
+          </SSText>
+        </View>
 
-      {notification.sentAt && (
-        <SSText className="text-xs text-muted-foreground mt-3">
-          {new Date(notification.sentAt).toLocaleString()}
+        <SSText
+          className="text-muted-foreground mt-1 leading-relaxed"
+          numberOfLines={3}
+        >
+          {notification.message}
         </SSText>
-      )}
 
-      {renderAction()}
-    </Card>
+        {notification.sentAt && (
+          <SSText className="text-xs text-muted-foreground mt-3">
+            {new Date(notification.sentAt).toLocaleString()}
+          </SSText>
+        )}
+
+        {renderAction()}
+      </Card>
+    </Pressable>
   );
 }
