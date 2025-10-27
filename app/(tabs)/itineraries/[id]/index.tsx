@@ -41,6 +41,7 @@ import ItineraryMap from '@/components/itinerary-maps/ItineraryMap';
 import { IPlace } from '@/dto/places/place.dto';
 import PlaceDetailsModal from '@/components/places/PlaceDetailsModal';
 import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
+import { ItineraryTimeline } from '@/components/itineraries/ItineraryTimeline';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -49,6 +50,7 @@ export default function ItineraryDetailsScreen() {
   const [tappedInItineraryPlaces, setTappedInItineraryPlaces] = useState<
     IItineraryPlace[]
   >([]);
+  console.log('itinerary', itinerary);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<'places' | 'maps'>('places');
   const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null);
@@ -58,7 +60,10 @@ export default function ItineraryDetailsScreen() {
   useEffect(() => {
     if (!user) return;
     getTappedInItineraryPlaces(id, user.uid).then((res) => {
-      setTappedInItineraryPlaces(res.data || []);
+      setTappedInItineraryPlaces((res.data || []).map((ip) => ({
+        ...ip,
+        imageUrl: itinerary?.itineraryPlaces?.find((itp) => itp.id === ip.id)?.imageUrl
+      })));
     });
   }, [user]);
 
@@ -351,7 +356,7 @@ export default function ItineraryDetailsScreen() {
             )} */}
 
             {/* Collaborators */}
-            {(itinerary.collaborators || []).length > 0 && (
+            {/* {(itinerary.collaborators || []).length > 0 && (
               <View className="mb-8">
                 <SSText
                   variant="semibold"
@@ -385,7 +390,7 @@ export default function ItineraryDetailsScreen() {
                   )}
                 </View>
               </View>
-            )}
+            )} */}
 
             <Tabs value={tab} onValueChange={(value) => setTab(value as any)}>
               <View className="md:flex-row items-center gap-2 justify-between">
@@ -420,17 +425,13 @@ export default function ItineraryDetailsScreen() {
                 </View>
               </View>
               <TabsContent value="places">
-                {/* Places List */}
-                <View className="mb-10 gap-4">
-                  {/* <View className="flex-row items-center">
-                    <SSText
-                      variant="semibold"
-                      className="text-xl text-gray-800"
-                    >
-                      Spots to Visit
-                    </SSText>
-                  </View> */}
+                <ItineraryTimeline
+                  itinerary={itinerary}
+                  handleSelectPlace={handleSelectPlace}
+                  tappedInItineraryPlaces={tappedInItineraryPlaces}
 
+                />
+                {/* <View className="mb-10 gap-4">
                   {itinerary.itineraryPlaces?.map((place, index) => (
                     <TouchableOpacity
                       key={place.id}
@@ -447,7 +448,7 @@ export default function ItineraryDetailsScreen() {
                       />
                     </TouchableOpacity>
                   ))}
-                </View>
+                </View> */}
               </TabsContent>
               <TabsContent value="maps">
                 {/* TODO: should be just places that we tap in */}

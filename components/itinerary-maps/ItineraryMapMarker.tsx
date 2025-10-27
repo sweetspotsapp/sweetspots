@@ -15,7 +15,9 @@ export default function ItineraryMapMarker({
   index?: number;
 }) {
   const place = itineraryPlace.place;
-  const imageUrl = place?.placeImages?.[0]?.url;
+  console.log('ItineraryMapMarker place', place, itineraryPlace);
+  const imageUrl =
+    itineraryPlace?.imageUrl || itineraryPlace?.place?.placeImages?.[0]?.url;
   const startDateTime = moment(
     `${itineraryPlace.visitDate}T${itineraryPlace.visitTime}`
   );
@@ -26,8 +28,15 @@ export default function ItineraryMapMarker({
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <Card className="p-4 max-w-64">
-        <View className="flex-row items-center gap-2 mb-2">
+      <Card className="p-4 max-w-64 gap-2">
+        {imageUrl && (
+          <Image
+            source={{ uri: imageUrl }}
+            className="w-full h-24 rounded-xl"
+            style={{ resizeMode: 'cover' }}
+          />
+        )}
+        <View className="flex-row items-center gap-2">
           <View className="h-6 w-6 items-center justify-center rounded-full bg-orange-600">
             <Text className="text-white font-bold text-sm">
               {' '}
@@ -37,18 +46,12 @@ export default function ItineraryMapMarker({
           </View>
           <SSText>{place?.name}</SSText>
         </View>
-        <View className="mb-2">
+        <View>
           <SSText className="text-sm text-gray-700">
             {startDateTime.format('h:mm A')} - {endDateTime.format('h:mm A')}
           </SSText>
         </View>
-        {imageUrl && (
-          <Image
-            source={{ uri: imageUrl }}
-            className="w-24 h-24 rounded-xl"
-            style={{ resizeMode: 'cover' }}
-          />
-        )}
+
         <View className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white rotate-45 -mt-2 rounded-[2px]" />
       </Card>
     </TouchableOpacity>
