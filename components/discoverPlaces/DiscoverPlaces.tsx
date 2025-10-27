@@ -6,6 +6,8 @@ import SearchInput from '../ui/SearchInput';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
 import { DiscoverPlaceCard } from './DiscoverPlaceCard';
 import { getRecommendations } from '@/endpoints/recommendations/endpoints';
+import PlaceDetailsModal from '../places/PlaceDetailsModal';
+import { IPlace } from '@/dto/places/place.dto';
 
 type DiscoverPlacesProps = {
   isSelectionMode?: boolean;
@@ -27,6 +29,7 @@ export default function DiscoverPlaces({
   // const { savedPlaces, loadSavedPlaces, refreshing } = useSavedPlaces();
   const [savedPlaces, setSavedPlaces] = useState<IRecommendedPlace[]>([]);
   const [filteredPlaces, setFilteredPlaces] = useState<IRecommendedPlace[]>([]);
+  const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null);
 
   useEffect(() => {
     filterPlaces();
@@ -82,11 +85,17 @@ export default function DiscoverPlaces({
       isSelected={selectedPlaceIds.includes(item.id)}
       isSelectionMode={isSelectionMode}
       onSelect={() => onSelectPlace(item.id)}
+      onPress={() => setSelectedPlace(item)}
     />
   );
 
   return (
     <>
+      <PlaceDetailsModal
+        visible={selectedPlace !== null}
+        onClose={() => setSelectedPlace(null)}
+        place={selectedPlace as IPlace}
+      />
       {/* Search Bar */}
       <SearchInput value={searchQuery} onTextChange={setSearchQuery} />
 

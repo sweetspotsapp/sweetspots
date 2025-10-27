@@ -139,7 +139,7 @@ export default function AddPlacesPage() {
         <SSSpinner />
       ) : (
         <>
-          <View className="mb-5 flex-row items-center gap-4">
+          <View className="my-5 flex-row items-center gap-4">
             <SSBackButton />
             <View>
               <SSText variant="bold" className="text-3xl text-orange-600">

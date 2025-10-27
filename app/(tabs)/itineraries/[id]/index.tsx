@@ -373,42 +373,47 @@ export default function ItineraryDetailsScreen() {
               </View>
             )}
 
-            <Tabs
-              value={tab}
-              onValueChange={(value) => setTab(value as any)}
-            >
-              <TabsList>
-                <TabsTrigger value="places">
-                  <SSText>Spots</SSText>
-                </TabsTrigger>
-                <TabsTrigger value="maps">
-                  <SSText>Maps</SSText>
-                </TabsTrigger>
-              </TabsList>
+            <Tabs value={tab} onValueChange={(value) => setTab(value as any)}>
+              <View className="flex-row items-center gap-2">
+                <TabsList>
+                  <TabsTrigger value="places">
+                    <SSText>Spots</SSText>
+                  </TabsTrigger>
+                  <TabsTrigger value="maps">
+                    <SSText>Maps</SSText>
+                  </TabsTrigger>
+                </TabsList>
+                {!isOwner ? (
+                  <Link href={`/itineraries/${id}/your-suggestions`} asChild>
+                    <Button variant="ghost" className="ml-auto">
+                      <SSText>Your Suggestions</SSText>
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href={`/itineraries/${id}/place-suggestions`} asChild>
+                    <Button variant="ghost" className="ml-auto">
+                      <SSText>See Chiller's Suggestions</SSText>
+                    </Button>
+                  </Link>
+                )}
+                <Link href={`/itineraries/${id}/add-places`} asChild>
+                  <Button>
+                    <Plus size={16} className="text-white" />
+                    <SSText>{isEditor ? 'Suggest' : 'Add'} New Spot</SSText>
+                  </Button>
+                </Link>
+              </View>
               <TabsContent value="places">
                 {/* Places List */}
                 <View className="mb-10 gap-4">
-                  <View className="flex-row items-center">
+                  {/* <View className="flex-row items-center">
                     <SSText
                       variant="semibold"
                       className="text-xl text-gray-800"
                     >
                       Spots to Visit
                     </SSText>
-                    <Link href={`/itineraries/${id}/your-suggestions`} asChild>
-                      <Button variant='ghost' className='ml-auto mr-2'>
-                        <SSText>Your Suggestions</SSText>
-                      </Button>
-                    </Link>
-                    {isEditor && (
-                      <Link href={`/itineraries/${id}/add-places`} asChild>
-                        <Button>
-                          <Plus size={16} className="text-white" />
-                          <SSText>Suggest New Spot</SSText>
-                        </Button>
-                      </Link>
-                    )}
-                  </View>
+                  </View> */}
 
                   {itinerary.itineraryPlaces?.map((place, index) => (
                     <TouchableOpacity

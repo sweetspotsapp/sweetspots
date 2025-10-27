@@ -17,6 +17,7 @@ interface DiscoverPlaceCardProps {
   place: IRecommendedPlace;
   isSelectionMode: boolean;
   onSelect: () => void;
+  onPress?: () => void;
   isSelected?: boolean;
 }
 
@@ -24,6 +25,7 @@ export function DiscoverPlaceCard({
   place,
   isSelectionMode,
   onSelect,
+  onPress,
   isSelected = false,
 }: DiscoverPlaceCardProps) {
   return (
@@ -31,7 +33,7 @@ export function DiscoverPlaceCard({
       // className={`flex-row bg-white rounded-2xl mb-4 overflow-hidden shadow-sm ${
       //   place.selected ? 'border-2 border-orange-700' : ''
       // }`}
-      onPress={isSelectionMode ? onSelect : undefined}
+      onPress={isSelectionMode ? onPress ? onPress : onSelect : onPress}
       activeOpacity={isSelectionMode ? 0.7 : 1}
     >
       <Card
