@@ -9,14 +9,29 @@ import {
 } from '@/dto/places/calculate-distance.dto';
 import SSMaps, { Marker } from '../SSMaps';
 import ItineraryMapMarker from './ItineraryMapMarker';
+import { getTappedInItineraryPlaces } from '@/endpoints/collab-itinerary/endpoints';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function ItineraryMap({
   itineraryPlaces,
+  itineraryId,
   onPressPlace,
 }: {
   itineraryPlaces: IItineraryPlace[];
+  itineraryId: string;
   onPressPlace?: (place: IPlace) => void;
 }) {
+  const user = useAuth().user;
+  // const [itineraryPlaces, setItineraryPlaces] = React.useState<IItineraryPlace[]>([]);
+
+  // useEffect(() => {
+  //   if (!user) return;
+  //   getTappedInItineraryPlaces(itineraryId, user.uid).then((res) => {
+  //     console.log('BATMAN BIN SUPARMAN', res.data);
+  //     setItineraryPlaces(res.data || []);
+  //   })
+  // }, [user])
+
   const places = itineraryPlaces
     .map((place) => place.place)
     .filter(Boolean) as IPlace[];

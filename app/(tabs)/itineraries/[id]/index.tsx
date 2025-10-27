@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -29,7 +29,10 @@ import { goBack } from '@/utils/goBack';
 import SSContainer from '@/components/SSContainer';
 import { BackArrowButton } from '@/components/BackArrowButton';
 import { IItineraryUser } from '@/dto/itinerary-users/itinerary-user.dto';
-import { getItineraryCollaborators } from '@/endpoints/collab-itinerary/endpoints';
+import {
+  getItineraryCollaborators,
+  getTappedInItineraryPlaces,
+} from '@/endpoints/collab-itinerary/endpoints';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import ItineraryPlaceCard from '@/components/itineraries/ItineraryPlaceCard';
@@ -37,16 +40,27 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ItineraryMap from '@/components/itinerary-maps/ItineraryMap';
 import { IPlace } from '@/dto/places/place.dto';
 import PlaceDetailsModal from '@/components/places/PlaceDetailsModal';
+import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
 
 export default function ItineraryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [itinerary, setItinerary] = useState<IItinerary | null>(null);
   const [itineraryUsers, setItineraryUsers] = useState<IItineraryUser[]>([]);
+  const [tappedInItineraryPlaces, setTappedInItineraryPlaces] = useState<
+    IItineraryPlace[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<'places' | 'maps'>('places');
   const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null);
 
   const user = useAuth().user;
+
+  useEffect(() => {
+    if (!user) return;
+    getTappedInItineraryPlaces(id, user.uid).then((res) => {
+      setTappedInItineraryPlaces(res.data || []);
+    });
+  }, [user]);
 
   // useEffect(() => {
   //   loadItinerary();
@@ -374,7 +388,7 @@ export default function ItineraryDetailsScreen() {
             )}
 
             <Tabs value={tab} onValueChange={(value) => setTab(value as any)}>
-              <View className="flex-row items-center gap-2">
+              <View className="md:flex-row items-center gap-2 justify-between">
                 <TabsList>
                   <TabsTrigger value="places">
                     <SSText>Spots</SSText>
@@ -383,25 +397,27 @@ export default function ItineraryDetailsScreen() {
                     <SSText>Maps</SSText>
                   </TabsTrigger>
                 </TabsList>
-                {!isOwner ? (
-                  <Link href={`/itineraries/${id}/your-suggestions`} asChild>
-                    <Button variant="ghost" className="ml-auto">
-                      <SSText>Your Suggestions</SSText>
+                <View className='flex-row w-full md:w-fit justify-between'>
+                  {!isOwner ? (
+                    <Link href={`/itineraries/${id}/your-suggestions`} asChild>
+                      <Button variant="ghost">
+                        <SSText>Your Suggestions</SSText>
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link href={`/itineraries/${id}/place-suggestions`} asChild>
+                      <Button variant="ghost">
+                        <SSText>See Chiller's Suggestions</SSText>
+                      </Button>
+                    </Link>
+                  )}
+                  <Link href={`/itineraries/${id}/add-places`} asChild>
+                    <Button>
+                      <Plus size={16} className="text-white" />
+                      <SSText>{isEditor ? 'Suggest' : 'Add'} New Spot</SSText>
                     </Button>
                   </Link>
-                ) : (
-                  <Link href={`/itineraries/${id}/place-suggestions`} asChild>
-                    <Button variant="ghost" className="ml-auto">
-                      <SSText>See Chiller's Suggestions</SSText>
-                    </Button>
-                  </Link>
-                )}
-                <Link href={`/itineraries/${id}/add-places`} asChild>
-                  <Button>
-                    <Plus size={16} className="text-white" />
-                    <SSText>{isEditor ? 'Suggest' : 'Add'} New Spot</SSText>
-                  </Button>
-                </Link>
+                </View>
               </View>
               <TabsContent value="places">
                 {/* Places List */}
@@ -422,7 +438,13 @@ export default function ItineraryDetailsScreen() {
                         handleSelectPlace(place.place!);
                       }}
                     >
-                      <ItineraryPlaceCard index={index} place={place} />
+                      <ItineraryPlaceCard
+                        index={index}
+                        place={place}
+                        tappedIn={tappedInItineraryPlaces
+                          .map((ip) => ip.id)
+                          .includes(place.id)}
+                      />
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -430,7 +452,8 @@ export default function ItineraryDetailsScreen() {
               <TabsContent value="maps">
                 {/* TODO: should be just places that we tap in */}
                 <ItineraryMap
-                  itineraryPlaces={itinerary.itineraryPlaces || []}
+                  itineraryId={id}
+                  itineraryPlaces={tappedInItineraryPlaces}
                   onPressPlace={handleSelectPlace}
                 />
               </TabsContent>

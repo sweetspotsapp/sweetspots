@@ -98,11 +98,11 @@ export default function PlaceSuggestionCard({
               style={{ width: 120, height: 120, borderRadius: 8 }}
             />
           )}
-          <View>
+          <View className='flex-1'>
             <SSText variant="semibold" className="text-xl">
               {itineraryPlace.place?.name}
             </SSText>
-            <View className="flex-row flex-wrap gap-2 mb-4">
+            <View className="flex-row flex-wrap gap-2 mb-4 flex-1">
               {place?.vibes.map((vibe, index) => (
                 <VibePill vibe={vibe} key={index} />
               ))}

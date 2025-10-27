@@ -136,7 +136,7 @@ export default function PlaceSuggestionModal({
           )}
           <ItineraryPlaceStatus itineraryPlace={itineraryPlace} />
         </View>
-        {isOwnerSuggestion && onCancelSuggestion && (
+        {isOwnerSuggestion && onCancelSuggestion && itineraryPlace.suggestionStatus !== ItineraryPlaceSuggestionStatus.Rejected && (
           <View className="flex-row justify-between items-center gap-4 mb-4">
             <Button
               className="flex-1"

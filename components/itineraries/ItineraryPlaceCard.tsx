@@ -12,13 +12,15 @@ import { tapIn, tapOut } from '@/endpoints/collab-itinerary/endpoints';
 export default function ItineraryPlaceCard({
   place,
   index,
+  tappedIn,
 }: {
   place: IItineraryPlace;
   index: number;
+  tappedIn: boolean;
 }) {
   const user = useAuth().user;
   const isOwner = user?.uid === place?.userId;
-  const [isTappedIn, setIsTappedIn] = React.useState(false);
+  const [isTappedIn, setIsTappedIn] = React.useState(tappedIn);
 
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -168,7 +170,7 @@ export default function ItineraryPlaceCard({
               onPress={handleTapInOut}
               disabled={isLoading}
             >
-              <SSText>{isTappedIn ? "I'm In!" : "I'm Out!"}</SSText>
+              <SSText>{!isTappedIn ? "I'm In!" : "I'm Out!"}</SSText>
             </Button>
           </View>
         )}
