@@ -28,8 +28,6 @@ import { PickerProvider } from '../ui/SSDateTimePicker';
 import { SSText } from '../ui/SSText';
 import { Button } from '../ui/button';
 import { SSControlledInput } from '../ui/SSControlledInput';
-
-import { updateSuggestionStatus } from '@/endpoints/collab-itinerary/endpoints';
 import SuggestionCardList, { Suggestion } from './SuggestionCardList';
 import { CreateItineraryDto } from '@/dto/itineraries/create-itinerary.dto';
 import { arrayMove } from '@/lib/utils';
@@ -469,7 +467,8 @@ export function ItineraryForm({
       id: place.id,
       createdAt: new Date().toISOString(),
       place,
-      imageUrl: place.images?.[0]?.url || null,
+      placeId: place.id,
+      imageUrl: place.placeImages?.[0]?.url || null,
       visitDuration: getDefaultDuration(place.category),
       estimatedCost: getDefaultCost(place.priceRange),
       visitDate: '',
@@ -478,6 +477,7 @@ export function ItineraryForm({
       orderIndex: index + 1,
       suggestionStatus: 'accepted',
       itineraryId: itineraryId || '',
+
     }));
     setValue('itineraryPlaces', places, {
       shouldDirty: true,
@@ -765,29 +765,6 @@ export function ItineraryForm({
     setValue('itineraryPlaces', after, { shouldDirty: true });
   };
 
-  // ------------------ suggestions accept/reject ------------------
-
-  const handleAcceptRejectPlaceSuggestion = (
-    suggestionId: string,
-    status: 'accepted' | 'rejected'
-  ) => {
-    const list = getValues('itineraryPlaces') as IItineraryPlace[];
-    const idx = list.findIndex((p) => p.id === suggestionId);
-    if (idx === -1) return;
-    const target = list[idx];
-    if (target.suggestionStatus !== 'pending') return;
-
-    // update backend
-    updateSuggestionStatus(suggestionId, status);
-
-    // update form list
-    const next = [...list];
-    next[idx] = { ...target, suggestionStatus: status };
-    setValue('itineraryPlaces', next, { shouldDirty: true });
-  };
-
-  // ------------------ create/save ------------------
-
   const onSubmit = async (values: FormValues) => {
     if (!values.name.trim()) {
       Alert.alert('Missing name', 'Please enter a name for your itinerary.');
@@ -893,12 +870,6 @@ export function ItineraryForm({
               />
             </View>
 
-            <SuggestionCardList
-              suggestions={nameSuggestions}
-              title="Name Suggestions"
-              onSuggestionStatusChange={handleAcceptRejectPlaceSuggestion}
-            />
-
             <View className="mb-4">
               <SSText
                 variant="semibold"
@@ -976,37 +947,6 @@ export function ItineraryForm({
                 lockedFields={lockedFields}
               />
             ))}
-
-            {suggestedPlaces.length > 0 && (
-              <>
-                <SSText
-                  variant="semibold"
-                  className="text-xl text-gray-800 mb-2 mt-6"
-                >
-                  Suggested Places ({suggestedPlaces.length} places)
-                </SSText>
-                <SSText className="text-sm text-slate-500 mb-6">
-                  Tap each place to configure when and how long you&apos;ll
-                  visit
-                </SSText>
-                {suggestedPlaces.map((place) => (
-                  <PlaceScheduleCard
-                    key={place.id}
-                    itineraryPlace={place}
-                    onUpdate={(updates) => updatePlace(place.id, updates)}
-                    onFieldFocus={handleFieldFocus}
-                    onFieldBlur={handleFieldBlur}
-                    lockedFields={lockedFields}
-                    onAcceptSuggestion={() =>
-                      handleAcceptRejectPlaceSuggestion(place.id, 'accepted')
-                    }
-                    onRejectSuggestion={() =>
-                      handleAcceptRejectPlaceSuggestion(place.id, 'rejected')
-                    }
-                  />
-                ))}
-              </>
-            )}
           </View>
 
           {!editMode && (
@@ -1071,7 +1011,7 @@ export function ItineraryForm({
             id: place.id,
             createdAt: new Date().toISOString(),
             place,
-            imageUrl: place.images?.[0]?.url || null,
+            imageUrl: place.placeImages?.[0]?.url || null,
             visitDuration: getDefaultDuration(place.category),
             estimatedCost: getDefaultCost(place.priceRange),
             visitDate: '',

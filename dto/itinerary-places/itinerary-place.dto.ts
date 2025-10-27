@@ -1,7 +1,8 @@
+import { IItineraryPlaceParticipant } from "../collab-itineraries/itinerary-place-participant.dto";
 import { IPlace } from "../places/place.dto";
+import { IUserProfile } from "../users/user-profile.dto";
 
 export interface IItineraryPlace {
-  longitude(longitude: any): number;
   id: string;
   itineraryId?: string | null;
   placeId?: string | null;
@@ -17,5 +18,6 @@ export interface IItineraryPlace {
   // Optional populated place
   place?: IPlace;
   userId?: string | null;
-  includedUserIds: string[];
+  participants?: IItineraryPlaceParticipant[];
+  user?: IUserProfile;
 }

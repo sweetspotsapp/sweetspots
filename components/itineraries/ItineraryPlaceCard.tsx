@@ -18,9 +18,7 @@ export default function ItineraryPlaceCard({
 }) {
   const user = useAuth().user;
   const isOwner = user?.uid === place?.userId;
-  const [isTappedIn, setIsTappedIn] = React.useState(
-    place.includedUserIds?.includes(user?.uid || '')
-  );
+  const [isTappedIn, setIsTappedIn] = React.useState(false);
 
   const [isLoading, setIsLoading] = React.useState(false);
 
