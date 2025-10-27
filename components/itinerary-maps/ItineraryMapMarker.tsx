@@ -8,14 +8,21 @@ import moment from 'moment';
 export default function ItineraryMapMarker({
   itineraryPlace,
   onPress,
+  index,
 }: {
   itineraryPlace: IItineraryPlace;
   onPress?: () => void;
+  index?: number;
 }) {
   const place = itineraryPlace.place;
   const imageUrl = place?.placeImages?.[0]?.url;
-  const startDateTime = moment(`${itineraryPlace.visitDate}T${itineraryPlace.visitTime}`);
-  const endDateTime = moment(startDateTime).add(itineraryPlace.visitDuration, 'hours');
+  const startDateTime = moment(
+    `${itineraryPlace.visitDate}T${itineraryPlace.visitTime}`
+  );
+  const endDateTime = moment(startDateTime).add(
+    itineraryPlace.visitDuration,
+    'hours'
+  );
 
   return (
     <TouchableOpacity onPress={onPress}>
@@ -24,12 +31,13 @@ export default function ItineraryMapMarker({
           <View className="h-6 w-6 items-center justify-center rounded-full bg-orange-600">
             <Text className="text-white font-bold text-sm">
               {' '}
-              {itineraryPlace.orderIndex + 1}{' '}
+              {(index !== undefined ? index : itineraryPlace.orderIndex) +
+                1}{' '}
             </Text>
           </View>
           <SSText>{place?.name}</SSText>
         </View>
-        <View className='mb-2'>
+        <View className="mb-2">
           <SSText className="text-sm text-gray-700">
             {startDateTime.format('h:mm A')} - {endDateTime.format('h:mm A')}
           </SSText>
@@ -42,7 +50,6 @@ export default function ItineraryMapMarker({
           />
         )}
         <View className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white rotate-45 -mt-2 rounded-[2px]" />
-        
       </Card>
     </TouchableOpacity>
   );

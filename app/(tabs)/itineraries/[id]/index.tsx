@@ -264,7 +264,7 @@ export default function ItineraryDetailsScreen() {
             )}
 
             {/* Trip Summary */}
-            {(itinerary.totalEstimatedCost || itinerary.totalDuration) && (
+            {/* {(itinerary.totalEstimatedCost || itinerary.totalDuration) && (
               <View className="mb-8">
                 <SSText
                   variant="semibold"
@@ -348,7 +348,7 @@ export default function ItineraryDetailsScreen() {
                   )}
                 </View>
               </View>
-            )}
+            )} */}
 
             {/* Collaborators */}
             {(itinerary.collaborators || []).length > 0 && (

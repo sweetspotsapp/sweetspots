@@ -37,10 +37,11 @@ export default function ItineraryMap({
     .filter(Boolean) as IPlace[];
 
   const placeMarkers: Marker[] = itineraryPlaces.map(
-    (ip) =>
+    (ip, idx) =>
       ip.place && {
         element: (
           <ItineraryMapMarker
+            index={idx}
             itineraryPlace={ip}
             onPress={() => ip.place && onPressPlace?.(ip.place)}
           />
