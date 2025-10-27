@@ -39,7 +39,9 @@ export default function NotificationCard({
           <Button
             onPress={() => {
               handleRead();
-              router.push(`/itineraries/${notification.data?.itineraryId}/place-suggestions`);
+              router.push(
+                `/itineraries/${notification.data?.itineraryId}/place-suggestions`
+              );
             }}
             className="mt-2 self-start"
             size="sm"
@@ -77,12 +79,14 @@ export default function NotificationCard({
           </SSText>
         </View>
 
-        <SSText
-          className="text-muted-foreground mt-1 leading-relaxed"
-          numberOfLines={3}
-        >
-          {notification.message}
-        </SSText>
+        {notification.title !== notification.message && (
+          <SSText
+            className="text-muted-foreground mt-1 leading-relaxed"
+            numberOfLines={3}
+          >
+            {notification.message}
+          </SSText>
+        )}
 
         {notification.sentAt && (
           <SSText className="text-xs text-muted-foreground mt-3">

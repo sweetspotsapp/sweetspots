@@ -19,9 +19,7 @@ import {
 } from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
 import SSLinearGradient from '@/components/ui/SSLinearGradient';
-import { Card } from '@/components/ui/card';
 import { getItineraryById } from '@/endpoints/itineraries/endpoints';
-import { formatCurrency, formatDuration } from '@/utils/formatter';
 import SSSpinner from '@/components/ui/SSSpinner';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
 import ShareItineraryModal from '@/components/itineraries/ShareItineraryModal';

@@ -1,4 +1,14 @@
-export type NotificationType = 'itinerary-collaboration' | 'removed-from-itinerary' | 'new-place-nearby' | 'place-update' | 'saved-place-change' | 'itinerary-place-suggested';
+export type NotificationType =
+  | "itinerary-collaboration"
+  | "removed-from-itinerary"
+  | "new-place-nearby"
+  | "place-update"
+  | "saved-place-change"
+  | "itinerary-place-suggested"
+  | "itinerary-all-in"
+  | "itinerary-all-out"
+  | "itinerary-tap-in"
+  | "itinerary-tap-out";
 
 export interface IUserNotification {
   id: string;
