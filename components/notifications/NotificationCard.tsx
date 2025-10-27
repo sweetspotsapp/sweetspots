@@ -6,6 +6,7 @@ import { Button } from '../ui/button';
 import { Link, router } from 'expo-router';
 import { IUserNotification } from '@/dto/notifications/notification.dto';
 import { markNotificationAsRead } from '@/endpoints/notifications/endpoints';
+import moment from 'moment';
 
 export default function NotificationCard({
   notification,
@@ -56,13 +57,18 @@ export default function NotificationCard({
       className={`p-4 mb-3 rounded-2xl border border-border/60 bg-background/70 
       shadow-sm active:scale-[0.98] transition-all`}
     >
+      <View className='flex-row justify-between'>
+      <SSText className='text-neutral-500'>
+        {moment(notification.createdAt).format('LLL')}
+      </SSText>
+        {!notification.isRead && (
+          <View className="w-2.5 h-2.5 bg-primary rounded-full ml-2 mt-1" />
+        )}
+      </View>
       <View className="flex-row justify-between items-start">
         <SSText className="text-lg font-semibold flex-shrink" numberOfLines={2}>
           {notification.title}
         </SSText>
-        {!notification.isRead && (
-          <View className="w-2.5 h-2.5 bg-primary rounded-full ml-2 mt-1" />
-        )}
       </View>
 
       <SSText

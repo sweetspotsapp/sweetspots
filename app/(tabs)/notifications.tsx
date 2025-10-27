@@ -14,7 +14,10 @@ export default function NotificationPage() {
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      const res = await getUserNotifications();
+      const res = await getUserNotifications({
+        limit: 30,
+        page: 1,
+      });
       console.log('fetched notifications', res);
       setNotifications(res.data || []);
     };
@@ -42,7 +45,7 @@ export default function NotificationPage() {
       <FlatList
         data={notifications}
         renderItem={({ item }) => (
-          <View className='mb-4'>
+          <View>
             <NotificationCard notification={item} />
           </View>
       )}

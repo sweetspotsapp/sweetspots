@@ -86,7 +86,7 @@ export default function PlaceSuggestionsPage() {
         />
       )}
 
-      <View className="flex-row items-center gap-4 my-5">
+      <View className="flex-row items-center gap-4 my-4">
         {/* <TouchableOpacity
             className="w-11 h-11 rounded-full bg-white justify-center items-center shadow-sm"
             onPress={() => goBack('/profile')}

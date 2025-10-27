@@ -10,4 +10,5 @@ export interface IUserNotification {
   isRead: boolean;
   sentAt?: string;
   createdAt: string;
+  itineraryId?: string;
 }

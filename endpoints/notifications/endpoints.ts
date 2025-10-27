@@ -1,9 +1,10 @@
 import { IUserNotification } from '@/dto/notifications/notification.dto';
 import { api } from '../client';
-import { ApiPluralResponse, ApiResponse } from '../pagination.dto';
+import { ApiResponse } from '../pagination.dto';
+import { GetNotificationsDto } from '@/dto/notifications/get-notifications.dto';
 
 export const getUserNotifications = async (
-  params: { limit?: number } = { limit: 20 }
+  params: GetNotificationsDto
 ): Promise<ApiResponse<IUserNotification[]>> => {
   const res = await api.get('/notifications', { params });
   return res.data;

@@ -54,7 +54,7 @@ export default function ItineraryPlaceCard({
             />
           )}
 
-          <View className='w-full gap-2'>
+          <View className='flex-1 gap-2'>
             <View className="">
               <SSText variant="semibold" className="text-lg text-gray-800 mb-1">
                 {place.place?.name}
