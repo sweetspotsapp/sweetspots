@@ -39,7 +39,7 @@ export default function NotificationCard({
           <Button
             onPress={() => {
               handleRead();
-              router.push(`/itineraries/${notification.data?.itineraryId}`);
+              router.push(`/itineraries/${notification.data?.itineraryId}/place-suggestions`);
             }}
             className="mt-2 self-start"
             size="sm"

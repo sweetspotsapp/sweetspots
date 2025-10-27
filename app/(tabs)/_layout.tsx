@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Tabs, Redirect, router } from 'expo-router';
-import { Heart, User, Compass, Search, Briefcase, Bell } from 'lucide-react-native';
+import {
+  Heart,
+  User,
+  Compass,
+  Search,
+  Briefcase,
+  Bell,
+} from 'lucide-react-native';
 import { Platform } from 'react-native';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
 import { useAuth } from '@/hooks/useAuth';
@@ -39,7 +46,7 @@ export default function TabLayout() {
   }, [promptOk, markPromptShown, APP_VERSION]);
 
   React.useEffect(() => {
-    console.log("YAHOOO", { user, answers });
+    console.log('YAHOOO', { user, answers });
     if (user && answers.email !== user.email && !ui.dismissed) {
       useOnboardingStore.setState({
         answers: {
@@ -134,17 +141,17 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="profile"
-          options={{
-            title: 'Profile',
-            tabBarIcon: ({ size, color }) => <User size={size} color={color} />,
-          }}
-        />
-          <Tabs.Screen
           name="notifications"
           options={{
             title: 'Notifications',
             tabBarIcon: ({ size, color }) => <Bell size={size} color={color} />,
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: 'Profile',
+            tabBarIcon: ({ size, color }) => <User size={size} color={color} />,
           }}
         />
       </Tabs>
