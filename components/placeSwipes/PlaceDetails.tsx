@@ -87,12 +87,12 @@ PlaceDetailsProps) {
   const { location } = useLocationStore();
 
   useEffect(() => {
-    if (
+    if ((
       !(place as IPlace).placeImages ||
       !(place as IRecommendedPlace).images ||
       (place as IRecommendedPlace).images.length === 0 ||
       (place as IPlace).placeImages?.length === 0
-    ) {
+    ) && place?.id) {
       getPlaceImages({
         placeId: place?.id,
       }).then((res) => {
