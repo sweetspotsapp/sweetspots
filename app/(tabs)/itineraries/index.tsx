@@ -118,13 +118,13 @@ export default function ItinerariesScreen() {
           )} */}
 
           {/* Trip Summary */}
-          <View className="flex-row gap-4 mb-4 pb-4 border-b border-slate-100">
-            {/* <View className="flex-row items-center gap-1.5">
+          {/* <View className="flex-row gap-4 mb-4 pb-4 border-b border-slate-100">
+            <View className="flex-row items-center gap-1.5">
               <MapPin size={14} color="#64748b" />
               <SSText variant="semibold" className="text-sm text-gray-800">
                 {item.places.length} places
               </SSText>
-            </View> */}
+            </View>
 
             {item.totalDuration && (
               <View className="flex-row items-center gap-1.5">
@@ -143,7 +143,7 @@ export default function ItinerariesScreen() {
                 </SSText>
               </View>
             )}
-          </View>
+          </View> */}
 
           <View className="flex-row flex-wrap gap-4">
             <View className="flex-row items-center gap-1.5">
