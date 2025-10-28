@@ -29,6 +29,7 @@ export function SavedPlaceCard({
   onPress,
   isSelected = false,
 }: SavedPlaceCardProps) {
+  console.log(place)
   return (
     <TouchableOpacity
       // className={`flex-row bg-white rounded-2xl mb-4 overflow-hidden shadow-sm ${
@@ -50,7 +51,7 @@ export function SavedPlaceCard({
       >
         {/* {place.images?.[0] && ( */}
           <Image
-            source={{ uri: place.placeImages?.[0].url }}
+            source={{ uri: place.images?.[0].url }}
             // height={120}
             // width={120}
             className="w-full md:w-32 h-32"

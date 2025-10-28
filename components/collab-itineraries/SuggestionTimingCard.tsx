@@ -50,8 +50,8 @@ export default function SuggestionTimingCard({
   const placeImageUrl =
     placeImages && placeImages.length > 0
       ? placeImages[0].url
-      : place?.placeImages && place.placeImages.length > 0
-      ? place.placeImages[0].url
+      : place?.images && place.images.length > 0
+      ? place.images[0].url
       : itineraryPlace.imageUrl;
 
   const start = moment(`${itineraryPlace.visitDate}T${itineraryPlace.visitTime}`);

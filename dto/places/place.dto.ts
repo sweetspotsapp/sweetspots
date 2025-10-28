@@ -37,7 +37,7 @@ export interface IPlace {
   savedAt?: string | null; // when the place was saved by the user
 
   // Optional expanded fields
-  placeImages?: IPlaceImage[];
+  images?: IPlaceImage[];
   reviews?: IReview[];
   calculatedDistance?: number;
 }

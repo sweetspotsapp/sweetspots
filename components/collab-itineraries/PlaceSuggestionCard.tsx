@@ -35,7 +35,7 @@ export default function PlaceSuggestionCard({
     itineraryPlace.place || null
   );
   const [placeImages, setPlaceImages] = useState<IPlaceImage[]>(
-    place?.placeImages || []
+    place?.images || []
   );
   const [userProfile, setUserProfile] = useState<IUserProfile | null>(null);
 
@@ -50,7 +50,7 @@ export default function PlaceSuggestionCard({
   }, [itineraryPlace.placeId]);
 
   useEffect(() => {
-    if (!place?.placeImages || place.placeImages.length === 0) {
+    if (!place?.images || place.images.length === 0) {
       getPlaceImages({
         placeId: place?.id,
         limit: 1,
@@ -60,7 +60,7 @@ export default function PlaceSuggestionCard({
         }
       });
     }
-  }, [place?.placeImages]);
+  }, [place?.images]);
 
   useEffect(() => {
     if (itineraryPlace.userId) {

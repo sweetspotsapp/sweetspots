@@ -72,8 +72,8 @@ PlaceDetailsProps) {
     (place as IRecommendedPlace).images
   )
     ? (place as IRecommendedPlace).images
-    : Array.isArray((place as IPlace).placeImages)
-    ? (place as IPlace).placeImages
+    : Array.isArray((place as IPlace).images)
+    ? (place as IPlace).images
     : []) as (IPlaceImage | string)[];
 
   const [placeImages, setPlaceImages] = useState<(IPlaceImage | string)[]>(
@@ -88,10 +88,10 @@ PlaceDetailsProps) {
 
   useEffect(() => {
     if ((
-      !(place as IPlace).placeImages ||
+      !(place as IPlace).images ||
       !(place as IRecommendedPlace).images ||
       (place as IRecommendedPlace).images.length === 0 ||
-      (place as IPlace).placeImages?.length === 0
+      (place as IPlace).images?.length === 0
     ) && place?.id) {
       getPlaceImages({
         placeId: place?.id,
@@ -100,6 +100,8 @@ PlaceDetailsProps) {
           setPlaceImages(res.data.data);
         }
       });
+    } else if (initialPlaceImages.length > 0) {
+      setPlaceImages(initialPlaceImages);
     }
   }, [place]);
 
