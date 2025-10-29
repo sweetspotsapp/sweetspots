@@ -30,10 +30,11 @@ import { IItineraryUser } from '@/dto/itinerary-users/itinerary-user.dto';
 import {
   getItineraryCollaborators,
   getTappedInItineraryPlaces,
+  tapAllIn,
+  tapAllOut,
 } from '@/endpoints/collab-itinerary/endpoints';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import ItineraryPlaceCard from '@/components/itineraries/ItineraryPlaceCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ItineraryMap from '@/components/itinerary-maps/ItineraryMap';
 import { IPlace } from '@/dto/places/place.dto';
@@ -48,24 +49,39 @@ export default function ItineraryDetailsScreen() {
   const [tappedInItineraryPlaces, setTappedInItineraryPlaces] = useState<
     IItineraryPlace[]
   >([]);
-  console.log('itinerary', itinerary);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<'places' | 'maps'>('places');
   const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null);
+  const [isUpdatingAllInOut, setIsUpdatingAllInOut] = useState(false);
+  const [isLoadingTappedPlaces, setIsLoadingTappedPlaces] = useState(false);
 
+  const isAllIn =
+    tappedInItineraryPlaces.length ===
+    (itinerary?.itineraryPlaces?.length || 0);
   const user = useAuth().user;
 
-  useEffect(() => {
+  async function loadTappedInPlaces() {
     if (!user) return;
-    getTappedInItineraryPlaces(id, user.uid).then((res) => {
-      setTappedInItineraryPlaces(
-        (res.data || []).map((ip) => ({
-          ...ip,
-          imageUrl: itinerary?.itineraryPlaces?.find((itp) => itp.id === ip.id)
-            ?.imageUrl,
-        }))
-      );
-    });
+
+    setIsLoadingTappedPlaces(true);
+    getTappedInItineraryPlaces(id, user.uid)
+      .then((res) => {
+        setTappedInItineraryPlaces(
+          (res.data || []).map((ip) => ({
+            ...ip,
+            imageUrl: itinerary?.itineraryPlaces?.find(
+              (itp) => itp.id === ip.id
+            )?.imageUrl,
+          }))
+        );
+      })
+      .finally(() => {
+        setIsLoadingTappedPlaces(false);
+      });
+  }
+
+  useEffect(() => {
+    loadTappedInPlaces();
   }, [user]);
 
   // useEffect(() => {
@@ -181,6 +197,26 @@ export default function ItineraryDetailsScreen() {
     setSelectedPlace(place);
   }
 
+  function handleAllInToggle() {
+    if (!itinerary) return;
+    setIsUpdatingAllInOut(true);
+    if (isAllIn) {
+      tapAllOut(itinerary.id, user?.uid || '')
+        .then(() => {
+          setTappedInItineraryPlaces([]);
+          loadTappedInPlaces();
+        })
+        .finally(() => setIsUpdatingAllInOut(false));
+    } else {
+      tapAllIn(itinerary.id, user?.uid || '')
+        .then(() => {
+          setTappedInItineraryPlaces(itinerary.itineraryPlaces || []);
+          loadTappedInPlaces();
+        })
+        .finally(() => setIsUpdatingAllInOut(false));
+    }
+  }
+
   return (
     <>
       <PlaceDetailsModal
@@ -195,6 +231,14 @@ export default function ItineraryDetailsScreen() {
         onFinished={loadItinerary}
       />
       <SSContainer>
+        <Button
+          disabled={isUpdatingAllInOut}
+          variant={isAllIn ? 'outline' : 'default'}
+          className="absolute z-50 bottom-24 left-5 right-5 shadow-lg"
+          onPress={handleAllInToggle}
+        >
+          <SSText variant="semibold">I'm All {isAllIn ? 'Out' : 'In'}!</SSText>
+        </Button>
         {/* Header */}
         <View className="flex-row justify-between items-center  pt-2.5 pb-4">
           <BackArrowButton fallbackUrl="/itineraries" forceFallback />
@@ -223,7 +267,6 @@ export default function ItineraryDetailsScreen() {
             </Link>
           </View>
         </View>
-
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Cover Image */}
           {/* {itinerary.coverImage && (
@@ -394,46 +437,54 @@ export default function ItineraryDetailsScreen() {
                 </View>
               </View>
             )} */}
-
-            <Tabs value={tab} onValueChange={(value) => setTab(value as any)}>
-              <View className="md:flex-row md:items-center gap-2 justify-between">
-                <TabsList>
-                  <TabsTrigger value="places">
-                    <SSText>Spots</SSText>
-                  </TabsTrigger>
-                  <TabsTrigger value="maps">
-                    <SSText>Maps</SSText>
-                  </TabsTrigger>
-                </TabsList>
-                <View className="flex-row w-full md:w-fit justify-between">
-                  {!isOwner ? (
-                    <Link href={`/itineraries/${id}/your-suggestions`} asChild>
-                      <Button variant="ghost">
-                        <SSText>Your Suggestions</SSText>
+            {isLoadingTappedPlaces ? (
+              <SSSpinner />
+            ) : (
+              <Tabs value={tab} onValueChange={(value) => setTab(value as any)} className='mb-4'>
+                <View className="md:flex-row md:items-center gap-2 justify-between">
+                  <TabsList>
+                    <TabsTrigger value="places">
+                      <SSText>Spots</SSText>
+                    </TabsTrigger>
+                    <TabsTrigger value="maps">
+                      <SSText>Maps</SSText>
+                    </TabsTrigger>
+                  </TabsList>
+                  <View className="flex-row w-full md:w-fit justify-between">
+                    {!isOwner ? (
+                      <Link
+                        href={`/itineraries/${id}/your-suggestions`}
+                        asChild
+                      >
+                        <Button variant="ghost">
+                          <SSText>Your Suggestions</SSText>
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/itineraries/${id}/place-suggestions`}
+                        asChild
+                      >
+                        <Button variant="ghost">
+                          <SSText>See Chiller's Suggestions</SSText>
+                        </Button>
+                      </Link>
+                    )}
+                    <Link href={`/itineraries/${id}/add-places`} asChild>
+                      <Button>
+                        <Plus size={16} className="text-white" />
+                        <SSText>{isEditor ? 'Suggest' : 'Add'} New Spot</SSText>
                       </Button>
                     </Link>
-                  ) : (
-                    <Link href={`/itineraries/${id}/place-suggestions`} asChild>
-                      <Button variant="ghost">
-                        <SSText>See Chiller's Suggestions</SSText>
-                      </Button>
-                    </Link>
-                  )}
-                  <Link href={`/itineraries/${id}/add-places`} asChild>
-                    <Button>
-                      <Plus size={16} className="text-white" />
-                      <SSText>{isEditor ? 'Suggest' : 'Add'} New Spot</SSText>
-                    </Button>
-                  </Link>
+                  </View>
                 </View>
-              </View>
-              <TabsContent value="places">
-                <ItineraryTimeline
-                  itinerary={itinerary}
-                  handleSelectPlace={handleSelectPlace}
-                  tappedInItineraryPlaces={tappedInItineraryPlaces}
-                />
-                {/* <View className="mb-10 gap-4">
+                <TabsContent value="places">
+                  <ItineraryTimeline
+                    itinerary={itinerary}
+                    handleSelectPlace={handleSelectPlace}
+                    tappedInItineraryPlaces={tappedInItineraryPlaces}
+                  />
+                  {/* <View className="mb-10 gap-4">
                   {itinerary.itineraryPlaces?.map((place, index) => (
                     <TouchableOpacity
                       key={place.id}
@@ -451,16 +502,17 @@ export default function ItineraryDetailsScreen() {
                     </TouchableOpacity>
                   ))}
                 </View> */}
-              </TabsContent>
-              <TabsContent value="maps">
-                {/* TODO: should be just places that we tap in */}
-                <ItineraryMap
-                  itineraryId={id}
-                  itineraryPlaces={tappedInItineraryPlaces}
-                  onPressPlace={handleSelectPlace}
-                />
-              </TabsContent>
-            </Tabs>
+                </TabsContent>
+                <TabsContent value="maps">
+                  {/* TODO: should be just places that we tap in */}
+                  <ItineraryMap
+                    itineraryId={id}
+                    itineraryPlaces={tappedInItineraryPlaces}
+                    onPressPlace={handleSelectPlace}
+                  />
+                </TabsContent>
+              </Tabs>
+            )}
           </View>
         </ScrollView>
       </SSContainer>

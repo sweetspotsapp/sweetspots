@@ -38,8 +38,6 @@ export default function ItineraryPlaceCard({
     'id'
   );
 
-  console.log('ItineraryPlaceCard participants profiles:', participants);
-
   const [isLoading, setIsLoading] = React.useState(false);
 
   useEffect(() => {
@@ -67,7 +65,6 @@ export default function ItineraryPlaceCard({
       tapIn(place.id, user?.uid || '')
         .then((res) => {
           setIsTappedIn(true);
-          console.log('tapIn response data:', res.data);  
           if (res.data !== undefined) {
             setItineraryPlaceParticipants((prev) => [...prev, res.data!]);
           }

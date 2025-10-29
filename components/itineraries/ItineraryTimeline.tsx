@@ -66,8 +66,6 @@ export function ItineraryTimeline({
     });
   }, [itinerary.itineraryPlaces]);
 
-  console.log('ItineraryTimeline sections', sections);
-
   return (
     <SectionList
       sections={sections}
