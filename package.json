@@ -31,6 +31,7 @@
     "@rn-primitives/separator": "^1.2.0",
     "@rn-primitives/slot": "^1.2.0",
     "@rn-primitives/tabs": "^1.2.0",
+    "@rn-primitives/tooltip": "^1.2.0",
     "@vis.gl/react-google-maps": "^1.5.5",
     "axios": "^1.10.0",
     "change-case": "^5.4.4",
