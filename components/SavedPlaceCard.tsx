@@ -29,7 +29,6 @@ export function SavedPlaceCard({
   onPress,
   isSelected = false,
 }: SavedPlaceCardProps) {
-  console.log(place)
   return (
     <TouchableOpacity
       // className={`flex-row bg-white rounded-2xl mb-4 overflow-hidden shadow-sm ${

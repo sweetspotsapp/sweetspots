@@ -156,7 +156,6 @@ PlaceDetailsProps) {
   );
 
   useEffect(() => {
-    console.log('Change placae');
     if (user?.uid && place?.id) {
       setIsLoadingPrepareContext(true);
       getPrepareContext({ userId: user.uid, placeId: place.id })

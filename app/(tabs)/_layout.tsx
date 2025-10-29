@@ -46,7 +46,6 @@ export default function TabLayout() {
   }, [promptOk, markPromptShown, APP_VERSION]);
 
   React.useEffect(() => {
-    console.log('YAHOOO', { user, answers });
     if (user && answers.email !== user.email && !ui.dismissed) {
       useOnboardingStore.setState({
         answers: {

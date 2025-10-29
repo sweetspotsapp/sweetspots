@@ -15,7 +15,6 @@ export default function ItineraryMapMarker({
   index?: number;
 }) {
   const place = itineraryPlace.place;
-  console.log('ItineraryMapMarker place', place, itineraryPlace);
   const imageUrl =
     itineraryPlace?.imageUrl || itineraryPlace?.place?.images?.[0]?.url;
   const startDateTime = moment(

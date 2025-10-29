@@ -69,7 +69,6 @@ export default function ShareItineraryModal({
     if (itinerary.id) {
       getItineraryCollaborators(itinerary.id)
         .then((res) => {
-          console.log('collaborators', res);
           setCollaborators(res.data || []);
         })
         .catch((e) => {

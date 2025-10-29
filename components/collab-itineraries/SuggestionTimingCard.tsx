@@ -23,7 +23,6 @@ export default function SuggestionTimingCard({
   isDraggable?: boolean;
 }) {
   const [place, setPlace] = useState<IPlace | undefined>(itineraryPlace.place);
-  console.log('RERENDER SuggestionTimingCard', { name: place?.name, itineraryPlace });
   const [placeImages, setPlaceImages] = useState<IPlaceImage[]>([]);
 
   useEffect(() => {
@@ -55,7 +54,6 @@ export default function SuggestionTimingCard({
       : itineraryPlace.imageUrl;
 
   const start = moment(`${itineraryPlace.visitDate}T${itineraryPlace.visitTime}`);
-  console.log('SuggestionTimingCard start time:', place?.name, start.toString());
   const end = moment(start).add(Number(itineraryPlace.visitDuration), 'hours');
 
   const timeRange = `${start.format('hh:mm A')} – ${end.format('hh:mm A')}`;
