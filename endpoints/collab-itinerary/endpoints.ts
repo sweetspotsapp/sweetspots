@@ -1,8 +1,9 @@
-import { CollabItineraryRoomDto } from "@/dto/collab-itineraries/collab-itinerary-room.dto";
-import { api } from "../client";
-import { ApiResponse } from "../pagination.dto";
-import { IItineraryUser } from "@/dto/itinerary-users/itinerary-user.dto";
-import { IItineraryPlace } from "@/dto/itinerary-places/itinerary-place.dto";
+import { CollabItineraryRoomDto } from '@/dto/collab-itineraries/collab-itinerary-room.dto';
+import { api } from '../client';
+import { ApiResponse } from '../pagination.dto';
+import { IItineraryUser } from '@/dto/itinerary-users/itinerary-user.dto';
+import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
+import { IItineraryPlaceParticipant } from '@/dto/collab-itineraries/itinerary-place-participant.dto';
 
 export const removeCollaborator = async ({
   itineraryId,
@@ -38,32 +39,59 @@ export const addCollaborator = async ({
   return res.data;
 };
 
-export const getItineraryCollaborators = async (itineraryId: string): Promise<ApiResponse<IItineraryUser[]>> => {
-    const res = await api.get(`/collab-itinerary/${itineraryId}/collaborators`);
-    return res.data;
-};
-
-export const getTappedInItineraryPlaces = async (itineraryId: string, userId: string): Promise<ApiResponse<IItineraryPlace[]>> => {
-  const res = await api.get(`/collab-itinerary/${itineraryId}`, { params: { userId } });
+export const getItineraryCollaborators = async (
+  itineraryId: string
+): Promise<ApiResponse<IItineraryUser[]>> => {
+  const res = await api.get(`/collab-itinerary/${itineraryId}/collaborators`);
   return res.data;
 };
 
-export const tapIn = async (itineraryPlaceId: string, userId: string): Promise<ApiResponse<any>> => {
-  const res = await api.patch(`/collab-itinerary/tap-in/${itineraryPlaceId}`, { userId });
+export const getTappedInItineraryPlaces = async (
+  itineraryId: string,
+  userId: string
+): Promise<ApiResponse<IItineraryPlace[]>> => {
+  const res = await api.get(`/collab-itinerary/${itineraryId}`, {
+    params: { userId },
+  });
   return res.data;
 };
 
-export const tapOut = async (itineraryPlaceId: string, userId: string): Promise<ApiResponse<any>> => {
-  const res = await api.patch(`/collab-itinerary/tap-out/${itineraryPlaceId}`, { userId });
+export const tapIn = async (
+  itineraryPlaceId: string,
+  userId: string
+): Promise<ApiResponse<IItineraryPlaceParticipant>> => {
+  const res = await api.patch(`/collab-itinerary/tap-in/${itineraryPlaceId}`, {
+    userId,
+  });
   return res.data;
 };
 
-export const tapAllIn = async (itineraryId: string, userId: string): Promise<ApiResponse<any>> => {
-  const res = await api.patch(`/collab-itinerary/tap-all-in/${itineraryId}`, { userId });
+export const tapOut = async (
+  itineraryPlaceId: string,
+  userId: string
+): Promise<ApiResponse<IItineraryPlaceParticipant>> => {
+  const res = await api.patch(`/collab-itinerary/tap-out/${itineraryPlaceId}`, {
+    userId,
+  });
   return res.data;
 };
 
-export const tapAllOut = async (itineraryId: string, userId: string): Promise<ApiResponse<any>> => {
-  const res = await api.patch(`/collab-itinerary/tap-all-out/${itineraryId}`, { userId });
+export const tapAllIn = async (
+  itineraryId: string,
+  userId: string
+): Promise<ApiResponse<IItineraryPlaceParticipant>> => {
+  const res = await api.patch(`/collab-itinerary/tap-all-in/${itineraryId}`, {
+    userId,
+  });
+  return res.data;
+};
+
+export const tapAllOut = async (
+  itineraryId: string,
+  userId: string
+): Promise<ApiResponse<IItineraryPlaceParticipant>> => {
+  const res = await api.patch(`/collab-itinerary/tap-all-out/${itineraryId}`, {
+    userId,
+  });
   return res.data;
 };

@@ -4,6 +4,7 @@ import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
 import { GetItineraryPlacesQueryDto } from '@/dto/itinerary-places/get-itinerary-places-query.dto';
 import { UpdateItineraryPlaceDto } from '@/dto/itinerary-places/update-itinerary-place.dto';
 import { ApiPluralResponse, ApiResponse } from '../pagination.dto';
+import { IItineraryPlaceParticipant } from '@/dto/collab-itineraries/itinerary-place-participant.dto';
 
 export const createItineraryPlace = async (
   data: CreateItineraryPlaceDto
@@ -37,6 +38,13 @@ export const getItineraryPlaceById = async (
   id: string
 ): Promise<ApiResponse<IItineraryPlace>> => {
   const res = await api.get(`/itinerary-places/${id}`);
+  return res.data;
+};
+
+export const getParticipantsOfItineraryPlace = async (
+  id: string
+): Promise<ApiResponse<IItineraryPlaceParticipant[]>> => {
+  const res = await api.get(`/itinerary-places/${id}/participants`);
   return res.data;
 };
 

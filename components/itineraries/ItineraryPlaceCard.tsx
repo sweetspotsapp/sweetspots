@@ -1,13 +1,18 @@
-import { View, Text, Image } from 'react-native';
-import React from 'react';
+import { View, Image } from 'react-native';
+import React, { useEffect } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { SSText } from '../ui/SSText';
 import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
-import { Calendar, Clock, DollarSign, MapPin, Star } from 'lucide-react-native';
-import { formatCurrency, formatDuration } from '@/utils/formatter';
+import { DollarSign, MapPin, Star } from 'lucide-react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '../ui/button';
 import { tapIn, tapOut } from '@/endpoints/collab-itinerary/endpoints';
+import { IItineraryPlaceParticipant } from '@/dto/collab-itineraries/itinerary-place-participant.dto';
+import { getParticipantsOfItineraryPlace } from '@/endpoints/itinerary-places/endpoints';
+import { IUserProfile } from '@/dto/users/user-profile.dto';
+import { uniqBy } from 'lodash';
+import ProfileAvatar from '../user/ProfileAvatar';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 export default function ItineraryPlaceCard({
   place,
@@ -22,17 +27,51 @@ export default function ItineraryPlaceCard({
   const isOwner = user?.uid === place?.userId;
   const [isTappedIn, setIsTappedIn] = React.useState(tappedIn);
 
+  const [itineraryPlaceParticipants, setItineraryPlaceParticipants] =
+    React.useState<IItineraryPlaceParticipant[]>([]);
+
+  const participants = uniqBy(
+    itineraryPlaceParticipants
+      .filter((participant) => !participant.tappedOutAt)
+      .map((participant) => (participant.user ? participant.user : null))
+      .filter(Boolean) as IUserProfile[],
+    'id'
+  );
+
+  console.log('ItineraryPlaceCard participants profiles:', participants);
+
   const [isLoading, setIsLoading] = React.useState(false);
+
+  useEffect(() => {
+    getParticipantsOfItineraryPlace(place.id)
+      .then((res) => {
+        setItineraryPlaceParticipants(res.data || []);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [place.id]);
 
   function handleTapInOut() {
     setIsLoading(true);
     if (isTappedIn) {
       tapOut(place.id, user?.uid || '')
-        .then(() => setIsTappedIn(false))
+        .then((res) => {
+          setIsTappedIn(false)
+          setItineraryPlaceParticipants((prev) =>
+            prev.filter((p) => p.userId !== user?.uid)
+          );
+        })
         .finally(() => setIsLoading(false));
     } else {
       tapIn(place.id, user?.uid || '')
-        .then(() => setIsTappedIn(true))
+        .then((res) => {
+          setIsTappedIn(true);
+          console.log('tapIn response data:', res.data);  
+          if (res.data !== undefined) {
+            setItineraryPlaceParticipants((prev) => [...prev, res.data!]);
+          }
+        })
         .finally(() => setIsLoading(false));
     }
   }
@@ -54,7 +93,7 @@ export default function ItineraryPlaceCard({
             />
           )}
 
-          <View className='flex-1 gap-2'>
+          <View className="flex-1 gap-2">
             <View className="">
               <SSText variant="semibold" className="text-lg text-gray-800 mb-1">
                 {place.place?.name}
@@ -104,18 +143,36 @@ export default function ItineraryPlaceCard({
                 </SSText>
               </View>
             )}
-            {!isOwner && (
-              <View className="flex-row justify-between items-center mt-2">
-                {/* AVATARS HERE */}
-                <Button
-                  variant={isTappedIn ? 'outline' : 'default'}
-                  onPress={handleTapInOut}
-                  disabled={isLoading}
-                >
-                  <SSText>{!isTappedIn ? "I'm In!" : "I'm Out!"}</SSText>
-                </Button>
+            {/* {!isOwner && ( */}
+            <View className="flex-row justify-between items-center mt-2">
+              {/* AVATARS HERE */}
+              <View className="flex-row">
+                {participants.map((participant, pIdx) => (
+                  <View
+                    key={pIdx}
+                    className={pIdx !== 0 ? '-ml-3 z-0' : 'z-10'} // base overlap
+                    style={{ zIndex: participants.length - pIdx }} // higher index = on top
+                  >
+                    <Tooltip delayDuration={100}>
+                      <TooltipTrigger>
+                        <ProfileAvatar user={participant} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <SSText>{participant.username}</SSText>
+                      </TooltipContent>
+                    </Tooltip>
+                  </View>
+                ))}
               </View>
-            )}
+              <Button
+                variant={isTappedIn ? 'outline' : 'default'}
+                onPress={handleTapInOut}
+                disabled={isLoading}
+              >
+                <SSText>{!isTappedIn ? "I'm In!" : "I'm Out!"}</SSText>
+              </Button>
+            </View>
+            {/* )} */}
           </View>
         </View>
 
