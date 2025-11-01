@@ -18,7 +18,7 @@ import {
   ChevronRight,
 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ReviewCarousel } from '../ReviewCarousel';
+// import { ReviewCarousel } from '../ReviewCarousel';
 import { AllReviewsModal } from '../AllReviewsModal';
 import { ImageGalleryModal } from '../ImageGalleryModal';
 import { SSText } from '../ui/SSText';
@@ -29,6 +29,7 @@ import { calculateTimeAndDistance } from '@/endpoints/places/endpoints';
 import { useLocationStore } from '@/store/useLocationStore';
 import { formatDistance, formatDuration } from '@/utils/formatter';
 import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
+import { SSImage } from '../SSImage';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -153,7 +154,7 @@ export function PlaceCard({
                   activeOpacity={0.9}
                   className="w-full h-full"
                 >
-                  <Image
+                  <SSImage
                     source={{ uri: image }}
                     className="w-full h-full"
                     style={{ resizeMode: 'cover' }}

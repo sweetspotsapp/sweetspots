@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, TouchableOpacity, Alert } from 'react-native';
 import { ChevronDown, ChevronUp, Star, ThumbsUp } from 'lucide-react-native';
 import { markReviewHelpful } from '@/endpoints/reviews/endpoints';
 import { getSavedHelpfulReviews, saveHelpfulReview } from '@/utils/storage';
 import { IReview } from '@/dto/reviews/review.dto';
 import { SSText } from '../ui/SSText';
+import { SSImage } from '../SSImage';
 
 interface ReviewCardProps {
   review: IReview;
@@ -67,7 +68,7 @@ export function ReviewCard({ review, hideHelpfulButton }: ReviewCardProps) {
   return (
     <View className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
       <View className="flex-row items-center mb-3">
-        <Image
+        <SSImage
           source={{ uri: review.userAvatar }}
           className="w-12 h-12 rounded-full mr-3"
         />

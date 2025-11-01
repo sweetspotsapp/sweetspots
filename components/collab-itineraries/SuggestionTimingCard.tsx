@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, Pressable } from 'react-native';
+import { View } from 'react-native';
 import moment from 'moment';
 import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
 import { IPlace, IPlaceImage } from '@/dto/places/place.dto';
@@ -8,6 +8,7 @@ import { Card } from '../ui/card';
 import { SSText } from '../ui/SSText';
 import { getPlaceImages } from '@/endpoints/place-images/endpoints';
 import { Menu } from 'lucide-react-native';
+import { SSImage } from '../SSImage';
 
 export default function SuggestionTimingCard({
   itineraryPlace,
@@ -74,7 +75,7 @@ export default function SuggestionTimingCard({
 
         {/* Thumbnail */}
         {placeImageUrl ? (
-          <Image
+          <SSImage
             source={{ uri: placeImageUrl }}
             className="w-12 h-12 rounded-xl mr-3"
             resizeMode="cover"

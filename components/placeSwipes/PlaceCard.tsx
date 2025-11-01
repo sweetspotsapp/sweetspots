@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
-  Image,
   ScrollView,
   TouchableOpacity,
   NativeSyntheticEvent,
@@ -26,6 +25,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { formatDuration } from '@/utils/formatter';
 import { capitalCase } from 'change-case';
+import { SSImage } from '../SSImage';
 
 export const TWO_DAYS_MS = 1000 * 60 * 60 * 24 * 2;
 
@@ -219,7 +219,7 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
                 activeOpacity={0.9}
                 className="w-full h-full"
               >
-                <Image
+                <SSImage
                   source={{ uri: image }}
                   className="w-full h-full"
                   style={{ resizeMode: 'cover' }}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import {
   Star,
   MapPin,
@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { IPlace } from '@/dto/places/place.dto';
 import VibePill from './ui/VibePill';
 import { router } from 'expo-router';
+import { SSImage } from './SSImage';
 
 interface SavedPlaceCardProps {
   place: IPlace;
@@ -49,7 +50,7 @@ export function SavedPlaceCard({
         )}
       >
         {/* {place.images?.[0] && ( */}
-          <Image
+          <SSImage
             source={{ uri: place.images?.[0].url }}
             // height={120}
             // width={120}

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Modal,
   Dimensions,
-  Image,
   ScrollView,
   TouchableOpacity,
   View,
@@ -22,6 +21,7 @@ import {
 import { X } from 'lucide-react-native';
 import { cn } from '@/lib/utils';
 import { uniq } from 'lodash';
+import { SSImage } from './SSImage';
 
 const { width, height } = Dimensions.get('window');
 const MIN_ZOOM = 1;
@@ -257,7 +257,7 @@ export function ImageGalleryModal({
               )}
               onPress={() => handleThumbnailPress(index)}
             >
-              <Image
+              <SSImage
                 source={{ uri: item }}
                 className="w-[60px] h-[60px] rounded-md"
               />

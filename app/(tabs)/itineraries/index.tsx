@@ -3,14 +3,10 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  Image,
   Platform,
 } from 'react-native';
 import {
   Calendar,
-  MapPin,
-  Clock,
-  DollarSign,
   RefreshCcw,
   Plus,
 } from 'lucide-react-native';
@@ -18,12 +14,12 @@ import { router } from 'expo-router';
 import { SSText } from '@/components/ui/SSText';
 import { getMyItineraries } from '@/endpoints/itineraries/endpoints';
 import { IItinerary } from '@/dto/itineraries/itinerary.dto';
-import { formatCurrency } from '@/utils/formatter';
 import SSSpinner from '@/components/ui/SSSpinner';
 import { Button } from '@/components/ui/button';
 import { CreateItineraryModal } from '@/components/itineraries/CreateItineraryModal';
 import SSContainer from '@/components/SSContainer';
 import { Card } from '@/components/ui/card';
+import { SSImage } from '@/components/SSImage';
 
 export default function ItinerariesScreen() {
   const [itineraries, setItineraries] = useState<IItinerary[]>([]);
@@ -78,7 +74,7 @@ export default function ItinerariesScreen() {
     <TouchableOpacity onPress={() => router.push(`/itineraries/${item.id}`)}>
       <Card>
         {item.coverImage && (
-          <Image
+          <SSImage
             source={{ uri: item.coverImage }}
             className="w-full h-40"
             style={{ resizeMode: 'cover' }}

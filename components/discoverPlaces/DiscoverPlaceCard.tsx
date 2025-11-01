@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import {
   Star,
   MapPin,
@@ -12,6 +12,7 @@ import { SSText } from '../ui/SSText';
 import VibePill from '../ui/VibePill';
 import { Card, CardContent } from '../ui/card';
 import { IRecommendedPlace } from '@/dto/recommendations/recommendation.dto';
+import { SSImage } from '../SSImage';
 
 interface DiscoverPlaceCardProps {
   place: IRecommendedPlace;
@@ -46,7 +47,7 @@ export function DiscoverPlaceCard({
         )}
       >
         {/* {place.images?.[0] && ( */}
-          <Image
+          <SSImage
             source={{ uri: place.images?.[0] }}
             // height={120}
             // width={120}

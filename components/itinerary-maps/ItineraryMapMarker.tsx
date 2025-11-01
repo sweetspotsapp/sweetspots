@@ -1,9 +1,10 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Card } from '../ui/card';
 import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
 import { SSText } from '../ui/SSText';
 import moment from 'moment';
+import { SSImage } from '../SSImage';
 
 export default function ItineraryMapMarker({
   itineraryPlace,
@@ -29,7 +30,7 @@ export default function ItineraryMapMarker({
     <TouchableOpacity onPress={onPress}>
       <Card className="p-4 max-w-64 gap-2">
         {imageUrl && (
-          <Image
+          <SSImage
             source={{ uri: imageUrl }}
             className="w-full h-24 rounded-xl"
             style={{ resizeMode: 'cover' }}

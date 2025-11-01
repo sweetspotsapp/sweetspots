@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
 import {
   Heart,
-  MapPin,
-  Settings,
-  Bell,
   User,
   Calendar,
-  Share2,
   LogOut,
 } from 'lucide-react-native';
 import { router } from 'expo-router';
@@ -24,6 +20,7 @@ import { OnboardingAnswers } from '@/store/useOnboardingStore';
 import { getMyOnboarding } from '@/endpoints/users-onboarding/endpoints';
 import { capitalCase } from 'change-case';
 import { Badge } from '@/components/ui/badge';
+import { SSImage } from '@/components/SSImage';
 
 const budgetLabel: Record<NonNullable<OnboardingAnswers['budget']>, string> = {
   budget: 'Less than $50',
@@ -131,7 +128,7 @@ export default function ProfileTab() {
             ) : profile ? (
               <>
                 <View className="relative mb-4">
-                  <Image
+                  <SSImage
                     source={{
                       uri: profile.avatarUrl || 'https://placehold.co/200x200',
                     }}

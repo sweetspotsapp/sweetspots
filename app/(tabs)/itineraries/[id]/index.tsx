@@ -271,7 +271,7 @@ export default function ItineraryDetailsScreen() {
           {/* Cover Image */}
           {/* {itinerary.coverImage && (
             <View className="h-50 mx-5 rounded-2xl overflow-hidden mb-5">
-              <Image 
+              <SSImage 
                 source={{ uri: itinerary.coverImage }} 
                 className="w-full h-[300px]"
                 style={{ resizeMode: 'contain', borderRadius: 16 }}

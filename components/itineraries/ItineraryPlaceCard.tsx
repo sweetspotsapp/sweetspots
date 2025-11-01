@@ -1,4 +1,4 @@
-import { View, Image } from 'react-native';
+import { View } from 'react-native';
 import React, { useEffect } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { SSText } from '../ui/SSText';
@@ -12,7 +12,6 @@ import { getParticipantsOfItineraryPlace } from '@/endpoints/itinerary-places/en
 import { IUserProfile } from '@/dto/users/user-profile.dto';
 import { uniqBy } from 'lodash';
 import ProfileAvatar from '../user/ProfileAvatar';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import {
   Dialog,
   DialogContent,
@@ -21,6 +20,7 @@ import {
   DialogTrigger,
 } from '../ui/dialog';
 import ShareItineraryUserCard from './ShareItineraryUserCard';
+import { SSImage } from '../SSImage';
 
 export default function ItineraryPlaceCard({
   place,
@@ -91,7 +91,7 @@ export default function ItineraryPlaceCard({
             </SSText>
           </View> */}
           {place.imageUrl && (
-            <Image
+            <SSImage
               source={{ uri: place.imageUrl }}
               className="w-full md:w-48 h-48 rounded-xl mr-3"
               style={{ resizeMode: 'cover' }}

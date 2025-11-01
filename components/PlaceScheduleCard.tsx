@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import { Input } from './ui/input';
 import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
 import moment from 'moment';
+import { SSImage } from './SSImage';
 
 interface PlaceScheduleCardProps {
   itineraryPlace: IItineraryPlace;
@@ -142,7 +143,7 @@ export function PlaceScheduleCard({
             {itineraryPlace.place && (
               <>
                 {itineraryPlace.imageUrl ? (
-                  <Image
+                  <SSImage
                     source={{ uri: itineraryPlace.imageUrl }}
                     className="rounded-xl mr-3"
                     style={{ resizeMode: 'cover', width: 112, height: 112 }}

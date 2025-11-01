@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  ActivityIndicator,
-  Image,
-  TouchableOpacity,
-  Pressable,
-  Platform,
-} from 'react-native';
+import { View, TouchableOpacity, Pressable, Platform } from 'react-native';
 import {
   MapPin,
   Clock,
-  DollarSign,
   Banknote,
   CircleCheck,
   Info,
-  Pin,
   Phone,
   Globe,
   Lightbulb,
@@ -49,6 +40,7 @@ import SSSpinner from '../ui/SSSpinner';
 import { useRecContextCache } from '@/store/useRecContextCache';
 import { TWO_DAYS_MS } from './PlaceCard';
 import { getPlaceImages } from '@/endpoints/place-images/endpoints';
+import { SSImage } from '../SSImage';
 
 interface PlaceDetailsProps {
   place: IRecommendedPlace | IPlace;
@@ -161,6 +153,10 @@ PlaceDetailsProps) {
     useState<{ item: string }[]>(whatToPrepareArr);
 
   useEffect(() => {
+    if (place?.whatToPrepare) {
+      setThingsToPrepare(whatToPrepareArr);
+      return;
+    }
     if (user?.uid && place?.id && !place?.whatToPrepare) {
       setIsLoadingPrepareContext(true);
       getPrepareContext({ userId: user.uid, placeId: place.id })
@@ -182,7 +178,11 @@ PlaceDetailsProps) {
   );
 
   useEffect(() => {
-    if (!user || !place?.id || place?.whyVisit) return;
+    if (!user || !place?.id) return;
+    if (place?.whyVisit) {
+      setContext(place.whyVisit);
+      return;
+    }
 
     const cache = useRecContextCache.getState();
     const isFresh = cache.isFresh(user.uid, place.id, TWO_DAYS_MS);
@@ -227,7 +227,7 @@ PlaceDetailsProps) {
                 setCurrentImageIndex(index + (skipFirstImage ? 1 : 0))
               }
             >
-              <Image
+              <SSImage
                 onLoadEnd={() => console.log('Image loaded')}
                 onError={(err) =>
                   handleImageError(place.id, (img as IPlaceImage)?.id)
@@ -377,8 +377,15 @@ PlaceDetailsProps) {
           </SSText>
         </View>
         <SSText>
-          {place.minPrice ? formatCurrency(place.minPrice) : 'Free'} -{' '}
-          {formatCurrency(place.maxPrice as any)}
+          {Number(place.minPrice) === 0 && Number(place.maxPrice) === 0
+            ? 'Free'
+            : place.minPrice != null
+            ? `${formatCurrency(place.minPrice)} - ${formatCurrency(
+                place.maxPrice as any
+              )}`
+            : place.maxPrice != null
+            ? formatCurrency(place.maxPrice as any)
+            : 'Free'}
         </SSText>
       </Card>
 

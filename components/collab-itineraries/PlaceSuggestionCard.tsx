@@ -1,5 +1,5 @@
-import { Image, Pressable, View } from 'react-native';
-import React, { use, useEffect, useState } from 'react';
+import { Pressable, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { IItineraryPlace } from '@/dto/itinerary-places/itinerary-place.dto';
 import { IPlace, IPlaceImage } from '@/dto/places/place.dto';
 import { IUserProfile } from '@/dto/users/user-profile.dto';
@@ -12,9 +12,8 @@ import { updateItineraryPlace } from '@/endpoints/itinerary-places/endpoints';
 import { SSText } from '../ui/SSText';
 import ProfileAvatar from '../user/ProfileAvatar';
 import VibePill from '../ui/VibePill';
-import { capitalCase } from 'change-case';
-import { cn } from '@/lib/utils';
 import ItineraryPlaceStatus from './ItineraryPlaceStatus';
+import { SSImage } from '../SSImage';
 
 export default function PlaceSuggestionCard({
   itineraryPlace,
@@ -93,7 +92,7 @@ export default function PlaceSuggestionCard({
       <Card className="p-4">
         <View className="flex-row gap-4">
           {imageUrl && (
-            <Image
+            <SSImage
               source={{ uri: imageUrl }}
               style={{ width: 120, height: 120, borderRadius: 8 }}
             />
