@@ -13,6 +13,14 @@ import { IUserProfile } from '@/dto/users/user-profile.dto';
 import { uniqBy } from 'lodash';
 import ProfileAvatar from '../user/ProfileAvatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../ui/dialog';
+import ShareItineraryUserCard from './ShareItineraryUserCard';
 
 export default function ItineraryPlaceCard({
   place,
@@ -55,7 +63,7 @@ export default function ItineraryPlaceCard({
     if (isTappedIn) {
       tapOut(place.id, user?.uid || '')
         .then((res) => {
-          setIsTappedIn(false)
+          setIsTappedIn(false);
           setItineraryPlaceParticipants((prev) =>
             prev.filter((p) => p.userId !== user?.uid)
           );
@@ -143,24 +151,40 @@ export default function ItineraryPlaceCard({
             {/* {!isOwner && ( */}
             <View className="flex-row justify-between items-center mt-2">
               {/* AVATARS HERE */}
-              <View className="flex-row">
-                {participants.map((participant, pIdx) => (
-                  <View
-                    key={pIdx}
-                    className={pIdx !== 0 ? '-ml-3 z-0' : 'z-10'} // base overlap
-                    style={{ zIndex: participants.length - pIdx }} // higher index = on top
-                  >
-                    <Tooltip delayDuration={100}>
-                      <TooltipTrigger>
-                        <ProfileAvatar user={participant} />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <SSText>{participant.username}</SSText>
-                      </TooltipContent>
-                    </Tooltip>
+              <Dialog>
+                <DialogTrigger>
+                  <View className="flex-row">
+                    {participants.map((participant, pIdx) => (
+                      <View
+                        key={pIdx}
+                        className={pIdx !== 0 ? '-ml-3 z-0' : 'z-10'} // base overlap
+                        style={{ zIndex: participants.length - pIdx }} // higher index = on top
+                      >
+                        {/* <Tooltip delayDuration={100}>
+                          <TooltipTrigger> */}
+                            <ProfileAvatar user={participant} />
+                          {/* </TooltipTrigger>
+                          <TooltipContent>
+                            <SSText>{participant.username}</SSText>
+                          </TooltipContent>
+                        </Tooltip> */}
+                      </View>
+                    ))}
                   </View>
-                ))}
-              </View>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      <SSText className="text-center font-semibold !text-lg">
+                        Who'll be at {place.place?.name}?
+                      </SSText>
+                    </DialogTitle>
+                  </DialogHeader>
+                  {participants.map((participant, pIdx) => (
+                    <ShareItineraryUserCard user={participant} />
+                  ))}
+                </DialogContent>
+              </Dialog>
               <Button
                 variant={isTappedIn ? 'outline' : 'default'}
                 onPress={handleTapInOut}
