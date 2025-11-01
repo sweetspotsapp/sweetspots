@@ -41,7 +41,8 @@ interface CardStackItem {
 }
 
 const PAGE_SIZE = 10;
-const PREFETCH_THRESHOLD = 3;
+const PREFETCH_THRESHOLD = 0;
+// const PREFETCH_THRESHOLD = 3;
 const CARDS_TO_PRERENDER = 4;
 const CARD_SCALES = [1, 0.95, 0.9, 0.85];
 const CARD_OPACITIES = [1, 1, 0, 0];
@@ -152,7 +153,8 @@ export default function DiscoverTab() {
         page,
         vibes: vibeFilters,
         rating: ratingFilter > 0 ? ratingFilter : undefined,
-        distance: distanceFilter,
+        // distance: distanceFilter,
+        distance: 9999999,
         priceRange: priceFilter,
         latitude: location?.latitude ?? -37.8136,
         longitude: location?.longitude ?? 144.9631,
