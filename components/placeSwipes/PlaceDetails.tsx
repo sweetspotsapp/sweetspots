@@ -68,17 +68,16 @@ PlaceDetailsProps) {
   // const [duration, setDuration] = useState<number | null>(null);
   const user = useAuth().user;
 
-  const initialPlaceImages = (Array.isArray(
-    (place as IRecommendedPlace).images
-  )
-    ? (place as IRecommendedPlace).images
-    : Array.isArray((place as IPlace).images)
-    ? (place as IPlace).images
-    : []) as (IPlaceImage | string)[];
+  const initialPlaceImages = (
+    Array.isArray((place as IRecommendedPlace).images)
+      ? (place as IRecommendedPlace).images
+      : Array.isArray((place as IPlace).images)
+      ? (place as IPlace).images
+      : []
+  ) as (IPlaceImage | string)[];
 
-  const [placeImages, setPlaceImages] = useState<(IPlaceImage | string)[]>(
-    initialPlaceImages
-  );
+  const [placeImages, setPlaceImages] =
+    useState<(IPlaceImage | string)[]>(initialPlaceImages);
 
   const images = Array.isArray(placeImages)
     ? placeImages.slice(skipFirstImage ? 1 : 0, 4)
@@ -87,12 +86,13 @@ PlaceDetailsProps) {
   const { location } = useLocationStore();
 
   useEffect(() => {
-    if ((
-      !(place as IPlace).images ||
-      !(place as IRecommendedPlace).images ||
-      (place as IRecommendedPlace).images.length === 0 ||
-      (place as IPlace).images?.length === 0
-    ) && place?.id) {
+    if (
+      (!(place as IPlace).images ||
+        !(place as IRecommendedPlace).images ||
+        (place as IRecommendedPlace).images.length === 0 ||
+        (place as IPlace).images?.length === 0) &&
+      place?.id
+    ) {
       getPlaceImages({
         placeId: place?.id,
       }).then((res) => {
@@ -151,12 +151,17 @@ PlaceDetailsProps) {
   };
 
   const [isLoadingPrepareContext, setIsLoadingPrepareContext] = useState(false);
-  const [thingsToPrepare, setThingsToPrepare] = useState<{ item: string }[]>(
-    []
-  );
+  const whatToPrepare = place.whatToPrepare;
+  const whatToPrepareArr =
+    whatToPrepare
+      ?.split(/\s*\d+\.\s*/g)
+      ?.filter(Boolean)
+      ?.map((s) => ({ item: s.trim() })) || [];
+  const [thingsToPrepare, setThingsToPrepare] =
+    useState<{ item: string }[]>(whatToPrepareArr);
 
   useEffect(() => {
-    if (user?.uid && place?.id) {
+    if (user?.uid && place?.id && !place?.whatToPrepare) {
       setIsLoadingPrepareContext(true);
       getPrepareContext({ userId: user.uid, placeId: place.id })
         .then((res) => {
@@ -172,10 +177,12 @@ PlaceDetailsProps) {
   }, [place?.id, user?.uid]);
 
   const [isLoadingContext, setIsLoadingContext] = useState(false);
-  const [context, setContext] = useState<string | null>(null);
+  const [context, setContext] = useState<string | null>(
+    place?.whyVisit || null
+  );
 
   useEffect(() => {
-    if (!user || !place?.id) return;
+    if (!user || !place?.id || place?.whyVisit) return;
 
     const cache = useRecContextCache.getState();
     const isFresh = cache.isFresh(user.uid, place.id, TWO_DAYS_MS);

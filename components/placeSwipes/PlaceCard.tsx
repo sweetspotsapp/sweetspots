@@ -7,15 +7,12 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
   Animated,
-  Easing,
 } from 'react-native';
 import {
   Star,
   ChevronLeft,
   ChevronRight,
   Car,
-  ChevronDown,
-  ChevronUp,
 } from 'lucide-react-native';
 import { ImageGalleryModal } from '../ImageGalleryModal';
 import { SSText } from '../ui/SSText';
@@ -26,12 +23,6 @@ import { useLocationStore } from '@/store/useLocationStore';
 import { CalculateDistanceDto } from '@/dto/places/calculate-distance.dto';
 import VibePill from '../ui/VibePill';
 import { useAuth } from '@/hooks/useAuth';
-import {
-  getPrepareContext,
-  getRecContext,
-} from '@/endpoints/recommendations/endpoints';
-import { useRecContextCache } from '@/store/useRecContextCache';
-import SSSpinner from '../ui/SSSpinner';
 import { cn } from '@/lib/utils';
 import { formatDuration } from '@/utils/formatter';
 import { capitalCase } from 'change-case';
@@ -123,40 +114,40 @@ export function PlaceCard({ place, onImagePress }: PlaceCardProps) {
   };
 
   // ----- Rec Context + Cache -----
-  const [isLoadingContext, setIsLoadingContext] = useState(false);
-  const [context, setContext] = useState<string | null>(null);
+  // const [isLoadingContext, setIsLoadingContext] = useState(false);
+  // const [context, setContext] = useState<string | null>(null);
   const user = useAuth().user;
 
-  useEffect(() => {
-    if (!user || !place?.id) return;
+  // useEffect(() => {
+  //   if (!user || !place?.id) return;
 
-    const cache = useRecContextCache.getState();
-    const isFresh = cache.isFresh(user.uid, place.id, TWO_DAYS_MS);
+  //   const cache = useRecContextCache.getState();
+  //   const isFresh = cache.isFresh(user.uid, place.id, TWO_DAYS_MS);
 
-    if (isFresh) {
-      const cached = cache.get(user.uid, place.id);
-      if (cached) {
-        setContext(cached.content);
-        return;
-      }
-    }
+  //   if (isFresh) {
+  //     const cached = cache.get(user.uid, place.id);
+  //     if (cached) {
+  //       setContext(cached.content);
+  //       return;
+  //     }
+  //   }
 
-    setIsLoadingContext(true);
-    getRecContext({ userId: user.uid, placeId: place.id })
-      .then((res) => {
-        if (res?.data) {
-          setContext(res.data);
-          cache.set(user.uid, place.id, res.data, new Date());
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to load rec context:', err);
-      })
-      .finally(() => {
-        setIsLoadingContext(false);
-      });
-  }, [place?.id, user?.uid]);
-  // ----- Animate ONLY the “Why should you visit?” card -----
+  //   setIsLoadingContext(true);
+  //   getRecContext({ userId: user.uid, placeId: place.id })
+  //     .then((res) => {
+  //       if (res?.data) {
+  //         setContext(res.data);
+  //         cache.set(user.uid, place.id, res.data, new Date());
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('Failed to load rec context:', err);
+  //     })
+  //     .finally(() => {
+  //       setIsLoadingContext(false);
+  //     });
+  // }, [place?.id, user?.uid]);
+
   // const [isCollapsed, setIsCollapsed] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const heightAnim = useRef(new Animated.Value(0)).current; // in px (animated container height)

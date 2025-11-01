@@ -31,6 +31,9 @@ export interface IPlace {
   syncSource: string;
   isActive: boolean;
 
+  whyVisit?: string | null;
+  whatToPrepare?: string | null;
+
   createdAt: string;
   updatedAt: string;
 

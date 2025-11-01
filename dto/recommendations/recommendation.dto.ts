@@ -21,4 +21,6 @@ export interface IRecommendedPlace {
   websiteUrl?: string;
   reviews?: IReview[];
   openingHours?: string[];
+  whyVisit?: string | null;
+  whatToPrepare?: string | null;
 }

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
-  Dimensions,
   Animated,
   PanResponder,
   Alert,
@@ -147,7 +146,8 @@ export default function DiscoverTab() {
 
     try {
       const res = await getRecommendations({
-        forDemo: user?.email === 'kao@gmail.com',
+        // forDemo: user?.email === 'kao@gmail.com',
+        forDemo: true,
         limit: PAGE_SIZE,
         page,
         vibes: vibeFilters,
